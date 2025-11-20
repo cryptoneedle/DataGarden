@@ -22,6 +22,10 @@
             <groupId>com.bubbles.engine.common</groupId>
             <artifactId>common-spring-boot-starter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.bubbles.engine.data</groupId>
+            <artifactId>data-spring-boot-starter</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>

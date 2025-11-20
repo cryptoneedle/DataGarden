@@ -69,7 +69,7 @@
             </dependency>
             <dependency>
                 <groupId>com.cryptoneedle.garden</groupId>
-                <artifactId>data-garden-core-datasource</artifactId>
+                <artifactId>data-garden-core-source</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

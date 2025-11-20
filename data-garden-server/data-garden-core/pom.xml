@@ -18,7 +18,7 @@
         <module>data-garden-core-config</module>
         <module>data-garden-core-dolphin-scheduler</module>
         <module>data-garden-core-sync</module>
-        <module>data-garden-core-datasource</module>
+        <module>data-garden-core-source</module>
         <module>data-garden-core-doris</module>
         <module>data-garden-core-dim</module>
         <module>data-garden-core-standard</module>
