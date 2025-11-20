@@ -51,11 +51,11 @@ public class SourceColumn extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     @Comment("字段评论")
     private String comment;
-    @Comment("排序")
-    private Long position;
     @Enumerated(EnumType.STRING)
     @Comment("字段类型")
     private SourceColumnType columnType;
+    @Comment("排序")
+    private Long sort;
 
     @Comment("Doris目录")
     private String dorisCatalog;
@@ -104,6 +104,8 @@ public class SourceColumn extends BaseEntity {
     private String transTable;
     @Comment("字段")
     private String transColumn;
+    @Comment("排序")
+    private Integer transSort;
     @Column(columnDefinition = "TEXT")
     @Comment("字段评论")
     private String transComment;

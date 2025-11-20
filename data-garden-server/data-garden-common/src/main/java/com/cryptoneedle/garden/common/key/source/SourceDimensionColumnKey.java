@@ -1,5 +1,6 @@
 package com.cryptoneedle.garden.common.key.source;
 
+import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -20,6 +21,7 @@ public class SourceDimensionColumnKey implements Serializable {
     private String catalog;
     private String database;
     private String table;
+    private SourceDimensionType dimensionType;
     private String dimension;
     private String column;
 
@@ -36,7 +38,7 @@ public class SourceDimensionColumnKey implements Serializable {
     }
 
     public SourceDimensionKey sourceDimensionKey() {
-        return SourceDimensionKey.builder().catalog(this.catalog).database(this.database).table(this.table).dimension(this.dimension).build();
+        return SourceDimensionKey.builder().catalog(this.catalog).database(this.database).table(this.table).dimensionType(this.dimensionType).dimension(this.dimension).build();
     }
 
     public SourceColumnKey sourceColumnKey() {
