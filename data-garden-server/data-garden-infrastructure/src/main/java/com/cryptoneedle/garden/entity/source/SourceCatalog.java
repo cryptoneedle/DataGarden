@@ -37,8 +37,15 @@ public class SourceCatalog extends BaseEntity {
     @Comment("目录")
     private String catalog;
 
-    @Comment("启用")
-    private Boolean enabled;
+    @Comment("Doris目录")
+    private String dorisCatalog;
+    @Comment("默认系统编码")
+    private String systemCode;
+    @Enumerated(EnumType.STRING)
+    @Comment("默认采集频率")
+    private SourceCollectFrequencyType collectFrequency;
+    @Comment("默认采集频率对应的时间点 (每天为具体小时开始，每小时为具体分钟开始，每分钟为具体分开始)")
+    private Integer collectTimePoint;
 
     @Comment("主机")
     private String host;
@@ -70,21 +77,14 @@ public class SourceCatalog extends BaseEntity {
     @Comment("Doris可连接")
     private Boolean dorisConnected;
     @Comment("服务器最后可连接时间")
-    private LocalDateTime serverDt;
+    private LocalDateTime serverConnectedDt;
     @Comment("Jdbc最后可连接时间")
-    private LocalDateTime jdbcDt;
+    private LocalDateTime jdbcConnectedDt;
     @Comment("Doris最后可连接时间")
-    private LocalDateTime dorisDt;
+    private LocalDateTime dorisConnectedDt;
 
-    @Comment("Doris目录")
-    private String dorisCatalog;
-    @Comment("默认系统编码")
-    private String systemCode;
-    @Enumerated(EnumType.STRING)
-    @Comment("默认采集频率")
-    private SourceCollectFrequencyType collectFrequency;
-    @Comment("默认采集频率对应的时间点 (每天为具体小时开始，每小时为具体分钟开始，每分钟为具体分开始)")
-    private Integer collectTimePoint;
+    @Comment("启用")
+    private Boolean enabled;
 
     public SourceCatalogKey sourceCatalogKey() {
         return SourceCatalogKey.builder().catalog(this.catalog).build();

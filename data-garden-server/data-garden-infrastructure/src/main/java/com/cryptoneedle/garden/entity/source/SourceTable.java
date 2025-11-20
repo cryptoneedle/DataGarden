@@ -43,15 +43,9 @@ public class SourceTable extends BaseEntity {
     @Comment("表")
     private String table;
 
-    @Comment("启用")
-    private Boolean enabled;
-
     @Column(columnDefinition = "TEXT")
-    @Comment("表评论")
+    @Comment("表说明")
     private String comment;
-    @Enumerated(EnumType.STRING)
-    @Comment("表类型")
-    private SourceTableType tableType;
 
     @Comment("Doris目录")
     private String dorisCatalog;
@@ -64,33 +58,42 @@ public class SourceTable extends BaseEntity {
     private SourceCollectFrequencyType collectFrequency;
     @Comment("采集频率对应的时间点 (会覆盖目录、数据库配置) (每天为具体小时开始，每小时为具体分钟开始，每分钟为具体分开始)")
     private Integer collectTimePoint;
-    @Comment("采集任务分片数")
-    private Integer collectShardNum;
+    @Comment("采集任务分组序号")
+    private Integer collectGroupNum;
 
-    @Comment("数据量")
-    private Long rowNum;
-    @Column(precision = 30, scale = 20)
-    @Comment("行平均占用空间(单位：Byte)")
-    private BigDecimal avgRowBytes;
-    @Column(name = "storage_mb")
-    @Comment("预估占用空间(单位：MBytes)")
-    private BigDecimal storageMegaBytes;
-    @Comment("预估占用空间(格式化)")
-    private String storageFormat;
-    @Comment("统计时间")
-    private LocalDateTime statisticDt;
-
+    @Enumerated(EnumType.STRING)
+    @Comment("表类型")
+    private SourceTableType tableType;
     @Comment("表")
     private String transTable;
     @Column(columnDefinition = "TEXT")
-    @Comment("表评论")
+    @Comment("表说明")
     private String transComment;
+    @Comment("分桶数量")
+    private Integer transBucketNum;
+
+    @Comment("字段数量")
+    private Integer columnNum;
+    @Comment("数据量")
+    private Long rowNum;
+    @Comment("预估占用空间(格式化)")
+    private String storageSpaceFormat;
+    @Column(name = "storage_mb", precision = 30, scale = 20)
+    @Comment("预估占用空间(单位：MBytes)")
+    private BigDecimal storageMegaBytes;
+    @Column(precision = 30, scale = 20)
+    @Comment("行平均占用空间(单位：Byte)")
+    private BigDecimal avgRowBytes;
+    @Comment("统计时间")
+    private LocalDateTime statisticDt;
+
     @Comment("锁定表")
     private Boolean transTableLocked;
-    @Comment("锁定评论")
+    @Comment("锁定说明")
     private Boolean transCommentLocked;
-    @Comment("预估分桶数量")
-    private Integer transBucketNum;
+
+    @Comment("启用")
+    private Boolean enabled;
 
     public SourceTableKey sourceTableKey() {
         return SourceTableKey.builder().catalog(this.catalog).database(this.database).table(this.table).build();

@@ -38,9 +38,6 @@ public class SourceDatabase extends BaseEntity {
     @Comment("数据库")
     private String database;
 
-    @Comment("启用")
-    private Boolean enabled;
-
     @Comment("Doris目录")
     private String dorisCatalog;
     @Comment("默认系统编码 (会覆盖目录配置)")
@@ -57,6 +54,9 @@ public class SourceDatabase extends BaseEntity {
     private Long viewNum;
     @Comment("统计时间")
     private LocalDateTime statisticDt;
+
+    @Comment("启用")
+    private Boolean enabled;
 
     public SourceDatabaseKey sourceDatabaseKey() {
         return SourceDatabaseKey.builder().catalog(this.catalog).database(this.database).build();

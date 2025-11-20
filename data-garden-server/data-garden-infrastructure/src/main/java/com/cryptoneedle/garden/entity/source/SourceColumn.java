@@ -45,35 +45,56 @@ public class SourceColumn extends BaseEntity {
     @Comment("字段")
     private String column;
 
-    @Comment("启用")
-    private Boolean enabled;
-
     @Column(columnDefinition = "TEXT")
-    @Comment("字段评论")
+    @Comment("字段说明")
     private String comment;
-    @Enumerated(EnumType.STRING)
-    @Comment("字段类型")
-    private SourceColumnType columnType;
-    @Comment("排序")
-    private Long sort;
 
     @Comment("Doris目录")
     private String dorisCatalog;
     @Comment("系统编码 (会覆盖目录、数据库、表配置)")
     private String systemCode;
 
+    @Enumerated(EnumType.STRING)
+    @Comment("字段类型")
+    private SourceColumnType columnType;
+    @Comment("表")
+    private String transTable;
+    @Comment("字段")
+    private String transColumn;
+    @Column(columnDefinition = "TEXT")
+    @Comment("字段说明")
+    private String transComment;
+    @Comment("排序")
+    private Long sort;
+    @Comment("排序")
+    private Integer transSort;
+
+    @Comment("数据类型格式化")
+    private Long dataTypeFormat;
+    @Comment("数据类型格式化")
+    private Long transDataTypeFormat;
     @Comment("数据类型")
     private String dataType;
+    @Comment("数据类型")
+    private String transDataType;
     @Comment("长度")
     private Long length;
+    @Comment("长度")
+    private Long transLength;
     @Comment("精度")
     private Long precision;
+    @Comment("精度")
+    private Long transPrecision;
     @Comment("标度")
     private Long scale;
+    @Comment("标度")
+    private Long transScale;
+
     @Comment("数据量")
     private Long rowNum;
     @Comment("采样数据量")
     private Long sampleNum;
+    @Column(precision = 10, scale = 2)
     @Comment("采样率")
     private BigDecimal sampleRate;
     @Comment("采样空值数据量")
@@ -92,7 +113,7 @@ public class SourceColumn extends BaseEntity {
     @Column(precision = 30, scale = 20)
     @Comment("字段平均占用空间(单位：Byte)")
     private BigDecimal avgColumnBytes;
-    @Column(name = "storage_mb")
+    @Column(name = "storage_mb", precision = 30, scale = 20)
     @Comment("预估占用空间(单位：MBytes)")
     private BigDecimal storageMegaBytes;
     @Comment("预估占用空间(格式化)")
@@ -100,37 +121,15 @@ public class SourceColumn extends BaseEntity {
     @Comment("统计时间")
     private LocalDateTime statisticDt;
 
-    @Comment("表")
-    private String transTable;
-    @Comment("字段")
-    private String transColumn;
-    @Comment("排序")
-    private Integer transSort;
-    @Column(columnDefinition = "TEXT")
-    @Comment("字段评论")
-    private String transComment;
-    @Comment("数据类型")
-    private String transDataType;
-    @Comment("长度")
-    private Long transLength;
-    @Comment("精度")
-    private Long transPrecision;
-    @Comment("标度")
-    private Long transScale;
     @Comment("锁定字段")
     private Boolean transColumnLocked;
-    @Comment("锁定评论")
+    @Comment("锁定说明")
     private Boolean transCommentLocked;
     @Comment("锁定数据类型")
     private String transDataTypeLocked;
-    @Comment("锁定长度")
-    private Long transLengthLocked;
-    @Comment("锁定精度")
-    private Long transPrecisionLocked;
-    @Comment("锁定标度")
-    private Long transScaleLocked;
-    @Comment("数据类型格式化")
-    private Long transDataTypeFormat;
+
+    @Comment("启用")
+    private Boolean enabled;
 
     public SourceColumnKey sourceColumnKey() {
         return SourceColumnKey.builder().catalog(this.catalog).database(this.database).table(this.table).column(this.column).build();

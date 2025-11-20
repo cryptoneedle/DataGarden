@@ -49,11 +49,11 @@ public class SourceDimension extends BaseEntity {
     @Comment("字段")
     private String column;
 
-    @Comment("启用")
-    private Boolean enabled;
-
     @Comment("排序")
     private Long sort;
+
+    @Comment("启用")
+    private Boolean enabled;
 
     public SourceDimensionColumnKey sourceDimensionColumnKey() {
         return SourceDimensionColumnKey.builder().catalog(this.catalog).database(this.database).table(this.table).dimensionType(this.dimensionType).dimension(this.dimension).column(this.column).build();
