@@ -41,7 +41,7 @@ public class DorisColumn extends BaseEntity {
     @Comment("字段")
     private String column;
 
-    @Column(length = 255)
+    @Column(length = 2048)
     @Comment("详情")
     private String comment;
 
