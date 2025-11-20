@@ -115,6 +115,11 @@
             </dependency>
             <dependency>
                 <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-start-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
                 <artifactId>data-garden-start-task</artifactId>
                 <version>${project.version}</version>
             </dependency>
