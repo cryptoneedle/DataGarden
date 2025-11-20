@@ -1,0 +1,164 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.bubbles.engine</groupId>
+        <artifactId>engine-dependency</artifactId>
+        <version>3.5.5.2</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.cryptoneedle.garden</groupId>
+    <artifactId>data-garden-server</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>data-garden-common</module>
+        <module>data-garden-spi</module>
+        <module>data-garden-infrastructure</module>
+        <module>data-garden-core</module>
+        <module>data-garden-start</module>
+        <module>data-garden-plugins</module>
+    </modules>
+
+    <properties>
+        <java.version>25</java.version>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <project.version>1.0.0-SNAPSHOT</project.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-spi</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-infrastructure</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- data-garden-core -->
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core-config</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core-dolphin-scheduler</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core-sync</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core-datasource</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core-doris</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core-dim</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core-standard</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core-ods</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core-dwd</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core-dws</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-core-ads</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-start</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-start-task</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-start-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- data-garden-plugins -->
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-plugins</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>ata-garden-plugins-oracle</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Other -->
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>9.5.0</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

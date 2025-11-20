@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.cryptoneedle.garden</groupId>
+        <artifactId>data-garden-server</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>data-garden-core</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>data-garden-core-config</module>
+        <module>data-garden-core-dolphin-scheduler</module>
+        <module>data-garden-core-sync</module>
+        <module>data-garden-core-datasource</module>
+        <module>data-garden-core-doris</module>
+        <module>data-garden-core-dim</module>
+        <module>data-garden-core-standard</module>
+        <module>data-garden-core-ods</module>
+        <module>data-garden-core-dwd</module>
+        <module>data-garden-core-dws</module>
+        <module>data-garden-core-ads</module>
+    </modules>
+</project>

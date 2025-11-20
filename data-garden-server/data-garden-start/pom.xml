@@ -6,12 +6,16 @@
 
     <parent>
         <groupId>com.cryptoneedle.garden</groupId>
-        <artifactId>data-garden</artifactId>
+        <artifactId>data-garden-server</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>data-garden-start</artifactId>
+    <packaging>pom</packaging>
 
-
+    <modules>
+        <module>data-garden-start-task</module>
+        <module>data-garden-start-api</module>
+    </modules>
 </project>
