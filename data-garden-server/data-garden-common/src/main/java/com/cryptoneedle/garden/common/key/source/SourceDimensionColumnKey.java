@@ -3,11 +3,12 @@ package com.cryptoneedle.garden.common.key.source;
 import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
-import lombok.Builder;
-import lombok.Data;
+import jakarta.persistence.Embeddable;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * <p>description: 数据源-维度字段-主键 </p>
@@ -15,9 +16,14 @@ import java.io.Serializable;
  * @author CryptoNeedle
  * @date 2025-11-20
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 @Accessors(chain = true)
+@ToString
+@Embeddable
 @Schema(description = "数据源-维度字段-主键")
 public class SourceDimensionColumnKey implements Serializable {
 
@@ -42,6 +48,19 @@ public class SourceDimensionColumnKey implements Serializable {
     @Column(name = "\"column\"")
     @Schema(description = "字段")
     private String column;
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof SourceDimensionColumnKey that)) {
+            return false;
+        }
+        return Objects.equals(catalog, that.catalog) && Objects.equals(database, that.database) && Objects.equals(table, that.table) && dimensionType == that.dimensionType && Objects.equals(dimension, that.dimension) && Objects.equals(column, that.column);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(catalog, database, table, dimensionType, dimension, column);
+    }
 
     public SourceCatalogKey sourceCatalogKey() {
         return SourceCatalogKey.builder().catalog(this.catalog).build();
