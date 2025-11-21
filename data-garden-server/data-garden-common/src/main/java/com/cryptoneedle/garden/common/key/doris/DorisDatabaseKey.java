@@ -1,6 +1,7 @@
 package com.cryptoneedle.garden.common.key.doris;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -19,6 +20,7 @@ import java.io.Serializable;
 @Schema(description = "Doris数据库-数据库-主键")
 public class DorisDatabaseKey implements Serializable {
 
+    @Column(name = "\"database\"", length = 64)
     @Schema(description = "数据库")
     private String database;
 }

@@ -8,19 +8,14 @@
         <groupId>com.cryptoneedle.garden</groupId>
         <artifactId>data-garden-start</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>data-garden-start-task</artifactId>
+    <artifactId>data-garden-start-config</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-start-config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-core-sync</artifactId>
+            <artifactId>data-garden-core-ads</artifactId>
         </dependency>
     </dependencies>
 </project>

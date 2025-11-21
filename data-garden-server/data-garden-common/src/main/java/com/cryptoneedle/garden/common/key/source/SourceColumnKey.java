@@ -1,6 +1,7 @@
 package com.cryptoneedle.garden.common.key.source;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -19,15 +20,19 @@ import java.io.Serializable;
 @Schema(description = "数据源-字段-主键")
 public class SourceColumnKey implements Serializable {
 
+    @Column(name = "\"catalog\"")
     @Schema(description = "目录")
     private String catalog;
 
+    @Column(name = "\"database\"")
     @Schema(description = "数据库")
     private String database;
 
+    @Column(name = "\"table\"")
     @Schema(description = "表")
     private String table;
 
+    @Column(name = "\"column\"")
     @Schema(description = "字段")
     private String column;
 

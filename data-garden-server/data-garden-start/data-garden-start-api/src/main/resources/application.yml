@@ -1,0 +1,36 @@
+server:
+  port: 30001
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  datasource:
+    primary:
+      url: jdbc:postgresql://${primary.host}:${primary.port}/data-garden
+      username: ${primary.username}
+      password: ${primary.password}
+    doris:
+      url: jdbc:mysql://${doris.host}:${doris.port}
+      username: ${doris.username}
+      password: ${doris.password}
+    dolphin-scheduler:
+      url: jdbc:mysql://${dolphin-scheduler.host}:${dolphin-scheduler.port}/dolphinscheduler
+      username: ${dolphin-scheduler.username}
+      password: ${dolphin-scheduler.password}
+
+---
+primary:
+  host: localhost
+  port: 5432
+  username: cryptoneedle
+  password: postgres
+doris:
+  host: 10.36.10.87
+  port: 9030
+  username: root
+  password: HJD@%hd&di8473jh
+dolphin-scheduler:
+  host: 10.36.10.93
+  port: 3306
+  username: root
+  password: Seatone@2024#

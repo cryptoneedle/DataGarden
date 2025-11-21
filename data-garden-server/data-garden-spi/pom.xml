@@ -12,4 +12,11 @@
     </parent>
 
     <artifactId>data-garden-spi</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.cryptoneedle.garden</groupId>
+            <artifactId>data-garden-common</artifactId>
+        </dependency>
+    </dependencies>
 </project>

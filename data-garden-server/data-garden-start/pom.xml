@@ -15,7 +15,7 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>data-garden-start-starter</module>
+        <module>data-garden-start-config</module>
         <module>data-garden-start-task</module>
         <module>data-garden-start-api</module>
     </modules>
