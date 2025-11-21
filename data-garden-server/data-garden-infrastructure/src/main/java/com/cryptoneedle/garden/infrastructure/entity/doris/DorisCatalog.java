@@ -19,9 +19,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Accessors(chain = true)
+@ToString
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "doris_catalog")
@@ -37,7 +37,7 @@ public class DorisCatalog extends BaseEntity {
     @Comment("说明")
     private String comment;
     @Comment("数据源目录")
-    private String sourceCatalog;
+    private String sourceCatalogName;
 
     @Comment("创建时间(需采用字符类型)")
     private String createDt;

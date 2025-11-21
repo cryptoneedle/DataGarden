@@ -23,9 +23,9 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Accessors(chain = true)
+@ToString
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "source_table")
@@ -57,7 +57,7 @@ public class SourceTable extends BaseEntity {
     @Comment("表类型")
     private SourceTableType tableType;
     @Comment("表")
-    private String transTable;
+    private String transTableName;
     @Column(columnDefinition = "TEXT")
     @Comment("表说明")
     private String transComment;
@@ -80,10 +80,10 @@ public class SourceTable extends BaseEntity {
     private LocalDateTime statisticDt;
 
     @Comment("锁定表")
-    private Boolean transTableLocked;
+    private boolean transTableLocked = false;
     @Comment("锁定说明")
-    private Boolean transCommentLocked;
+    private boolean transCommentLocked = false;
 
     @Comment("启用")
-    private Boolean enabled;
+    private boolean enabled = false;
 }

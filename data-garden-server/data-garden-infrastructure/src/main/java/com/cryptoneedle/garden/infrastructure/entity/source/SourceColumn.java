@@ -22,9 +22,9 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Accessors(chain = true)
+@ToString
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "source_column")
@@ -39,7 +39,7 @@ public class SourceColumn extends BaseEntity {
     private String comment;
 
     @Comment("Doris目录")
-    private String dorisCatalog;
+    private String dorisCatalogName;
     @Comment("系统编码 (会覆盖目录、数据库、表配置)")
     private String systemCode;
 
@@ -47,9 +47,9 @@ public class SourceColumn extends BaseEntity {
     @Comment("字段类型")
     private SourceColumnType columnType;
     @Comment("表")
-    private String transTable;
+    private String transTableName;
     @Comment("字段")
-    private String transColumn;
+    private String transColumnName;
     @Column(columnDefinition = "TEXT")
     @Comment("字段说明")
     private String transComment;
@@ -111,12 +111,12 @@ public class SourceColumn extends BaseEntity {
     private LocalDateTime statisticDt;
 
     @Comment("锁定字段")
-    private Boolean transColumnLocked;
+    private boolean transColumnLocked = false;
     @Comment("锁定说明")
-    private Boolean transCommentLocked;
+    private boolean transCommentLocked = false;
     @Comment("锁定数据类型")
     private String transDataTypeLocked;
 
     @Comment("启用")
-    private Boolean enabled;
+    private boolean enabled = false;
 }

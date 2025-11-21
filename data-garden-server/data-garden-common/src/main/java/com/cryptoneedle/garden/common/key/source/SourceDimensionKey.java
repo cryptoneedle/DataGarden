@@ -3,11 +3,14 @@ package com.cryptoneedle.garden.common.key.source;
 import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Embeddable;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Comment;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * <p>description: 数据源-维度-主键 </p>
@@ -15,54 +18,45 @@ import java.util.Objects;
  * @author CryptoNeedle
  * @date 2025-11-20
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Accessors(chain = true)
-@ToString
 @Embeddable
+@Comment("数据源-维度-主键")
 @Schema(description = "数据源-维度-主键")
 public class SourceDimensionKey implements Serializable {
 
+    @Comment("目录")
     @Schema(description = "目录")
-    private String catalog;
+    private String catalogName;
 
+    @Comment("数据库")
     @Schema(description = "数据库")
-    private String database;
+    private String databaseName;
 
+    @Comment("表")
     @Schema(description = "表")
-    private String table;
+    private String tableName;
 
+    @Comment("维度类型")
     @Schema(description = "维度类型")
     private SourceDimensionType dimensionType;
 
+    @Comment("字段")
     @Schema(description = "字段")
-    private String dimension;
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof SourceDimensionKey that)) {
-            return false;
-        }
-        return Objects.equals(catalog, that.catalog) && Objects.equals(database, that.database) && Objects.equals(table, that.table) && dimensionType == that.dimensionType && Objects.equals(dimension, that.dimension);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(catalog, database, table, dimensionType, dimension);
-    }
+    private String dimensionName;
 
     public SourceCatalogKey sourceCatalogKey() {
-        return SourceCatalogKey.builder().catalog(this.catalog).build();
+        return SourceCatalogKey.builder().catalogName(this.catalogName).build();
     }
 
     public SourceDatabaseKey sourceDatabaseKey() {
-        return SourceDatabaseKey.builder().catalog(this.catalog).database(this.database).build();
+        return SourceDatabaseKey.builder().catalogName(this.catalogName).databaseName(this.databaseName).build();
     }
 
     public SourceTableKey sourceTableKey() {
-        return SourceTableKey.builder().catalog(this.catalog).database(this.database).table(this.table).build();
+        return SourceTableKey.builder().catalogName(this.catalogName).databaseName(this.databaseName).tableName(this.tableName).build();
     }
 }

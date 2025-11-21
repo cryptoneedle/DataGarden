@@ -2,13 +2,17 @@ package com.cryptoneedle.garden.common.key.source;
 
 import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Comment;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * <p>description: 数据源-维度字段-主键 </p>
@@ -16,69 +20,58 @@ import java.util.Objects;
  * @author CryptoNeedle
  * @date 2025-11-20
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Accessors(chain = true)
-@ToString
 @Embeddable
+@Comment("数据源-维度字段-主键")
 @Schema(description = "数据源-维度字段-主键")
 public class SourceDimensionColumnKey implements Serializable {
 
-    @Column(name = "\"catalog\"")
+    @Comment("目录")
     @Schema(description = "目录")
-    private String catalog;
+    private String catalogName;
 
-    @Column(name = "\"database\"")
+    @Comment("数据库")
     @Schema(description = "数据库")
-    private String database;
+    private String databaseName;
 
-    @Column(name = "\"table\"")
+    @Comment("表")
     @Schema(description = "表")
-    private String table;
+    private String tableName;
 
+    @Enumerated(EnumType.STRING)
+    @Comment("维度类型")
     @Schema(description = "维度类型")
     private SourceDimensionType dimensionType;
 
+    @Comment("维度")
     @Schema(description = "维度")
-    private String dimension;
+    private String dimensionName;
 
-    @Column(name = "\"column\"")
+    @Comment("字段")
     @Schema(description = "字段")
-    private String column;
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof SourceDimensionColumnKey that)) {
-            return false;
-        }
-        return Objects.equals(catalog, that.catalog) && Objects.equals(database, that.database) && Objects.equals(table, that.table) && dimensionType == that.dimensionType && Objects.equals(dimension, that.dimension) && Objects.equals(column, that.column);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(catalog, database, table, dimensionType, dimension, column);
-    }
+    private String columnName;
 
     public SourceCatalogKey sourceCatalogKey() {
-        return SourceCatalogKey.builder().catalog(this.catalog).build();
+        return SourceCatalogKey.builder().catalogName(this.catalogName).build();
     }
 
     public SourceDatabaseKey sourceDatabaseKey() {
-        return SourceDatabaseKey.builder().catalog(this.catalog).database(this.database).build();
+        return SourceDatabaseKey.builder().catalogName(this.catalogName).databaseName(this.databaseName).build();
     }
 
     public SourceTableKey sourceTableKey() {
-        return SourceTableKey.builder().catalog(this.catalog).database(this.database).table(this.table).build();
+        return SourceTableKey.builder().catalogName(this.catalogName).databaseName(this.databaseName).tableName(this.tableName).build();
     }
 
     public SourceDimensionKey sourceDimensionKey() {
-        return SourceDimensionKey.builder().catalog(this.catalog).database(this.database).table(this.table).dimensionType(this.dimensionType).dimension(this.dimension).build();
+        return SourceDimensionKey.builder().catalogName(this.catalogName).databaseName(this.databaseName).tableName(this.tableName).dimensionType(this.dimensionType).dimensionName(this.dimensionName).build();
     }
 
     public SourceColumnKey sourceColumnKey() {
-        return SourceColumnKey.builder().catalog(this.catalog).database(this.database).table(this.table).column(this.column).build();
+        return SourceColumnKey.builder().catalogName(this.catalogName).databaseName(this.databaseName).tableName(this.tableName).columnName(this.columnName).build();
     }
 }

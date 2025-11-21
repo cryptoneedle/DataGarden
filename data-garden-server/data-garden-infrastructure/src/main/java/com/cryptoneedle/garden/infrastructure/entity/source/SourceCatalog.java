@@ -23,9 +23,9 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Accessors(chain = true)
+@ToString
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "source_catalog")
@@ -36,7 +36,7 @@ public class SourceCatalog extends BaseEntity {
     private SourceCatalogKey id;
 
     @Comment("Doris目录")
-    private String dorisCatalog;
+    private String dorisCatalogName;
     @Comment("默认系统编码")
     private String systemCode;
     @Enumerated(EnumType.STRING)
@@ -69,11 +69,11 @@ public class SourceCatalog extends BaseEntity {
     @Comment("数据库版本")
     private String version;
     @Comment("服务器可连接")
-    private Boolean serverConnected;
+    private boolean serverConnected = false;
     @Comment("Jdbc可连接")
-    private Boolean jdbcConnected;
+    private boolean jdbcConnected = false;
     @Comment("Doris可连接")
-    private Boolean dorisConnected;
+    private boolean dorisConnected = false;
     @Comment("服务器最后可连接时间")
     private LocalDateTime serverConnectedDt;
     @Comment("Jdbc最后可连接时间")
@@ -82,5 +82,5 @@ public class SourceCatalog extends BaseEntity {
     private LocalDateTime dorisConnectedDt;
 
     @Comment("启用")
-    private Boolean enabled;
+    private boolean enabled = false;
 }

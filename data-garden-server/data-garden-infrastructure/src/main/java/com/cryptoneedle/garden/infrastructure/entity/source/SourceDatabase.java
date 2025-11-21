@@ -21,9 +21,9 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Accessors(chain = true)
+@ToString
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "source_database")
@@ -34,7 +34,7 @@ public class SourceDatabase extends BaseEntity {
     private SourceDatabaseKey id;
 
     @Comment("Doris目录")
-    private String dorisCatalog;
+    private String dorisCatalogName;
     @Comment("默认系统编码 (会覆盖目录配置)")
     private String systemCode;
     @Enumerated(EnumType.STRING)
@@ -51,5 +51,5 @@ public class SourceDatabase extends BaseEntity {
     private LocalDateTime statisticDt;
 
     @Comment("启用")
-    private Boolean enabled;
+    private boolean enabled = false;
 }

@@ -23,9 +23,9 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Accessors(chain = true)
+@ToString
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "doris_table")
@@ -50,7 +50,7 @@ public class DorisTable extends BaseEntity {
     @Comment("副本数量")
     private Integer replicaCount;
     @Comment("是否分区")
-    private Boolean partitioned;
+    private boolean partitioned = false;
     @Comment("真实桶数量")
     private String bucketNum;
     @Comment("推荐桶数量")
@@ -81,9 +81,9 @@ public class DorisTable extends BaseEntity {
     @Column(length = 64)
     @Comment("表引擎类型")
     private String engine;
-    @Column(name = "\"collation\"", length = 32)
+    @Column(length = 32)
     @Comment("固定值：utf-8")
-    private String collation;
+    private String collationName;
     @Comment("创建时间")
     private LocalDateTime createDt;
     @Comment("更新时间")

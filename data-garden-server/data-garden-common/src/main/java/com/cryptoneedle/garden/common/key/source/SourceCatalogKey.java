@@ -1,13 +1,15 @@
 package com.cryptoneedle.garden.common.key.source;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Comment;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * <p>description: 数据源-目录-主键 </p>
@@ -15,31 +17,17 @@ import java.util.Objects;
  * @author CryptoNeedle
  * @date 2025-11-20
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Accessors(chain = true)
-@ToString
 @Embeddable
+@Comment("数据源-目录-主键")
 @Schema(description = "数据源-目录-主键")
 public class SourceCatalogKey implements Serializable {
 
-    @Column(name = "\"catalog\"")
+    @Comment("目录")
     @Schema(description = "目录")
-    private String catalog;
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof SourceCatalogKey that)) {
-            return false;
-        }
-        return Objects.equals(catalog, that.catalog);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(catalog);
-    }
+    private String catalogName;
 }

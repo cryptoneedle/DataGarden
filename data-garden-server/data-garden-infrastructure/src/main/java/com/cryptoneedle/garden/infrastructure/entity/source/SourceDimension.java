@@ -21,9 +21,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 @Accessors(chain = true)
+@ToString
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "source_dimension")
@@ -37,5 +37,5 @@ public class SourceDimension extends BaseEntity {
     private Long sort;
 
     @Comment("启用")
-    private Boolean enabled;
+    private boolean enabled = false;
 }

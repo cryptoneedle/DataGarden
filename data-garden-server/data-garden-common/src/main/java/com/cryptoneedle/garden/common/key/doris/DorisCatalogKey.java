@@ -3,11 +3,14 @@ package com.cryptoneedle.garden.common.key.doris;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.Comment;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * <p>description: Doris数据库-目录-主键 </p>
@@ -15,31 +18,18 @@ import java.util.Objects;
  * @author CryptoNeedle
  * @date 2025-11-20
  */
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Accessors(chain = true)
-@ToString
 @Embeddable
+@Comment("Doris数据库-目录-主键")
 @Schema(description = "Doris数据库-目录-主键")
 public class DorisCatalogKey implements Serializable {
 
-    @Column(name = "\"catalog\"", length = 512)
+    @Column(length = 512)
+    @Comment("目录")
     @Schema(description = "目录")
-    private String catalog;
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof DorisCatalogKey that)) {
-            return false;
-        }
-        return Objects.equals(catalog, that.catalog);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(catalog);
-    }
+    private String catalogName;
 }
