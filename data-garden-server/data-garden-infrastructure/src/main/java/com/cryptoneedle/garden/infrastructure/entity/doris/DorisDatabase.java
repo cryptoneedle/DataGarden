@@ -44,4 +44,7 @@ public class DorisDatabase extends BaseEntity {
     private Integer duplicateNum;
     @Comment("明细模型表数量")
     private Integer aggregateNum;
+
+    @Comment("排序")
+    private Integer sort;
 }

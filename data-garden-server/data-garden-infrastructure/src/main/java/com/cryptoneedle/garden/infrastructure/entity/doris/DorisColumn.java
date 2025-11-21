@@ -67,4 +67,7 @@ public class DorisColumn extends BaseEntity {
     private Long charMaxLength;
     @Comment("字符类型允许的最大字节数")
     private Long byteMaxLength;
+
+    @Comment("排序")
+    private Integer databaseSort;
 }

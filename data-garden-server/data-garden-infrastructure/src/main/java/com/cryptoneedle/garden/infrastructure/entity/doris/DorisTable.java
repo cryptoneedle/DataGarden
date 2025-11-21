@@ -88,4 +88,7 @@ public class DorisTable extends BaseEntity {
     private LocalDateTime createDt;
     @Comment("更新时间")
     private LocalDateTime updateDt;
+
+    @Comment("排序")
+    private Integer databaseSort;
 }

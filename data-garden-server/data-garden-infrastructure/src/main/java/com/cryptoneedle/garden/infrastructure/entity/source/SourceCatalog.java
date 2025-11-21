@@ -35,7 +35,7 @@ public class SourceCatalog extends BaseEntity {
     @EmbeddedId
     private SourceCatalogKey id;
 
-    @Comment("Doris目录")
+    @Comment("Doris目录(唯一)")
     private String dorisCatalogName;
     @Comment("默认系统编码")
     private String systemCode;
