@@ -25,11 +25,13 @@ primary:
   username: cryptoneedle
   password: postgres
 doris:
+  enabled: fales
   host: 10.36.10.87
   port: 9030
   username: root
   password: HJD@%hd&di8473jh
 dolphin-scheduler:
+  enabled: fales
   host: 10.36.10.93
   port: 3306
   username: root

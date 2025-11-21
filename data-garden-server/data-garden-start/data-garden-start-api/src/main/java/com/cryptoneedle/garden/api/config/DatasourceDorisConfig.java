@@ -2,6 +2,7 @@ package com.cryptoneedle.garden.api.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +25,7 @@ import java.util.Map;
  */
 @Configuration
 @EnableTransactionManagement
+@ConditionalOnBooleanProperty(name = "doris.enabled")
 public class DatasourceDorisConfig {
 
     @Bean(name = "dorisDataSource")

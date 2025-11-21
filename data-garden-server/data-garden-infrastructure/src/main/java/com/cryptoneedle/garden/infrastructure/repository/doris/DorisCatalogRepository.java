@@ -31,7 +31,7 @@ public interface DorisCatalogRepository extends BaseRepository<DorisCatalog, Dor
 
     @Query("""
              FROM DorisCatalog
-            ORDER BY CASE id.catalogName WHEN 'internal' THEN 0 ELSE 1 END, updateDt DESC
+            ORDER BY CASE id.catalogName WHEN 'internal' THEN 0 ELSE 1 END, id.catalogName DESC
             """)
     List<DorisCatalog> catalogs();
 }

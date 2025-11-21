@@ -15,6 +15,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>data-garden-core-crud</module>
         <module>data-garden-core-config</module>
         <module>data-garden-core-dolphin-scheduler</module>
         <module>data-garden-core-sync</module>

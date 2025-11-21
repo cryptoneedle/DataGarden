@@ -24,7 +24,6 @@ import java.io.Serializable;
 @Builder
 @Accessors(chain = true)
 @Embeddable
-@Comment("Doris数据库-数据库-主键")
 @Schema(description = "Doris数据库-数据库-主键")
 public class DorisDatabaseKey implements Serializable {
 

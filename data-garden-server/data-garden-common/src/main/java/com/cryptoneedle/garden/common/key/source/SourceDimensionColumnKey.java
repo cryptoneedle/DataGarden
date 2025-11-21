@@ -26,7 +26,6 @@ import java.io.Serializable;
 @Builder
 @Accessors(chain = true)
 @Embeddable
-@Comment("数据源-维度字段-主键")
 @Schema(description = "数据源-维度字段-主键")
 public class SourceDimensionColumnKey implements Serializable {
 

@@ -23,7 +23,6 @@ import java.io.Serializable;
 @Builder
 @Accessors(chain = true)
 @Embeddable
-@Comment("Doris外部数据库-数据库-主键")
 @Schema(description = "Doris外部数据库-数据库-主键")
 public class DorisExternalDatabaseKey implements Serializable {
 
