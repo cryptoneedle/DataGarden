@@ -18,6 +18,13 @@ import java.util.List;
 public interface DwsTableRepository extends BaseRepository<DwsTable, DorisTableKey> {
 
     @Query("""
+             FROM AdsTable
+            WHERE id.tableName = :tableName
+            ORDER BY id.databaseName, id.tableName
+            """)
+    DwsTable table(String tableName);
+
+    @Query("""
              FROM DwsTable
             ORDER BY id.databaseName, id.tableName
             """)

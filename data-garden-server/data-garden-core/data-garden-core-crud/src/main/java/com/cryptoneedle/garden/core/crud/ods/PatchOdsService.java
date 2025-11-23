@@ -1,8 +1,8 @@
 package com.cryptoneedle.garden.core.crud.ods;
 
 
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.ods.OdsTableRepository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,20 +14,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class PatchOdsService {
 
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final OdsTableRepository odsTableRepository;
+    private final OdsColumnRepository odsColumnRepository;
 
-    public PatchOdsService(AdsTableRepository adsTableRepository,
-                           AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public PatchOdsService(OdsTableRepository odsTableRepository,
+                           OdsColumnRepository odsColumnRepository) {
+        this.odsTableRepository = odsTableRepository;
+        this.odsColumnRepository = odsColumnRepository;
     }
 
     /**
-     * AdsTable
+     * OdsTable
      */
 
     /**
-     * AdsColumn
+     * OdsColumn
      */
 }

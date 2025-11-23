@@ -1,10 +1,10 @@
 package com.cryptoneedle.garden.core.crud.standard;
 
 
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsColumn;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.entity.standard.StandardColumn;
+import com.cryptoneedle.garden.infrastructure.entity.standard.StandardTable;
+import com.cryptoneedle.garden.infrastructure.repository.standard.StandardColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.standard.StandardTableRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,37 +18,37 @@ import java.util.List;
 @Service
 public class AddStandardService {
 
-    private final SaveStandardService saveAdsService;
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final SaveStandardService saveStandardService;
+    private final StandardTableRepository standardTableRepository;
+    private final StandardColumnRepository standardColumnRepository;
 
-    public AddStandardService(SaveStandardService saveAdsService,
-                              AdsTableRepository adsTableRepository,
-                              AdsColumnRepository adsColumnRepository) {
-        this.saveAdsService = saveAdsService;
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public AddStandardService(SaveStandardService saveStandardService,
+                              StandardTableRepository standardTableRepository,
+                              StandardColumnRepository standardColumnRepository) {
+        this.saveStandardService = saveStandardService;
+        this.standardTableRepository = standardTableRepository;
+        this.standardColumnRepository = standardColumnRepository;
     }
 
     /**
-     * AdsTable
+     * StandardTable
      */
-    public void table(AdsTable entity) {
-        saveAdsService.table(entity);
+    public void table(StandardTable entity) {
+        saveStandardService.table(entity);
     }
 
-    public void tables(List<AdsTable> list) {
-        saveAdsService.tables(list);
+    public void tables(List<StandardTable> list) {
+        saveStandardService.tables(list);
     }
 
     /**
-     * AdsColumn
+     * StandardColumn
      */
-    public void column(AdsColumn entity) {
-        saveAdsService.column(entity);
+    public void column(StandardColumn entity) {
+        saveStandardService.column(entity);
     }
 
-    public void columns(List<AdsColumn> list) {
-        saveAdsService.columns(list);
+    public void columns(List<StandardColumn> list) {
+        saveStandardService.columns(list);
     }
 }

@@ -1,10 +1,10 @@
 package com.cryptoneedle.garden.core.crud.dim;
 
 
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsColumn;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.entity.dim.DimColumn;
+import com.cryptoneedle.garden.infrastructure.entity.dim.DimTable;
+import com.cryptoneedle.garden.infrastructure.repository.dim.DimColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.dim.DimTableRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,37 +18,37 @@ import java.util.List;
 @Service
 public class AddDimService {
 
-    private final SaveDimService saveAdsService;
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final SaveDimService saveDimService;
+    private final DimTableRepository dimTableRepository;
+    private final DimColumnRepository dimColumnRepository;
 
-    public AddDimService(SaveDimService saveAdsService,
-                         AdsTableRepository adsTableRepository,
-                         AdsColumnRepository adsColumnRepository) {
-        this.saveAdsService = saveAdsService;
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public AddDimService(SaveDimService saveDimService,
+                         DimTableRepository dimTableRepository,
+                         DimColumnRepository dimColumnRepository) {
+        this.saveDimService = saveDimService;
+        this.dimTableRepository = dimTableRepository;
+        this.dimColumnRepository = dimColumnRepository;
     }
 
     /**
-     * AdsTable
+     * DimTable
      */
-    public void table(AdsTable entity) {
-        saveAdsService.table(entity);
+    public void table(DimTable entity) {
+        saveDimService.table(entity);
     }
 
-    public void tables(List<AdsTable> list) {
-        saveAdsService.tables(list);
+    public void tables(List<DimTable> list) {
+        saveDimService.tables(list);
     }
 
     /**
-     * AdsColumn
+     * DimColumn
      */
-    public void column(AdsColumn entity) {
-        saveAdsService.column(entity);
+    public void column(DimColumn entity) {
+        saveDimService.column(entity);
     }
 
-    public void columns(List<AdsColumn> list) {
-        saveAdsService.columns(list);
+    public void columns(List<DimColumn> list) {
+        saveDimService.columns(list);
     }
 }

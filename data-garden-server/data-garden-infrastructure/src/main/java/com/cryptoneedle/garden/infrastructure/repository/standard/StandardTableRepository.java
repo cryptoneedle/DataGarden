@@ -19,6 +19,13 @@ public interface StandardTableRepository extends BaseRepository<StandardTable, D
 
     @Query("""
              FROM StandardTable
+            WHERE id.tableName = :tableName
+            ORDER BY id.databaseName, id.tableName
+            """)
+    StandardTable table(String tableName);
+
+    @Query("""
+             FROM StandardTable
             ORDER BY id.databaseName, id.tableName
             """)
     List<StandardTable> tables();

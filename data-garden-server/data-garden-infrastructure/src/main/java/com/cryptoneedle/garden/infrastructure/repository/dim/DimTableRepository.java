@@ -19,6 +19,13 @@ public interface DimTableRepository extends BaseRepository<DimTable, DorisTableK
 
     @Query("""
              FROM DimTable
+            WHERE id.tableName = :tableName
+            ORDER BY id.databaseName, id.tableName
+            """)
+    DimTable table(String tableName);
+
+    @Query("""
+             FROM DimTable
             ORDER BY id.databaseName, id.tableName
             """)
     List<DimTable> tables();

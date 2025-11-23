@@ -4,10 +4,10 @@ package com.cryptoneedle.garden.core.crud.ods;
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
 import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsColumn;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
+import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
+import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.ods.OdsTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,50 +23,54 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class SelectOdsService {
 
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final OdsTableRepository odsTableRepository;
+    private final OdsColumnRepository odsColumnRepository;
 
-    public SelectOdsService(AdsTableRepository adsTableRepository,
-                            AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public SelectOdsService(OdsTableRepository odsTableRepository,
+                            OdsColumnRepository odsColumnRepository) {
+        this.odsTableRepository = odsTableRepository;
+        this.odsColumnRepository = odsColumnRepository;
     }
 
     /**
-     * AdsTable
+     * OdsTable
      */
-    public AdsTable table(DorisTableKey id) {
-        return adsTableRepository.findById(id).orElse(null);
+    public OdsTable table(DorisTableKey id) {
+        return odsTableRepository.findById(id).orElse(null);
     }
 
-    public AdsTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
-        return adsTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AdsTable", id.toString()));
+    public OdsTable table(String tableName) {
+        return odsTableRepository.table(tableName);
     }
 
-    public List<AdsTable> tables() {
-        return adsTableRepository.tables();
+    public OdsTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
+        return odsTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("OdsTable", id.toString()));
     }
 
-    public List<AdsTable> tables(String databaseName) {
-        return adsTableRepository.tables(databaseName);
+    public List<OdsTable> tables() {
+        return odsTableRepository.tables();
+    }
+
+    public List<OdsTable> tables(String databaseName) {
+        return odsTableRepository.tables(databaseName);
     }
 
     /**
-     * AdsColumn
+     * OdsColumn
      */
-    public AdsColumn column(DorisColumnKey id) {
-        return adsColumnRepository.findById(id).orElse(null);
+    public OdsColumn column(DorisColumnKey id) {
+        return odsColumnRepository.findById(id).orElse(null);
     }
 
-    public AdsColumn columnCheck(DorisColumnKey id) throws EntityNotFoundException {
-        return adsColumnRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AdsColumn", id.toString()));
+    public OdsColumn columnCheck(DorisColumnKey id) throws EntityNotFoundException {
+        return odsColumnRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("OdsColumn", id.toString()));
     }
 
-    public List<AdsColumn> columns() {
-        return adsColumnRepository.columns();
+    public List<OdsColumn> columns() {
+        return odsColumnRepository.columns();
     }
 
-    public List<AdsColumn> columns(String tableName) {
-        return adsColumnRepository.columns(tableName);
+    public List<OdsColumn> columns(String tableName) {
+        return odsColumnRepository.columns(tableName);
     }
 }

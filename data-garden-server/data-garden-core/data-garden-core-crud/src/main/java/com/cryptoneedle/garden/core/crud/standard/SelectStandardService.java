@@ -4,10 +4,10 @@ package com.cryptoneedle.garden.core.crud.standard;
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
 import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsColumn;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.entity.standard.StandardColumn;
+import com.cryptoneedle.garden.infrastructure.entity.standard.StandardTable;
+import com.cryptoneedle.garden.infrastructure.repository.standard.StandardColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.standard.StandardTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,50 +23,54 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class SelectStandardService {
 
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final StandardTableRepository standardTableRepository;
+    private final StandardColumnRepository standardColumnRepository;
 
-    public SelectStandardService(AdsTableRepository adsTableRepository,
-                                 AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public SelectStandardService(StandardTableRepository standardTableRepository,
+                                 StandardColumnRepository standardColumnRepository) {
+        this.standardTableRepository = standardTableRepository;
+        this.standardColumnRepository = standardColumnRepository;
     }
 
     /**
-     * AdsTable
+     * StandardTable
      */
-    public AdsTable table(DorisTableKey id) {
-        return adsTableRepository.findById(id).orElse(null);
+    public StandardTable table(DorisTableKey id) {
+        return standardTableRepository.findById(id).orElse(null);
     }
 
-    public AdsTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
-        return adsTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AdsTable", id.toString()));
+    public StandardTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
+        return standardTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("StandardTable", id.toString()));
     }
 
-    public List<AdsTable> tables() {
-        return adsTableRepository.tables();
+    public List<StandardTable> tables() {
+        return standardTableRepository.tables();
     }
 
-    public List<AdsTable> tables(String databaseName) {
-        return adsTableRepository.tables(databaseName);
+    public List<StandardTable> tables(String databaseName) {
+        return standardTableRepository.tables(databaseName);
     }
 
     /**
-     * AdsColumn
+     * StandardColumn
      */
-    public AdsColumn column(DorisColumnKey id) {
-        return adsColumnRepository.findById(id).orElse(null);
+    public StandardColumn column(DorisColumnKey id) {
+        return standardColumnRepository.findById(id).orElse(null);
     }
 
-    public AdsColumn columnCheck(DorisColumnKey id) throws EntityNotFoundException {
-        return adsColumnRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AdsColumn", id.toString()));
+    public StandardTable table(String tableName) {
+        return standardTableRepository.table(tableName);
     }
 
-    public List<AdsColumn> columns() {
-        return adsColumnRepository.columns();
+    public StandardColumn columnCheck(DorisColumnKey id) throws EntityNotFoundException {
+        return standardColumnRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("StandardColumn", id.toString()));
     }
 
-    public List<AdsColumn> columns(String tableName) {
-        return adsColumnRepository.columns(tableName);
+    public List<StandardColumn> columns() {
+        return standardColumnRepository.columns();
+    }
+
+    public List<StandardColumn> columns(String tableName) {
+        return standardColumnRepository.columns(tableName);
     }
 }

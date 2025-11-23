@@ -4,10 +4,10 @@ package com.cryptoneedle.garden.core.crud.dws;
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
 import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsColumn;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.entity.dws.DwsColumn;
+import com.cryptoneedle.garden.infrastructure.entity.dws.DwsTable;
+import com.cryptoneedle.garden.infrastructure.repository.dws.DwsColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.dws.DwsTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,50 +23,54 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class SelectDwsService {
 
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final DwsTableRepository dwsTableRepository;
+    private final DwsColumnRepository dwsColumnRepository;
 
-    public SelectDwsService(AdsTableRepository adsTableRepository,
-                            AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public SelectDwsService(DwsTableRepository dwsTableRepository,
+                            DwsColumnRepository dwsColumnRepository) {
+        this.dwsTableRepository = dwsTableRepository;
+        this.dwsColumnRepository = dwsColumnRepository;
     }
 
     /**
-     * AdsTable
+     * DwsTable
      */
-    public AdsTable table(DorisTableKey id) {
-        return adsTableRepository.findById(id).orElse(null);
+    public DwsTable table(DorisTableKey id) {
+        return dwsTableRepository.findById(id).orElse(null);
     }
 
-    public AdsTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
-        return adsTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AdsTable", id.toString()));
+    public DwsTable table(String tableName) {
+        return dwsTableRepository.table(tableName);
     }
 
-    public List<AdsTable> tables() {
-        return adsTableRepository.tables();
+    public DwsTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
+        return dwsTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("DwsTable", id.toString()));
     }
 
-    public List<AdsTable> tables(String databaseName) {
-        return adsTableRepository.tables(databaseName);
+    public List<DwsTable> tables() {
+        return dwsTableRepository.tables();
+    }
+
+    public List<DwsTable> tables(String databaseName) {
+        return dwsTableRepository.tables(databaseName);
     }
 
     /**
-     * AdsColumn
+     * DwsColumn
      */
-    public AdsColumn column(DorisColumnKey id) {
-        return adsColumnRepository.findById(id).orElse(null);
+    public DwsColumn column(DorisColumnKey id) {
+        return dwsColumnRepository.findById(id).orElse(null);
     }
 
-    public AdsColumn columnCheck(DorisColumnKey id) throws EntityNotFoundException {
-        return adsColumnRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AdsColumn", id.toString()));
+    public DwsColumn columnCheck(DorisColumnKey id) throws EntityNotFoundException {
+        return dwsColumnRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("DwsColumn", id.toString()));
     }
 
-    public List<AdsColumn> columns() {
-        return adsColumnRepository.columns();
+    public List<DwsColumn> columns() {
+        return dwsColumnRepository.columns();
     }
 
-    public List<AdsColumn> columns(String tableName) {
-        return adsColumnRepository.columns(tableName);
+    public List<DwsColumn> columns(String tableName) {
+        return dwsColumnRepository.columns(tableName);
     }
 }

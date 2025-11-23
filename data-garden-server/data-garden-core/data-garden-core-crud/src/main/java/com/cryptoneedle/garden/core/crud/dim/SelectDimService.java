@@ -4,10 +4,10 @@ package com.cryptoneedle.garden.core.crud.dim;
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
 import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsColumn;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.entity.dim.DimColumn;
+import com.cryptoneedle.garden.infrastructure.entity.dim.DimTable;
+import com.cryptoneedle.garden.infrastructure.repository.dim.DimColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.dim.DimTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,50 +23,54 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class SelectDimService {
 
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final DimTableRepository dimTableRepository;
+    private final DimColumnRepository dimColumnRepository;
 
-    public SelectDimService(AdsTableRepository adsTableRepository,
-                            AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public SelectDimService(DimTableRepository dimTableRepository,
+                            DimColumnRepository dimColumnRepository) {
+        this.dimTableRepository = dimTableRepository;
+        this.dimColumnRepository = dimColumnRepository;
     }
 
     /**
-     * AdsTable
+     * DimTable
      */
-    public AdsTable table(DorisTableKey id) {
-        return adsTableRepository.findById(id).orElse(null);
+    public DimTable table(DorisTableKey id) {
+        return dimTableRepository.findById(id).orElse(null);
     }
 
-    public AdsTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
-        return adsTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AdsTable", id.toString()));
+    public DimTable table(String tableName) {
+        return dimTableRepository.table(tableName);
     }
 
-    public List<AdsTable> tables() {
-        return adsTableRepository.tables();
+    public DimTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
+        return dimTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("DimTable", id.toString()));
     }
 
-    public List<AdsTable> tables(String databaseName) {
-        return adsTableRepository.tables(databaseName);
+    public List<DimTable> tables() {
+        return dimTableRepository.tables();
+    }
+
+    public List<DimTable> tables(String databaseName) {
+        return dimTableRepository.tables(databaseName);
     }
 
     /**
-     * AdsColumn
+     * DimColumn
      */
-    public AdsColumn column(DorisColumnKey id) {
-        return adsColumnRepository.findById(id).orElse(null);
+    public DimColumn column(DorisColumnKey id) {
+        return dimColumnRepository.findById(id).orElse(null);
     }
 
-    public AdsColumn columnCheck(DorisColumnKey id) throws EntityNotFoundException {
-        return adsColumnRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AdsColumn", id.toString()));
+    public DimColumn columnCheck(DorisColumnKey id) throws EntityNotFoundException {
+        return dimColumnRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("DimColumn", id.toString()));
     }
 
-    public List<AdsColumn> columns() {
-        return adsColumnRepository.columns();
+    public List<DimColumn> columns() {
+        return dimColumnRepository.columns();
     }
 
-    public List<AdsColumn> columns(String tableName) {
-        return adsColumnRepository.columns(tableName);
+    public List<DimColumn> columns(String tableName) {
+        return dimColumnRepository.columns(tableName);
     }
 }

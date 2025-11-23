@@ -19,6 +19,13 @@ public interface AdsTableRepository extends BaseRepository<AdsTable, DorisTableK
 
     @Query("""
              FROM AdsTable
+            WHERE id.tableName = :tableName
+            ORDER BY id.databaseName, id.tableName
+            """)
+    AdsTable table(String tableName);
+
+    @Query("""
+             FROM AdsTable
             ORDER BY id.databaseName, id.tableName
             """)
     List<AdsTable> tables();

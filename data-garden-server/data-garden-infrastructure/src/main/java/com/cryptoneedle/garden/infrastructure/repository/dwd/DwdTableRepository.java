@@ -19,6 +19,13 @@ public interface DwdTableRepository extends BaseRepository<DwdTable, DorisTableK
 
     @Query("""
              FROM DwdTable
+            WHERE id.tableName = :tableName
+            ORDER BY id.databaseName, id.tableName
+            """)
+    DwdTable table(String tableName);
+
+    @Query("""
+             FROM DwdTable
             ORDER BY id.databaseName, id.tableName
             """)
     List<DwdTable> tables();

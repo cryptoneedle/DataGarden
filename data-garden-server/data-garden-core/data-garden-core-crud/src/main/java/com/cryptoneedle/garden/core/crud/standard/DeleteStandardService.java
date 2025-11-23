@@ -1,10 +1,10 @@
 package com.cryptoneedle.garden.core.crud.standard;
 
 
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsColumn;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.entity.standard.StandardColumn;
+import com.cryptoneedle.garden.infrastructure.entity.standard.StandardTable;
+import com.cryptoneedle.garden.infrastructure.repository.standard.StandardColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.standard.StandardTableRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,34 +18,34 @@ import java.util.List;
 @Service
 public class DeleteStandardService {
 
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final StandardTableRepository standardTableRepository;
+    private final StandardColumnRepository standardColumnRepository;
 
-    public DeleteStandardService(AdsTableRepository adsTableRepository,
-                                 AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public DeleteStandardService(StandardTableRepository standardTableRepository,
+                                 StandardColumnRepository standardColumnRepository) {
+        this.standardTableRepository = standardTableRepository;
+        this.standardColumnRepository = standardColumnRepository;
     }
 
     /**
-     * AdsTable
+     * StandardTable
      */
-    public void table(AdsTable entity) {
-        adsTableRepository.delete(entity);
+    public void table(StandardTable entity) {
+        standardTableRepository.delete(entity);
     }
 
-    public void tables(List<AdsTable> list) {
-        adsTableRepository.deleteAll(list);
+    public void tables(List<StandardTable> list) {
+        standardTableRepository.deleteAll(list);
     }
 
     /**
-     * AdsColumn
+     * StandardColumn
      */
-    public void column(AdsColumn entity) {
-        adsColumnRepository.delete(entity);
+    public void column(StandardColumn entity) {
+        standardColumnRepository.delete(entity);
     }
 
-    public void columns(List<AdsColumn> list) {
-        adsColumnRepository.deleteAll(list);
+    public void columns(List<StandardColumn> list) {
+        standardColumnRepository.deleteAll(list);
     }
 }

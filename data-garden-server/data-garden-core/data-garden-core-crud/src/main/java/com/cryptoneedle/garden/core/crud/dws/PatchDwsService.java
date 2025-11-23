@@ -1,8 +1,8 @@
 package com.cryptoneedle.garden.core.crud.dws;
 
 
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.repository.dws.DwsColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.dws.DwsTableRepository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,20 +14,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class PatchDwsService {
 
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final DwsTableRepository dwsTableRepository;
+    private final DwsColumnRepository dwsColumnRepository;
 
-    public PatchDwsService(AdsTableRepository adsTableRepository,
-                           AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public PatchDwsService(DwsTableRepository dwsTableRepository,
+                           DwsColumnRepository dwsColumnRepository) {
+        this.dwsTableRepository = dwsTableRepository;
+        this.dwsColumnRepository = dwsColumnRepository;
     }
 
     /**
-     * AdsTable
+     * DwsTable
      */
 
     /**
-     * AdsColumn
+     * DwsColumn
      */
 }

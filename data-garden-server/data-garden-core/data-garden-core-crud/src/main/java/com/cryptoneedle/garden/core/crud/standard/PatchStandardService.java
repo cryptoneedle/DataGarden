@@ -1,8 +1,8 @@
 package com.cryptoneedle.garden.core.crud.standard;
 
 
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.repository.standard.StandardColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.standard.StandardTableRepository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,20 +14,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class PatchStandardService {
 
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final StandardTableRepository standardTableRepository;
+    private final StandardColumnRepository standardColumnRepository;
 
-    public PatchStandardService(AdsTableRepository adsTableRepository,
-                                AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public PatchStandardService(StandardTableRepository standardTableRepository,
+                                StandardColumnRepository standardColumnRepository) {
+        this.standardTableRepository = standardTableRepository;
+        this.standardColumnRepository = standardColumnRepository;
     }
 
     /**
-     * AdsTable
+     * StandardTable
      */
 
     /**
-     * AdsColumn
+     * StandardColumn
      */
 }

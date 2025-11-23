@@ -1,10 +1,10 @@
 package com.cryptoneedle.garden.core.crud.dws;
 
 
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsColumn;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.entity.dws.DwsColumn;
+import com.cryptoneedle.garden.infrastructure.entity.dws.DwsTable;
+import com.cryptoneedle.garden.infrastructure.repository.dws.DwsColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.dws.DwsTableRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,34 +18,34 @@ import java.util.List;
 @Service
 public class DeleteDwsService {
 
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final DwsTableRepository dwsTableRepository;
+    private final DwsColumnRepository dwsColumnRepository;
 
-    public DeleteDwsService(AdsTableRepository adsTableRepository,
-                            AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public DeleteDwsService(DwsTableRepository dwsTableRepository,
+                            DwsColumnRepository dwsColumnRepository) {
+        this.dwsTableRepository = dwsTableRepository;
+        this.dwsColumnRepository = dwsColumnRepository;
     }
 
     /**
-     * AdsTable
+     * DwsTable
      */
-    public void table(AdsTable entity) {
-        adsTableRepository.delete(entity);
+    public void table(DwsTable entity) {
+        dwsTableRepository.delete(entity);
     }
 
-    public void tables(List<AdsTable> list) {
-        adsTableRepository.deleteAll(list);
+    public void tables(List<DwsTable> list) {
+        dwsTableRepository.deleteAll(list);
     }
 
     /**
-     * AdsColumn
+     * DwsColumn
      */
-    public void column(AdsColumn entity) {
-        adsColumnRepository.delete(entity);
+    public void column(DwsColumn entity) {
+        dwsColumnRepository.delete(entity);
     }
 
-    public void columns(List<AdsColumn> list) {
-        adsColumnRepository.deleteAll(list);
+    public void columns(List<DwsColumn> list) {
+        dwsColumnRepository.deleteAll(list);
     }
 }

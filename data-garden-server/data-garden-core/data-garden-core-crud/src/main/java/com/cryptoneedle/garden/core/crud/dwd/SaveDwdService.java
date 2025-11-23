@@ -1,10 +1,10 @@
 package com.cryptoneedle.garden.core.crud.dwd;
 
 
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsColumn;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.entity.dwd.DwdColumn;
+import com.cryptoneedle.garden.infrastructure.entity.dwd.DwdTable;
+import com.cryptoneedle.garden.infrastructure.repository.dwd.DwdColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.dwd.DwdTableRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,34 +18,34 @@ import java.util.List;
 @Service
 public class SaveDwdService {
 
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final DwdTableRepository dwdTableRepository;
+    private final DwdColumnRepository dwdColumnRepository;
 
-    public SaveDwdService(AdsTableRepository adsTableRepository,
-                          AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public SaveDwdService(DwdTableRepository dwdTableRepository,
+                          DwdColumnRepository dwdColumnRepository) {
+        this.dwdTableRepository = dwdTableRepository;
+        this.dwdColumnRepository = dwdColumnRepository;
     }
 
     /**
-     * AdsTable
+     * DwdTable
      */
-    public void table(AdsTable entity) {
-        adsTableRepository.save(entity);
+    public void table(DwdTable entity) {
+        dwdTableRepository.save(entity);
     }
 
-    public void tables(List<AdsTable> list) {
-        adsTableRepository.saveAll(list);
+    public void tables(List<DwdTable> list) {
+        dwdTableRepository.saveAll(list);
     }
 
     /**
-     * AdsColumn
+     * DwdColumn
      */
-    public void column(AdsColumn entity) {
-        adsColumnRepository.save(entity);
+    public void column(DwdColumn entity) {
+        dwdColumnRepository.save(entity);
     }
 
-    public void columns(List<AdsColumn> list) {
-        adsColumnRepository.saveAll(list);
+    public void columns(List<DwdColumn> list) {
+        dwdColumnRepository.saveAll(list);
     }
 }

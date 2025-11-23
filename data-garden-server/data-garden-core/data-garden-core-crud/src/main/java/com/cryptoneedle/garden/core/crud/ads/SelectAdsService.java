@@ -39,6 +39,10 @@ public class SelectAdsService {
         return adsTableRepository.findById(id).orElse(null);
     }
 
+    public AdsTable table(String tableName) {
+        return adsTableRepository.table(tableName);
+    }
+
     public AdsTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
         return adsTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AdsTable", id.toString()));
     }

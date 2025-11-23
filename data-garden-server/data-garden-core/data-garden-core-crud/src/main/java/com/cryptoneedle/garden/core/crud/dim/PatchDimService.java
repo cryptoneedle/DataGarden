@@ -1,8 +1,8 @@
 package com.cryptoneedle.garden.core.crud.dim;
 
 
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.repository.dim.DimColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.dim.DimTableRepository;
 import org.springframework.stereotype.Service;
 
 /**
@@ -14,20 +14,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class PatchDimService {
 
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final DimTableRepository dimTableRepository;
+    private final DimColumnRepository dimColumnRepository;
 
-    public PatchDimService(AdsTableRepository adsTableRepository,
-                           AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public PatchDimService(DimTableRepository dimTableRepository,
+                           DimColumnRepository dimColumnRepository) {
+        this.dimTableRepository = dimTableRepository;
+        this.dimColumnRepository = dimColumnRepository;
     }
 
     /**
-     * AdsTable
+     * DimTable
      */
 
     /**
-     * AdsColumn
+     * DimColumn
      */
 }

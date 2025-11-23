@@ -1,10 +1,10 @@
 package com.cryptoneedle.garden.core.crud.ods;
 
 
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsColumn;
-import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
+import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
+import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
+import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.ods.OdsTableRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,37 +18,37 @@ import java.util.List;
 @Service
 public class AddOdsService {
 
-    private final SaveOdsService saveAdsService;
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final SaveOdsService saveOdsService;
+    private final OdsTableRepository odsTableRepository;
+    private final OdsColumnRepository odsColumnRepository;
 
-    public AddOdsService(SaveOdsService saveAdsService,
-                         AdsTableRepository adsTableRepository,
-                         AdsColumnRepository adsColumnRepository) {
-        this.saveAdsService = saveAdsService;
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public AddOdsService(SaveOdsService saveOdsService,
+                         OdsTableRepository odsTableRepository,
+                         OdsColumnRepository odsColumnRepository) {
+        this.saveOdsService = saveOdsService;
+        this.odsTableRepository = odsTableRepository;
+        this.odsColumnRepository = odsColumnRepository;
     }
 
     /**
-     * AdsTable
+     * OdsTable
      */
-    public void table(AdsTable entity) {
-        saveAdsService.table(entity);
+    public void table(OdsTable entity) {
+        saveOdsService.table(entity);
     }
 
-    public void tables(List<AdsTable> list) {
-        saveAdsService.tables(list);
+    public void tables(List<OdsTable> list) {
+        saveOdsService.tables(list);
     }
 
     /**
-     * AdsColumn
+     * OdsColumn
      */
-    public void column(AdsColumn entity) {
-        saveAdsService.column(entity);
+    public void column(OdsColumn entity) {
+        saveOdsService.column(entity);
     }
 
-    public void columns(List<AdsColumn> list) {
-        saveAdsService.columns(list);
+    public void columns(List<OdsColumn> list) {
+        saveOdsService.columns(list);
     }
 }

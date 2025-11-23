@@ -19,6 +19,13 @@ public interface OdsTableRepository extends BaseRepository<OdsTable, DorisTableK
 
     @Query("""
              FROM OdsTable
+            WHERE id.tableName = :tableName
+            ORDER BY id.databaseName, id.tableName
+            """)
+    OdsTable table(String tableName);
+
+    @Query("""
+             FROM OdsTable
             ORDER BY id.databaseName, id.tableName
             """)
     List<OdsTable> tables();
