@@ -50,6 +50,10 @@ public class SelectDorisService {
         return dorisCatalogRepository.findById(id).orElse(null);
     }
 
+    public DorisCatalog catalog(String catalogName) {
+        return catalog(DorisCatalogKey.builder().catalogName(catalogName).build());
+    }
+
     public DorisCatalog catalogCheck(DorisCatalogKey id) throws EntityNotFoundException {
         return dorisCatalogRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("DorisCatalog", id.toString()));
     }
@@ -67,6 +71,10 @@ public class SelectDorisService {
      */
     public DorisDatabase database(DorisDatabaseKey id) {
         return dorisDatabaseRepository.findById(id).orElse(null);
+    }
+
+    public DorisDatabase database(String databaseName) {
+        return database(DorisDatabaseKey.builder().databaseName(databaseName).build());
     }
 
     public DorisDatabase databaseCheck(DorisDatabaseKey id) throws EntityNotFoundException {

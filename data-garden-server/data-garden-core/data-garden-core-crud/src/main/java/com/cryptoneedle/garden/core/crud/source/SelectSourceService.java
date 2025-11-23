@@ -46,6 +46,10 @@ public class SelectSourceService {
         return sourceCatalogRepository.findById(id).orElse(null);
     }
 
+    public SourceCatalog catalog(String catalogName) {
+        return catalog(SourceCatalogKey.builder().catalogName(catalogName).build());
+    }
+
     public SourceCatalog catalogCheck(SourceCatalogKey id) throws EntityNotFoundException {
         return sourceCatalogRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("SourceCatalog", id.toString()));
     }
