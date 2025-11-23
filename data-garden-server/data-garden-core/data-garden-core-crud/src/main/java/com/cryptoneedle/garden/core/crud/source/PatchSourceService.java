@@ -19,10 +19,10 @@ public class PatchSourceService {
     private final SourceDimensionRepository sourceDimensionRepository;
 
     public PatchSourceService(SourceCatalogRepository sourceCatalogRepository,
-                            SourceDatabaseRepository sourceDatabaseRepository,
-                            SourceTableRepository sourceTableRepository,
-                            SourceColumnRepository sourceColumnRepository,
-                            SourceDimensionRepository sourceDimensionRepository) {
+                              SourceDatabaseRepository sourceDatabaseRepository,
+                              SourceTableRepository sourceTableRepository,
+                              SourceColumnRepository sourceColumnRepository,
+                              SourceDimensionRepository sourceDimensionRepository) {
         this.sourceCatalogRepository = sourceCatalogRepository;
         this.sourceDatabaseRepository = sourceDatabaseRepository;
         this.sourceTableRepository = sourceTableRepository;

@@ -85,13 +85,16 @@ public class SelectSourceService {
     public List<SourceDatabase> databases() {
         return sourceDatabaseRepository.databases();
     }
-    public List<SourceDatabase> databases(String catalogName){
+
+    public List<SourceDatabase> databases(String catalogName) {
         return sourceDatabaseRepository.databases(catalogName);
     }
-    public List<SourceDatabase> databasesEnabled(){
+
+    public List<SourceDatabase> databasesEnabled() {
         return sourceDatabaseRepository.databasesEnabled();
     }
-    public List<SourceDatabase> databasesEnabled(String catalogName){
+
+    public List<SourceDatabase> databasesEnabled(String catalogName) {
         return sourceDatabaseRepository.databasesEnabled(catalogName);
     }
 
@@ -110,18 +113,23 @@ public class SelectSourceService {
     public List<SourceTable> tables() {
         return sourceTableRepository.tables();
     }
+
     public List<SourceTable> tables(String catalogName) {
         return sourceTableRepository.tables(catalogName);
     }
+
     public List<SourceTable> tables(String catalogName, String databaseName) {
         return sourceTableRepository.tables(catalogName, databaseName);
     }
+
     public List<SourceTable> tablesEnabled() {
         return sourceTableRepository.tablesEnabled();
     }
+
     public List<SourceTable> tablesEnabled(String catalogName) {
         return sourceTableRepository.tablesEnabled(catalogName);
     }
+
     public List<SourceTable> tablesEnabled(String catalogName, String databaseName) {
         return sourceTableRepository.tablesEnabled(catalogName, databaseName);
     }
@@ -141,24 +149,31 @@ public class SelectSourceService {
     public List<SourceColumn> columns() {
         return sourceColumnRepository.columns();
     }
+
     public List<SourceColumn> columns(String catalogName) {
         return sourceColumnRepository.columns(catalogName);
     }
+
     public List<SourceColumn> columns(String catalogName, String databaseName) {
         return sourceColumnRepository.columns(catalogName, databaseName);
     }
+
     public List<SourceColumn> columns(String catalogName, String databaseName, String columnName) {
         return sourceColumnRepository.columns(catalogName, databaseName, columnName);
     }
+
     public List<SourceColumn> columnsEnabled() {
         return sourceColumnRepository.columnsEnabled();
     }
+
     public List<SourceColumn> columnsEnabled(String catalogName) {
         return sourceColumnRepository.columnsEnabled(catalogName);
     }
+
     public List<SourceColumn> columnsEnabled(String catalogName, String databaseName) {
         return sourceColumnRepository.columnsEnabled(catalogName, databaseName);
     }
+
     public List<SourceColumn> columnsEnabled(String catalogName, String databaseName, String columnName) {
         return sourceColumnRepository.columnsEnabled(catalogName, databaseName, columnName);
     }
@@ -178,24 +193,31 @@ public class SelectSourceService {
     public List<SourceDimension> dimensions() {
         return sourceDimensionRepository.dimensions();
     }
+
     public List<SourceDimension> dimensions(String catalogName) {
         return sourceDimensionRepository.dimensions(catalogName);
     }
+
     public List<SourceDimension> dimensions(String catalogName, String databaseName) {
         return sourceDimensionRepository.dimensions(catalogName, databaseName);
     }
+
     public List<SourceDimension> dimensions(String catalogName, String databaseName, String tableName) {
         return sourceDimensionRepository.dimensions(catalogName, databaseName, tableName);
     }
+
     public List<SourceDimension> dimensions(String catalogName, String databaseName, String tableName, SourceDimensionType dimensionType) {
         return sourceDimensionRepository.dimensions(catalogName, databaseName, tableName, dimensionType);
     }
+
     public List<SourceDimension> dimensions(String catalogName, String databaseName, String tableName, SourceDimensionType dimensionType, String dimensionName) {
         return sourceDimensionRepository.dimensions(catalogName, databaseName, tableName, dimensionType, dimensionName);
     }
+
     public List<SourceDimension> dimensions(String catalogName, String databaseName, String tableName, String columnName) {
         return sourceDimensionRepository.dimensions(catalogName, databaseName, tableName, columnName);
     }
+
     public List<SourceDimension> dimensionsEnabled(String catalogName, String databaseName, String tableName) {
         return sourceDimensionRepository.dimensionsEnabled(catalogName, databaseName, tableName);
     }
