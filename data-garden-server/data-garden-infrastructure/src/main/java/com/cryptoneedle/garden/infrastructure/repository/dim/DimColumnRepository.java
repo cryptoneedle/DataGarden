@@ -25,16 +25,8 @@ public interface DimColumnRepository extends BaseRepository<DimColumn, DorisColu
 
     @Query("""
              FROM DimColumn
-            WHERE id.databaseName = :databaseName
+            WHERE id.tableName = :tableName
             ORDER BY id.databaseName, id.tableName, sort
             """)
-    List<DimColumn> columns(String databaseName);
-
-    @Query("""
-             FROM DimColumn
-            WHERE id.databaseName = :databaseName
-              AND id.tableName = :tableName
-            ORDER BY id.databaseName, id.tableName, sort
-            """)
-    List<DimColumn> columns(String databaseName, String tableName);
+    List<DimColumn> columns(String tableName);
 }

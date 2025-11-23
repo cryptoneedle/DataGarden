@@ -25,16 +25,8 @@ public interface DwdColumnRepository extends BaseRepository<DwdColumn, DorisColu
 
     @Query("""
              FROM DwdColumn
-            WHERE id.databaseName = :databaseName
+            WHERE id.tableName = :tableName
             ORDER BY id.databaseName, id.tableName, sort
             """)
-    List<DwdColumn> columns(String databaseName);
-
-    @Query("""
-             FROM DwdColumn
-            WHERE id.databaseName = :databaseName
-              AND id.tableName = :tableName
-            ORDER BY id.databaseName, id.tableName, sort
-            """)
-    List<DwdColumn> columns(String databaseName, String tableName);
+    List<DwdColumn> columns(String tableName);
 }

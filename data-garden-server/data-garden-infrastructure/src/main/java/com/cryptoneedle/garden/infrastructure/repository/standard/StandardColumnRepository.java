@@ -25,16 +25,8 @@ public interface StandardColumnRepository extends BaseRepository<StandardColumn,
 
     @Query("""
              FROM StandardColumn
-            WHERE id.databaseName = :databaseName
+            WHERE id.tableName = :tableName
             ORDER BY id.databaseName, id.tableName, sort
             """)
-    List<StandardColumn> columns(String databaseName);
-
-    @Query("""
-             FROM StandardColumn
-            WHERE id.databaseName = :databaseName
-              AND id.tableName = :tableName
-            ORDER BY id.databaseName, id.tableName, sort
-            """)
-    List<StandardColumn> columns(String databaseName, String tableName);
+    List<StandardColumn> columns(String tableName);
 }

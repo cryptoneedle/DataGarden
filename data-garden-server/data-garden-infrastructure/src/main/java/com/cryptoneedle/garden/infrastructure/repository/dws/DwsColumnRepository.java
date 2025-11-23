@@ -25,16 +25,8 @@ public interface DwsColumnRepository extends BaseRepository<DwsColumn, DorisColu
 
     @Query("""
              FROM DwsColumn
-            WHERE id.databaseName = :databaseName
+            WHERE id.tableName = :tableName
             ORDER BY id.databaseName, id.tableName, sort
             """)
-    List<DwsColumn> columns(String databaseName);
-
-    @Query("""
-             FROM DwsColumn
-            WHERE id.databaseName = :databaseName
-              AND id.tableName = :tableName
-            ORDER BY id.databaseName, id.tableName, sort
-            """)
-    List<DwsColumn> columns(String databaseName, String tableName);
+    List<DwsColumn> columns(String tableName);
 }

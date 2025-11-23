@@ -25,16 +25,8 @@ public interface OdsColumnRepository extends BaseRepository<OdsColumn, DorisColu
 
     @Query("""
              FROM OdsColumn
-            WHERE id.databaseName = :databaseName
+            WHERE id.tableName = :tableName
             ORDER BY id.databaseName, id.tableName, sort
             """)
-    List<OdsColumn> columns(String databaseName);
-
-    @Query("""
-             FROM OdsColumn
-            WHERE id.databaseName = :databaseName
-              AND id.tableName = :tableName
-            ORDER BY id.databaseName, id.tableName, sort
-            """)
-    List<OdsColumn> columns(String databaseName, String tableName);
+    List<OdsColumn> columns(String tableName);
 }

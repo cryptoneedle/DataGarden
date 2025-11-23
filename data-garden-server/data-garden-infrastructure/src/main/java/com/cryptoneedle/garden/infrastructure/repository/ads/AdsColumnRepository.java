@@ -25,16 +25,8 @@ public interface AdsColumnRepository extends BaseRepository<AdsColumn, DorisColu
 
     @Query("""
              FROM AdsColumn
-            WHERE id.databaseName = :databaseName
+            WHERE id.tableName = :tableName
             ORDER BY id.databaseName, id.tableName, sort
             """)
-    List<AdsColumn> columns(String databaseName);
-
-    @Query("""
-             FROM AdsColumn
-            WHERE id.databaseName = :databaseName
-              AND id.tableName = :tableName
-            ORDER BY id.databaseName, id.tableName, sort
-            """)
-    List<AdsColumn> columns(String databaseName, String tableName);
+    List<AdsColumn> columns(String tableName);
 }
