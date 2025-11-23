@@ -19,12 +19,6 @@ public interface SourceCatalogRepository extends BaseRepository<SourceCatalog, S
 
     @Query("""
              FROM SourceCatalog
-            WHERE id.catalogName = :catalogName
-            """)
-    SourceCatalog catalog(String catalogName);
-
-    @Query("""
-             FROM SourceCatalog
             WHERE dorisCatalogName = :dorisCatalogName
             """)
     SourceCatalog catalogByDoris(String dorisCatalogName);

@@ -19,12 +19,6 @@ public interface DorisDatabaseRepository extends BaseRepository<DorisDatabase, D
 
     @Query("""
              FROM DorisDatabase
-            WHERE id.databaseName = :databaseName
-            """)
-    DorisDatabase database(String databaseName);
-
-    @Query("""
-             FROM DorisDatabase
             ORDER BY sort, id.databaseName
             """)
     List<DorisDatabase> databases();

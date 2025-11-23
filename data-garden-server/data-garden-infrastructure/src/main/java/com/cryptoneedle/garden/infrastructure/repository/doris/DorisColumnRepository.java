@@ -19,14 +19,6 @@ public interface DorisColumnRepository extends BaseRepository<DorisColumn, Doris
 
     @Query("""
              FROM DorisColumn
-            WHERE id.databaseName = :databaseName
-              AND id.tableName = :tableName
-              AND id.columnName = :columnName
-            """)
-    DorisColumn column(String databaseName, String tableName, String columnName);
-
-    @Query("""
-             FROM DorisColumn
             ORDER BY databaseSort, id.databaseName, id.tableName, sort
             """)
     List<DorisColumn> columns();

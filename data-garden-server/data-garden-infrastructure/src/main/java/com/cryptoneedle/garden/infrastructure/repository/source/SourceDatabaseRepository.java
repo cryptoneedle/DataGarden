@@ -18,13 +18,6 @@ import java.util.List;
 public interface SourceDatabaseRepository extends BaseRepository<SourceDatabase, SourceDatabaseKey> {
 
     @Query("""
-              FROM SourceDatabase
-             WHERE id.catalogName = :catalogName
-               AND id.databaseName = :databaseName
-            """)
-    SourceDatabase database(String catalogName, String databaseName);
-
-    @Query("""
              FROM SourceDatabase
             ORDER BY id.catalogName, enabled DESC, id.databaseName
             """)

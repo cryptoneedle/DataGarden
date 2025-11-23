@@ -19,12 +19,6 @@ public interface DorisCatalogRepository extends BaseRepository<DorisCatalog, Dor
 
     @Query("""
              FROM DorisCatalog
-            WHERE id.catalogName = :catalogName
-            """)
-    DorisCatalog catalog(String catalogName);
-
-    @Query("""
-             FROM DorisCatalog
             WHERE sourceCatalogName = :sourceCatalogName
             """)
     DorisCatalog catalogBySource(String sourceCatalogName);

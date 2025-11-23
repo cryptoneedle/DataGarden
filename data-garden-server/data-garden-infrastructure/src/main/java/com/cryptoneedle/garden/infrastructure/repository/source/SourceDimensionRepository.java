@@ -19,17 +19,6 @@ import java.util.List;
 public interface SourceDimensionRepository extends BaseRepository<SourceDimension, SourceDimensionKey> {
 
     @Query("""
-              FROM SourceDimension
-             WHERE id.catalogName = :catalogName
-               AND id.databaseName = :databaseName
-               AND id.tableName = :tableName
-               AND id.dimensionType = :dimensionType
-               AND id.dimensionName = :dimensionName
-               AND id.columnName = :columnName
-            """)
-    SourceDimension dimension(String catalogName, String databaseName, String tableName, SourceDimensionType dimensionType, String dimensionName, String columnName);
-
-    @Query("""
              FROM SourceDimension
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, id.dimensionType, id.dimensionName, sort
             """)

@@ -18,15 +18,6 @@ import java.util.List;
 public interface SourceColumnRepository extends BaseRepository<SourceColumn, SourceColumnKey> {
 
     @Query("""
-              FROM SourceColumn
-             WHERE id.catalogName = :catalogName
-               AND id.databaseName = :databaseName
-               AND id.tableName = :tableName
-               AND id.columnName = :columnName
-            """)
-    SourceColumn column(String catalogName, String databaseName, String tableName, String columnName);
-
-    @Query("""
              FROM SourceColumn
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, sort
             """)
