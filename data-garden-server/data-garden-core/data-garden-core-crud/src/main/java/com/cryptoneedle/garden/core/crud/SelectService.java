@@ -1,5 +1,6 @@
 package com.cryptoneedle.garden.core.crud;
 
+import com.cryptoneedle.garden.core.crud.config.SelectConfigService;
 import com.cryptoneedle.garden.core.crud.doris.SelectDorisService;
 import com.cryptoneedle.garden.core.crud.source.SelectSourceService;
 import org.springframework.stereotype.Service;
@@ -13,11 +14,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class SelectService {
 
+    public final SelectConfigService config;
     public final SelectSourceService source;
     public final SelectDorisService doris;
 
-    public SelectService(SelectSourceService source,
+    public SelectService(SelectConfigService config,
+                         SelectSourceService source,
                          SelectDorisService doris) {
+        this.config = config;
         this.source = source;
         this.doris = doris;
     }

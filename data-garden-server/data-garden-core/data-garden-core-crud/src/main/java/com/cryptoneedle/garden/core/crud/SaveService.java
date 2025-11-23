@@ -1,5 +1,6 @@
 package com.cryptoneedle.garden.core.crud;
 
+import com.cryptoneedle.garden.core.crud.config.SaveConfigService;
 import com.cryptoneedle.garden.core.crud.doris.SaveDorisService;
 import com.cryptoneedle.garden.core.crud.source.SaveSourceService;
 import org.springframework.stereotype.Service;
@@ -13,11 +14,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class SaveService {
 
+    public final SaveConfigService config;
     public final SaveSourceService source;
     public final SaveDorisService doris;
 
-    public SaveService(SaveSourceService source,
+    public SaveService(SaveConfigService config,
+                       SaveSourceService source,
                        SaveDorisService doris) {
+        this.config = config;
         this.source = source;
         this.doris = doris;
     }
