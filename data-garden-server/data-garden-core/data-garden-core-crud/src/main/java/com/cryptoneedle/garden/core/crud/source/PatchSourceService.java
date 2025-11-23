@@ -29,4 +29,24 @@ public class PatchSourceService {
         this.sourceColumnRepository = sourceColumnRepository;
         this.sourceDimensionRepository = sourceDimensionRepository;
     }
+
+    /**
+     * SourceCatalog
+     */
+
+    /**
+     * SourceDatabase
+     */
+
+    /**
+     * SourceTable
+     */
+
+    /**
+     * SourceColumn
+     */
+
+    /**
+     * SourceDimension
+     */
 }

@@ -29,4 +29,20 @@ public class PatchDorisService {
         this.dorisTableRepository = dorisTableRepository;
         this.dorisColumnRepository = dorisColumnRepository;
     }
+
+    /**
+     * DorisCatalog
+     */
+
+    /**
+     * DorisDatabase
+     */
+
+    /**
+     * DorisTable
+     */
+
+    /**
+     * DorisColumn
+     */
 }
