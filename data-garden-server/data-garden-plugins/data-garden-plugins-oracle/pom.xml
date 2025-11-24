@@ -15,6 +15,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.cryptoneedle.garden</groupId>
+            <artifactId>data-garden-spi</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.oracle.database.jdbc</groupId>
             <artifactId>ojdbc10</artifactId>
         </dependency>
