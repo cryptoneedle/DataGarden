@@ -9,6 +9,9 @@ spring:
       url: jdbc:postgresql://${primary.host}:${primary.port}/data-garden
       username: ${primary.username}
       password: ${primary.password}
+      default_schema: garden
+      show-sql: true
+      ddl-auto: update
     doris:
       url: jdbc:mysql://${doris.host}:${doris.port}
       username: ${doris.username}
@@ -25,13 +28,13 @@ primary:
   username: cryptoneedle
   password: postgres
 doris:
-  enabled: false
+  enabled: true
   host: 10.36.10.87
   port: 9030
   username: root
   password: HJD@%hd&di8473jh
 dolphin-scheduler:
-  enabled: false
+  enabled: true
   host: 10.36.10.93
   port: 3306
   username: root
