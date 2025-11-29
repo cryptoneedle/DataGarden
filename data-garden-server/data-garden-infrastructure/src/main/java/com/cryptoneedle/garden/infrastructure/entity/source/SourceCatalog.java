@@ -2,8 +2,6 @@ package com.cryptoneedle.garden.infrastructure.entity.source;
 
 import com.bubbles.engine.data.core.entity.BaseEntity;
 import com.cryptoneedle.garden.common.enums.SourceCollectFrequencyType;
-import com.cryptoneedle.garden.common.enums.SourceConnectType;
-import com.cryptoneedle.garden.common.enums.SourceDatabaseType;
 import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
 import jakarta.persistence.*;
 import lombok.*;
@@ -49,12 +47,11 @@ public class SourceCatalog extends BaseEntity {
     private String host;
     @Comment("端口")
     private Integer port;
+    @Comment("数据库类型标识 (通过SPI动态支持)")
+    private String databaseType;
     @Enumerated(EnumType.STRING)
-    @Comment("数据库类型")
-    private SourceDatabaseType databaseType;
-    @Enumerated(EnumType.STRING)
-    @Comment("连接类型")
-    private SourceConnectType connectType;
+    @Comment("连接类型 (通过SPI动态支持)")
+    private String connectType;
     @Comment("路径")
     private String route;
     @Comment("驱动")

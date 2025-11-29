@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-common</artifactId>
+            <artifactId>data-garden-infrastructure</artifactId>
         </dependency>
     </dependencies>
 </project>
