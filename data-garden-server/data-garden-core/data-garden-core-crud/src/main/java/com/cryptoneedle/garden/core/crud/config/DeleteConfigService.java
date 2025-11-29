@@ -3,6 +3,7 @@ package com.cryptoneedle.garden.core.crud.config;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigProperty;
 import com.cryptoneedle.garden.infrastructure.repository.config.ConfigPropertyRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * @date 2025-11-21
  */
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DeleteConfigService {
 
     private final ConfigPropertyRepository configPropertyRepository;

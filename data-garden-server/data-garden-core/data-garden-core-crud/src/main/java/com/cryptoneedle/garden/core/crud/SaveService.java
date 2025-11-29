@@ -10,6 +10,7 @@ import com.cryptoneedle.garden.core.crud.ods.SaveOdsService;
 import com.cryptoneedle.garden.core.crud.source.SaveSourceService;
 import com.cryptoneedle.garden.core.crud.standard.SaveStandardService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>description: 保存数据服务 </p>
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
  * @date 2025-11-21
  */
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SaveService {
 
     public final SaveConfigService config;

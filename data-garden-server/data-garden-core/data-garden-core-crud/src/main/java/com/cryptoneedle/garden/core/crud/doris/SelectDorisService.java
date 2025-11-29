@@ -25,7 +25,7 @@ import java.util.List;
  * @date 2025-11-21
  */
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SelectDorisService {
 
     private final DorisCatalogRepository dorisCatalogRepository;

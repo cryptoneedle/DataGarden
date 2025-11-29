@@ -6,6 +6,7 @@ import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
 import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
 import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @date 2025-11-21
  */
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SaveAdsService {
 
     private final AdsTableRepository adsTableRepository;

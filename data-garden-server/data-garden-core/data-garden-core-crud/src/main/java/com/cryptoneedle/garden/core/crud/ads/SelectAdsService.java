@@ -20,7 +20,7 @@ import java.util.List;
  * @date 2025-11-21
  */
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SelectAdsService {
 
     private final AdsTableRepository adsTableRepository;

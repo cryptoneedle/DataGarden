@@ -6,6 +6,7 @@ import com.cryptoneedle.garden.infrastructure.entity.dws.DwsTable;
 import com.cryptoneedle.garden.infrastructure.repository.dws.DwsColumnRepository;
 import com.cryptoneedle.garden.infrastructure.repository.dws.DwsTableRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @date 2025-11-21
  */
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddDwsService {
 
     private final SaveDwsService saveDwsService;

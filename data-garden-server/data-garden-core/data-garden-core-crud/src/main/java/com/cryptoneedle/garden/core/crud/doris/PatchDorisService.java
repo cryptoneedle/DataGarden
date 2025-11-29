@@ -5,6 +5,7 @@ import com.cryptoneedle.garden.infrastructure.repository.doris.DorisColumnReposi
 import com.cryptoneedle.garden.infrastructure.repository.doris.DorisDatabaseRepository;
 import com.cryptoneedle.garden.infrastructure.repository.doris.DorisTableRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>description: 部分更新Doris数据服务 </p>
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
  * @date 2025-11-21
  */
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchDorisService {
 
     private final DorisCatalogRepository dorisCatalogRepository;

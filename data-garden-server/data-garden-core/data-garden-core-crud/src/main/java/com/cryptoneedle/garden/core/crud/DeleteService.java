@@ -10,6 +10,7 @@ import com.cryptoneedle.garden.core.crud.ods.DeleteOdsService;
 import com.cryptoneedle.garden.core.crud.source.DeleteSourceService;
 import com.cryptoneedle.garden.core.crud.standard.DeleteStandardService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>description: 删除数据服务 </p>
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
  * @date 2025-11-21
  */
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DeleteService {
 
     public final DeleteConfigService config;

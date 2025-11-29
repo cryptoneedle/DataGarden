@@ -6,6 +6,7 @@ import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
 import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnRepository;
 import com.cryptoneedle.garden.infrastructure.repository.ods.OdsTableRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @date 2025-11-21
  */
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SaveOdsService {
 
     private final OdsTableRepository odsTableRepository;

@@ -10,6 +10,7 @@ import com.cryptoneedle.garden.core.crud.ods.AddOdsService;
 import com.cryptoneedle.garden.core.crud.source.AddSourceService;
 import com.cryptoneedle.garden.core.crud.standard.AddStandardService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>description: 新增数据服务 </p>
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
  * @date 2025-11-21
  */
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddService {
 
     public final AddConfigService config;

@@ -6,6 +6,7 @@ import com.cryptoneedle.garden.infrastructure.entity.dim.DimTable;
 import com.cryptoneedle.garden.infrastructure.repository.dim.DimColumnRepository;
 import com.cryptoneedle.garden.infrastructure.repository.dim.DimTableRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
  * @date 2025-11-21
  */
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DeleteDimService {
 
     private final DimTableRepository dimTableRepository;
