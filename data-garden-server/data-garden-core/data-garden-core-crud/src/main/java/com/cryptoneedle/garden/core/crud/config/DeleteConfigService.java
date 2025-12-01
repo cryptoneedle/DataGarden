@@ -1,7 +1,9 @@
 package com.cryptoneedle.garden.core.crud.config;
 
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigProperty;
+import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import com.cryptoneedle.garden.infrastructure.repository.config.ConfigPropertyRepository;
+import com.cryptoneedle.garden.infrastructure.repository.config.ConfigSshRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,20 +20,33 @@ import java.util.List;
 public class DeleteConfigService {
 
     private final ConfigPropertyRepository configPropertyRepository;
+    private final ConfigSshRepository configSshRepository;
 
-    public DeleteConfigService(ConfigPropertyRepository configPropertyRepository) {
+    public DeleteConfigService(ConfigPropertyRepository configPropertyRepository,
+                               ConfigSshRepository configSshRepository) {
         this.configPropertyRepository = configPropertyRepository;
+        this.configSshRepository = configSshRepository;
     }
 
     /**
      * ConfigProperty
      */
-
     public void property(ConfigProperty entity) {
         configPropertyRepository.delete(entity);
     }
 
     public void properties(List<ConfigProperty> list) {
         configPropertyRepository.deleteAll(list);
+    }
+
+    /**
+     * ConfigSsh
+     */
+    public void ssh(ConfigSsh entity) {
+        configSshRepository.delete(entity);
+    }
+
+    public void sshs(List<ConfigSsh> list) {
+        configSshRepository.deleteAll(list);
     }
 }

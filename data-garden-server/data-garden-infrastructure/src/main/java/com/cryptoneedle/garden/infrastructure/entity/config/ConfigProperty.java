@@ -25,7 +25,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "config_property")
-@Comment("配置-属性配置-实体")
+@Comment("配置-属性配置")
 public class ConfigProperty extends BaseEntity {
 
     @EmbeddedId

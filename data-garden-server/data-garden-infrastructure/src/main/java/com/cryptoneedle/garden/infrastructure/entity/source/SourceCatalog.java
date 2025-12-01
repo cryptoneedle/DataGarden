@@ -60,6 +60,10 @@ public class SourceCatalog extends BaseEntity {
     private String username;
     @Comment("密码")
     private String password;
+    @Comment("SSH启用")
+    private boolean sshEnabled = false;
+    @Comment("SSH主机")
+    private String sshHost;
 
     @Comment("URL")
     private String url;

@@ -2,8 +2,11 @@ package com.cryptoneedle.garden.core.crud.config;
 
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.config.ConfigPropertyKey;
+import com.cryptoneedle.garden.common.key.config.ConfigSshKey;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigProperty;
+import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import com.cryptoneedle.garden.infrastructure.repository.config.ConfigPropertyRepository;
+import com.cryptoneedle.garden.infrastructure.repository.config.ConfigSshRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,9 +23,12 @@ import java.util.List;
 public class SelectConfigService {
 
     private final ConfigPropertyRepository configPropertyRepository;
+    private final ConfigSshRepository configSshRepository;
 
-    public SelectConfigService(ConfigPropertyRepository configPropertyRepository) {
+    public SelectConfigService(ConfigPropertyRepository configPropertyRepository,
+                               ConfigSshRepository configSshRepository) {
         this.configPropertyRepository = configPropertyRepository;
+        this.configSshRepository = configSshRepository;
     }
 
     /**
@@ -42,5 +48,24 @@ public class SelectConfigService {
 
     public List<ConfigProperty> properties() {
         return configPropertyRepository.properties();
+    }
+
+    /**
+     * ConfigSsh
+     */
+    public ConfigSsh ssh(ConfigSshKey id) {
+        return configSshRepository.findById(id).orElse(null);
+    }
+
+    public ConfigSsh ssh(String host) {
+        return ssh(ConfigSshKey.builder().host(host).build());
+    }
+
+    public ConfigSsh sshCheck(ConfigSshKey id) throws EntityNotFoundException {
+        return configSshRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("ConfigSsh", id.toString()));
+    }
+
+    public List<ConfigSsh> sshs() {
+        return configSshRepository.sshs();
     }
 }
