@@ -38,6 +38,9 @@ public class SourceTable extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     @Comment("表说明")
     private String comment;
+    @Enumerated(EnumType.STRING)
+    @Comment("表类型")
+    private SourceTableType tableType;
 
     @Comment("Doris目录")
     private String dorisCatalog;
@@ -53,9 +56,6 @@ public class SourceTable extends BaseEntity {
     @Comment("采集任务分组序号")
     private Integer collectGroupNum;
 
-    @Enumerated(EnumType.STRING)
-    @Comment("表类型")
-    private SourceTableType tableType;
     @Comment("表")
     private String transTableName;
     @Column(columnDefinition = "TEXT")

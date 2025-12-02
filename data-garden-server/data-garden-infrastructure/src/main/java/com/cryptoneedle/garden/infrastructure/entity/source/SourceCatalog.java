@@ -54,8 +54,6 @@ public class SourceCatalog extends BaseEntity {
     private String connectType;
     @Comment("路径")
     private String route;
-    @Comment("驱动")
-    private String driver;
     @Comment("用户名")
     private String username;
     @Comment("密码")
@@ -84,4 +82,16 @@ public class SourceCatalog extends BaseEntity {
 
     @Comment("启用")
     private boolean enabled = false;
+
+    public boolean equalsJdbc(SourceCatalog other) {
+        return this.host.equals(other.getHost())
+                && this.port.equals(other.getPort())
+                && this.databaseType.equals(other.getConnectType())
+                && this.connectType.equals(other.getConnectType())
+                && this.route.equals(other.getRoute())
+                && this.username.equals(other.getUsername())
+                && this.password.equals(other.getPassword())
+                && this.sshEnabled == other.isSshEnabled()
+                && this.sshHost.equals(other.getSshHost());
+    }
 }
