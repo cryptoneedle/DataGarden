@@ -18,5 +18,9 @@
             <groupId>com.cryptoneedle.garden</groupId>
             <artifactId>data-garden-start-task</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.cryptoneedle.garden</groupId>
+            <artifactId>data-garden-start-api</artifactId>
+        </dependency>
     </dependencies>
 </project>

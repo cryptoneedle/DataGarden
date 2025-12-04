@@ -1,4 +1,4 @@
-package com.cryptoneedle.garden.spi.datasource;
+package com.cryptoneedle.garden.spi;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -60,7 +60,7 @@ public class DataSourceSpiLoader {
     }
 
     private static boolean registerProvider(DataSourceProvider provider) {
-        String databaseType = provider.getDatabaseType();
+        String databaseType = provider.databaseType();
         if (StringUtils.isBlank(databaseType)) {
             log.warn("[SPI] 验证插件 -> {} getDatabaseType() 为空", provider.getClass().getName());
             return false;

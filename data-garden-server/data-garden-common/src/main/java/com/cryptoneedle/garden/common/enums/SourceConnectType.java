@@ -4,18 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * <p>description: 数据源-表类型 </p>
+ * <p>description: 数据源-连接方式 </p>
  *
  * @author CryptoNeedle
  * @date 2025-11-20
  */
 @Getter
 @AllArgsConstructor
-public enum SourceTableType {
+public enum SourceConnectType {
 
-    TABLE("表"),
-    VIEW("视图"),
-    MATERIALIZED_VIEW("物化视图")
+    DIRECT("直接连接"),
+    SID("ORACLE_SID"),
+    SERVICE_NAME("ORACLE_SERVICE_NAME"),
     ;
 
     private final String description;

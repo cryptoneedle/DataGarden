@@ -1,0 +1,106 @@
+package com.cryptoneedle.garden.spi;
+
+import com.cryptoneedle.garden.common.enums.SourceDimensionType;
+import com.cryptoneedle.garden.common.enums.SourceTableType;
+import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
+import com.cryptoneedle.garden.common.key.source.SourceDatabaseKey;
+import com.cryptoneedle.garden.common.key.source.SourceDimensionColumnKey;
+import com.cryptoneedle.garden.common.key.source.SourceTableKey;
+import com.cryptoneedle.garden.infrastructure.entity.source.*;
+import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.dbutils.BeanProcessor;
+import org.springframework.jdbc.core.JdbcTemplate;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.util.List;
+
+/**
+ * <p>description: 数据源-执行器 </p>
+ *
+ * @author CryptoNeedle
+ * @date 2025-12-02
+ */
+@Slf4j
+public class DataSourceExecutor {
+
+    public static String version(SourceCatalog catalog) {
+        DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
+
+        // 使用Connection元数据方式获取
+        try (Connection connection = DataSourceManager.getConnection(catalog)) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            return metaData.getDatabaseMajorVersion() + "." + metaData.getDatabaseMinorVersion();
+        } catch (SQLException e) {
+            throw new RuntimeException("获取数据库版本失败", e);
+        }
+
+        // todo 使用SQL查询方式
+    }
+
+    public static List<SourceDatabase> databases(SourceCatalog catalog, String databaseName) {
+        return DataSourceManager.getJdbcTemplate(catalog)
+                .query(DataSourceSpiLoader.getProvider(catalog.getDatabaseType()).databaseSql(databaseName),
+                        (rs, rowNum) ->
+                                new BeanProcessor().toBean(rs, SourceDatabase.class)
+                                        .setId(new BeanProcessor().toBean(rs, SourceDatabaseKey.class)
+                                                .setCatalogName(catalog.getId().getCatalogName())));
+    }
+
+    public static List<SourceTable> tables(SourceCatalog catalog, String databaseName, String tableName) {
+        DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
+        JdbcTemplate jdbcTemplate = DataSourceManager.getJdbcTemplate(catalog);
+
+        List<SourceTable> tables = tables(jdbcTemplate, provider.tableSql(databaseName, tableName), catalog, SourceTableType.TABLE);
+        List<SourceTable> views = tables(jdbcTemplate, provider.viewSql(databaseName, tableName), catalog, SourceTableType.VIEW);
+
+        List<SourceTable> result = Lists.newArrayListWithCapacity(tables.size() + views.size());
+        result.addAll(tables);
+        result.addAll(views);
+        return result;
+    }
+
+    private static List<SourceTable> tables(JdbcTemplate jdbcTemplate, String sql, SourceCatalog catalog, SourceTableType sourceTableType) {
+        return jdbcTemplate
+                .query(sql, (rs, rowNum) ->
+                        new BeanProcessor().toBean(rs, SourceTable.class)
+                                .setId(new BeanProcessor().toBean(rs, SourceTableKey.class)
+                                        .setCatalogName(catalog.getId().getCatalogName()))
+                                .setTableType(sourceTableType));
+    }
+
+    public static List<SourceColumn> columns(SourceCatalog catalog, String databaseName, String tableName) {
+        return DataSourceManager.getJdbcTemplate(catalog)
+                .query(DataSourceSpiLoader.getProvider(catalog.getDatabaseType()).columnSql(databaseName, tableName),
+                        (rs, rowNum) ->
+                                new BeanProcessor().toBean(rs, SourceColumn.class)
+                                        .setId(new BeanProcessor().toBean(rs, SourceColumnKey.class)
+                                                .setCatalogName(catalog.getId().getCatalogName())));
+    }
+
+    public static List<SourceDimension> dimensions(SourceCatalog catalog, String databaseName, String tableName) {
+        DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
+        JdbcTemplate jdbcTemplate = DataSourceManager.getJdbcTemplate(catalog);
+
+        List<SourceDimension> primaryConstraints = dimensions(jdbcTemplate, provider.primaryConstraintSql(databaseName, tableName), catalog, SourceDimensionType.PRIMARY_CONSTRAINT);
+        List<SourceDimension> uniqueConstraints = dimensions(jdbcTemplate, provider.uniqueConstraintSql(databaseName, tableName), catalog, SourceDimensionType.UNIQUE_CONSTRAINT);
+        List<SourceDimension> uniqueIndexs = dimensions(jdbcTemplate, provider.uniqueIndexSql(databaseName, tableName), catalog, SourceDimensionType.UNIQUE_INDEX);
+
+        List<SourceDimension> result = Lists.newArrayListWithCapacity(primaryConstraints.size() + uniqueConstraints.size() + uniqueIndexs.size());
+        result.addAll(primaryConstraints);
+        result.addAll(uniqueConstraints);
+        result.addAll(uniqueIndexs);
+        return result;
+    }
+
+    private static List<SourceDimension> dimensions(JdbcTemplate jdbcTemplate, String sql, SourceCatalog catalog, SourceDimensionType sourceDimensionType) {
+        return jdbcTemplate
+                .query(sql, (rs, rowNum) ->
+                        new BeanProcessor().toBean(rs, SourceDimension.class)
+                                .setId(new BeanProcessor().toBean(rs, SourceDimensionColumnKey.class)
+                                        .setCatalogName(catalog.getId().getCatalogName())
+                                        .setDimensionType(sourceDimensionType)));
+    }
+}

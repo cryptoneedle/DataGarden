@@ -1,9 +1,10 @@
-package com.cryptoneedle.garden.spi.datasource;
+package com.cryptoneedle.garden.spi;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 public class DataSourceManager {
 
     private static final Map<String, PooledDataSourceWrapper> DATA_SOURCE_MAP = new ConcurrentHashMap<>();
-    private static final Lock GLOBAL_LOCK = new ReentrantLock(); // 全局锁保护关键操作
+    private static final Lock GLOBAL_LOCK = new ReentrantLock();
 
     public static Connection getConnection(SourceCatalog catalog) throws SQLException {
         String catalogName = catalog.getId().getCatalogName();
@@ -56,6 +57,35 @@ public class DataSourceManager {
         }
     }
 
+    public static JdbcTemplate getJdbcTemplate(SourceCatalog catalog) {
+        String catalogName = catalog.getId().getCatalogName();
+
+        PooledDataSourceWrapper existing = DATA_SOURCE_MAP.get(catalogName);
+        if (existing != null && existing.getSourceCatalog().equals(catalog)) {
+            return existing.jdbcTemplate;
+        }
+
+        GLOBAL_LOCK.lock();
+        try {
+            existing = DATA_SOURCE_MAP.get(catalogName);
+            if (existing != null && existing.getSourceCatalog().equals(catalog)) {
+                return existing.jdbcTemplate;
+            }
+            // 关闭旧数据源
+            log.info("[JDBC] 检测到配置变更，关闭旧数据源: {}", catalogName);
+            if (existing.dataSource != null && !existing.dataSource.isClosed()) {
+                existing.dataSource.close();
+                log.info("[JDBC] 关闭连接 -> {}", existing.catalogName);
+            }
+            // 创建新数据源
+            PooledDataSourceWrapper newWrapper = createPooledDataSource(catalog);
+            DATA_SOURCE_MAP.put(catalogName, newWrapper);
+            return newWrapper.jdbcTemplate;
+        } finally {
+            GLOBAL_LOCK.unlock();
+        }
+    }
+
     public static boolean testConnection(SourceCatalog catalog) {
         String catalogName = catalog.getId().getCatalogName();
         log.info("[JDBC] 测试连接 -> {}", catalogName);
@@ -71,7 +101,7 @@ public class DataSourceManager {
             return connection.isValid(5);
         } catch (SQLException e) {
             log.warn("[JDBC] 测试连接 -> {}", catalogName, e);
-            throw new IllegalStateException("[JDBC] 测试 -> 尝试连接 -> " + provider.getDriver(), e);
+            throw new IllegalStateException("[JDBC] 测试 -> 尝试连接 -> ", e);
         }
     }
 
@@ -111,7 +141,6 @@ public class DataSourceManager {
             dataSource.setUrl(provider.buildJdbcUrl(catalog));
             dataSource.setUsername(catalog.getUsername());
             dataSource.setPassword(catalog.getPassword());
-            dataSource.setDriverClassName(provider.getDriver());
             // 连接池配置
             dataSource.setInitialSize(1);                                // 初始连接数
             dataSource.setMinIdle(1);                                    // 最小空闲连接
@@ -141,7 +170,6 @@ public class DataSourceManager {
 
             return new PooledDataSourceWrapper(catalog, dataSource);
         } catch (Exception e) {
-            // 确保异常时资源被释放
             if (dataSource != null) {
                 try {
                     dataSource.close();
@@ -161,11 +189,13 @@ public class DataSourceManager {
         private final String catalogName;
         private final SourceCatalog sourceCatalog;
         private final DruidDataSource dataSource;
+        private final JdbcTemplate jdbcTemplate;
 
         public PooledDataSourceWrapper(SourceCatalog catalog, DruidDataSource dataSource) {
             this.catalogName = catalog.getId().getCatalogName();
             this.sourceCatalog = catalog;
             this.dataSource = dataSource;
+            this.jdbcTemplate = new JdbcTemplate(this.dataSource);
         }
 
         public void close() {

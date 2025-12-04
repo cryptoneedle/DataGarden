@@ -18,10 +18,6 @@
             <groupId>com.cryptoneedle.garden</groupId>
             <artifactId>data-garden-common</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-plugins-oracle</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.bubbles.engine.data</groupId>
