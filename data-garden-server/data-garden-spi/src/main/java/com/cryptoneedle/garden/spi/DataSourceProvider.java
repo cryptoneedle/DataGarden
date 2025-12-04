@@ -44,6 +44,7 @@ public interface DataSourceProvider {
      * - tableName: 表
      * - comment: 表说明
      * - tableType: 表类型 [TABLE("表"),VIEW("视图")]
+     * - rowNum: 数据量
      * - avgRowBytes: 行平均占用空间(单位：Byte)
      * - statisticDt: 统计时间
      *
@@ -58,16 +59,32 @@ public interface DataSourceProvider {
      * - databaseName: 数据库
      * - tableName: 表
      * - comment: 表说明
-     * - tableType: 表类型 [TABLE("表"),VIEW("视图")]
-     * - isGranted: 是否授权
+     * - tableType: 表类型 [TABLE("表"),VIEW("视图"),MATERIALIZED_VIEW("物化视图")]
+     * - rowNum: 数据量
      * - avgRowBytes: 行平均占用空间(单位：Byte)
      * - statisticDt: 统计时间
      *
      * @param databaseName 数据库(可以为空)
-     * @param tableName 视图(可以为空)
+     * @param viewName 视图(可以为空)
      * @return 视图信息查询SQL
      */
-    String viewSql(String databaseName, String tableName);
+    String viewSql(String databaseName, String viewName);
+
+    /**
+     * 获取物化视图信息查询SQL
+     * - databaseName: 数据库
+     * - tableName: 表
+     * - comment: 表说明
+     * - tableType: 表类型 [TABLE("表"),VIEW("视图"),MATERIALIZED_VIEW("物化视图")]
+     * - rowNum: 数据量
+     * - avgRowBytes: 行平均占用空间(单位：Byte)
+     * - statisticDt: 统计时间
+     *
+     * @param databaseName 数据库(可以为空)
+     * @param viewName 物化视图(可以为空)
+     * @return 物化视图信息查询SQL
+     */
+    String materializedViewSql(String databaseName, String viewName);
 
     /**
      * 获取字段信息查询SQL
@@ -75,15 +92,13 @@ public interface DataSourceProvider {
      * - tableName: 表
      * - columnName: 字段
      * - comment: 字段说明
-     * - columnType: 字段类型 [UNIQUE("主键字段"), COMMON("普通字段")]
      * - sort: 排序
-     * - dataTypeFormat: 数据类型格式化
      * - dataType: 数据类型
      * - length: 长度
      * - precision: 精度
      * - scale: 标度
+     * - notNull: 不可空
      * - sampleNum: 采样数据量
-     * - sampleRate: 采样率
      * - nullNum: 采样空值数据量
      * - distinctNum: 采样基数
      * - density: 采样数据密度
@@ -102,7 +117,7 @@ public interface DataSourceProvider {
      * 获取主键查询SQL
      * - databaseName: 数据库
      * - tableName: 表
-     * - dimensionType: 维度类型
+     * - dimensionType: 维度类型 [PRIMARY_CONSTRAINT("主键约束", 2),UNIQUE_CONSTRAINT("唯一键约束", 3),UNIQUE_INDEX("唯一索引", 4)]
      * - dimensionName: 维度
      * - columnName: 字段
      * - sort: 排序
@@ -117,7 +132,7 @@ public interface DataSourceProvider {
      * 获取唯一键查询SQL
      * - databaseName: 数据库
      * - tableName: 表
-     * - dimensionType: 维度类型
+     * - dimensionType: 维度类型 [PRIMARY_CONSTRAINT("主键约束", 2),UNIQUE_CONSTRAINT("唯一键约束", 3),UNIQUE_INDEX("唯一索引", 4)]
      * - dimensionName: 维度
      * - columnName: 字段
      * - sort: 排序
@@ -132,7 +147,7 @@ public interface DataSourceProvider {
      * 获取唯一索引查询SQL
      * - databaseName: 数据库
      * - tableName: 表
-     * - dimensionType: 维度类型
+     * - dimensionType: 维度类型 [PRIMARY_CONSTRAINT("主键约束", 2),UNIQUE_CONSTRAINT("唯一键约束", 3),UNIQUE_INDEX("唯一索引", 4)]
      * - dimensionName: 维度
      * - columnName: 字段
      * - sort: 排序

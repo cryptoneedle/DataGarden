@@ -78,6 +78,10 @@ public class SourceColumn extends BaseEntity {
     private Long scale;
     @Comment("标度")
     private Long transScale;
+    @Comment("非空")
+    private boolean notNull;
+    @Comment("非空")
+    private Long transNotNull;
 
     @Comment("数据量")
     private Long rowNum;
