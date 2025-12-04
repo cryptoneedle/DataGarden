@@ -156,6 +156,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     public String columnSql(String databaseName, String tableName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND tc.owner = '%s'".formatted(databaseName) : "";
         String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND tc.table_name = '%s'".formatted(tableName) : "";
+        // todo 暂时只进行非DBA用户的查询
         return """
                 SELECT tc.owner          AS "databaseName"   -- 数据库
                      , tc.table_name     AS "tableName"      -- 表
@@ -186,6 +187,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     public String primaryConstraintSql(String databaseName, String tableName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND c.owner = '%s'".formatted(databaseName) : "";
         String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND c.table_name = '%s'".formatted(tableName) : "";
+        // todo 暂时只进行非DBA用户的查询
         return """
                 SELECT c.owner              AS "databasename"  -- 数据库
                      , c.table_name         AS "tablename"     -- 表
@@ -206,6 +208,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     public String uniqueConstraintSql(String databaseName, String tableName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND c.owner = '%s'".formatted(databaseName) : "";
         String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND c.table_name = '%s'".formatted(tableName) : "";
+        // todo 暂时只进行非DBA用户的查询
         return """
                 SELECT c.owner              AS "databasename"  -- 数据库
                      , c.table_name         AS "tablename"     -- 表
@@ -226,6 +229,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     public String uniqueIndexSql(String databaseName, String tableName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND i.table_owner = '%s'".formatted(databaseName) : "";
         String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND i.table_name = '%s'".formatted(tableName) : "";
+        // todo 暂时只进行非DBA用户的查询
         return """
                 SELECT i.table_owner     AS "databasename"  -- 数据库
                      , i.table_name      AS "tablename"     -- 表
