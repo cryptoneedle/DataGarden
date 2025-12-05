@@ -2,14 +2,14 @@ package com.cryptoneedle.garden.infrastructure.entity.config;
 
 import com.bubbles.engine.data.core.entity.BaseEntity;
 import com.cryptoneedle.garden.common.key.config.ConfigSshKey;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Table;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.util.List;
 
 /**
  * <p>description: 配置-隧道配置-实体 </p>
@@ -42,6 +42,14 @@ public class ConfigSsh extends BaseEntity {
     @Comment("密码")
     private String password;
 
-    @Comment("启用")
-    private boolean enabled = true;
+    @OneToMany(mappedBy = "configSsh", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<SourceCatalog> catalogs;
+
+    public boolean equalsConnect(ConfigSsh other) {
+        return this.id.equals(other.id)
+                && this.port == other.port
+                && this.username.equals(other.username)
+                && this.password.equals(other.password);
+    }
 }

@@ -32,14 +32,14 @@ public class DataSourceManager {
         String catalogName = catalog.getId().getCatalogName();
 
         PooledDataSourceWrapper existing = DATA_SOURCE_MAP.get(catalogName);
-        if (existing != null && existing.getSourceCatalog().equals(catalog)) {
+        if (existing != null && existing.getSourceCatalog().equalsJdbc(catalog)) {
             return existing.dataSource.getConnection();
         }
 
         GLOBAL_LOCK.lock();
         try {
             existing = DATA_SOURCE_MAP.get(catalogName);
-            if (existing != null && existing.getSourceCatalog().equals(catalog)) {
+            if (existing != null && existing.getSourceCatalog().equalsJdbc(catalog)) {
                 return existing.dataSource.getConnection();
             }
             // 关闭旧数据源
@@ -61,14 +61,14 @@ public class DataSourceManager {
         String catalogName = catalog.getId().getCatalogName();
 
         PooledDataSourceWrapper existing = DATA_SOURCE_MAP.get(catalogName);
-        if (existing != null && existing.getSourceCatalog().equals(catalog)) {
+        if (existing != null && existing.getSourceCatalog().equalsJdbc(catalog)) {
             return existing.jdbcTemplate;
         }
 
         GLOBAL_LOCK.lock();
         try {
             existing = DATA_SOURCE_MAP.get(catalogName);
-            if (existing != null && existing.getSourceCatalog().equals(catalog)) {
+            if (existing != null && existing.getSourceCatalog().equalsJdbc(catalog)) {
                 return existing.jdbcTemplate;
             }
             // 关闭旧数据源

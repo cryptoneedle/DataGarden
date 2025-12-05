@@ -3,6 +3,7 @@ package com.cryptoneedle.garden.infrastructure.entity.source;
 import com.bubbles.engine.data.core.entity.BaseEntity;
 import com.cryptoneedle.garden.common.enums.SourceCollectFrequencyType;
 import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
+import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -49,7 +50,6 @@ public class SourceCatalog extends BaseEntity {
     private Integer port;
     @Comment("数据库类型标识 (通过SPI动态支持)")
     private String databaseType;
-    @Enumerated(EnumType.STRING)
     @Comment("连接类型 (通过SPI动态支持)")
     private String connectType;
     @Comment("路径")
@@ -83,6 +83,11 @@ public class SourceCatalog extends BaseEntity {
     @Comment("启用")
     private boolean enabled = false;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sshHost", referencedColumnName = "host", insertable = false, updatable = false)
+    @Comment("SSH配置关联")
+    private ConfigSsh configSsh;
+
     public boolean equalsJdbc(SourceCatalog other) {
         return this.host.equals(other.getHost())
                 && this.port.equals(other.getPort())
@@ -92,6 +97,7 @@ public class SourceCatalog extends BaseEntity {
                 && this.username.equals(other.getUsername())
                 && this.password.equals(other.getPassword())
                 && this.sshEnabled == other.isSshEnabled()
-                && this.sshHost.equals(other.getSshHost());
+                && this.sshHost.equals(other.getSshHost())
+                && this.configSsh.equalsConnect(other.getConfigSsh());
     }
 }
