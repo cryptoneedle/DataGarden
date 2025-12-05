@@ -76,7 +76,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND owner = '%s'".formatted(databaseName) : "";
         // todo 暂时只进行非DBA用户的查询
         return """
-                SELECT owner                                                                                  AS databaseName          -- 数据库
+                SELECT owner                                                                                  AS "databaseName"          -- 数据库
                      , SUM(CASE WHEN object_type IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW') THEN 1 ELSE 0 END) AS "totalNum"            -- 总数(表数量+视图数量+物化视图数量)
                      , SUM(CASE WHEN object_type = 'TABLE' THEN 1 ELSE 0 END)                                 AS "tableNum"            -- 表数量
                      , SUM(CASE WHEN object_type = 'VIEW' THEN 1 ELSE 0 END)                                  AS "viewNum"             -- 视图数量
@@ -158,23 +158,24 @@ public class OracleDataSourceProvider implements DataSourceProvider {
         String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND tc.table_name = '%s'".formatted(tableName) : "";
         // todo 暂时只进行非DBA用户的查询
         return """
-                SELECT tc.owner          AS "databaseName"   -- 数据库
-                     , tc.table_name     AS "tableName"      -- 表
-                     , tc.column_name    AS "columnName"     -- 字段
-                     , c.comments        AS "comment"        -- 字段说明
-                     , tc.column_id      AS "sort"           -- 排序
-                     , tc.data_type      AS "dataType"       -- 数据类型
-                     , tc.data_length    AS "length"         -- 长度
-                     , tc.data_precision AS "precision"      -- 精度
-                     , tc.data_scale     AS "scale"          -- 标度
-                     , tc.sample_size    AS "sampleNum"      -- 采样数据量
-                     , tc.num_nulls      AS "nullNum"        -- 采样空值数据量
-                     , tc.num_distinct   AS "distinctNum"    -- 采样基数
-                     , tc.density        AS "density"        -- 采样数据密度
-                     , tc.low_value      AS "minValue"       -- 采样最小值
-                     , tc.high_value     AS "maxValue"       -- 采样最大值
-                     , tc.avg_col_len    AS "avgColumnBytes" -- 字段平均占用空间(单位：Byte)
-                     , tc.last_analyzed  AS "statisticDt"    -- 统计时间
+                SELECT tc.owner                       AS "databaseName"   -- 数据库
+                     , tc.table_name                  AS "tableName"      -- 表
+                     , tc.column_name                 AS "columnName"     -- 字段
+                     , c.comments                     AS "comment"        -- 字段说明
+                     , tc.column_id                   AS "sort"           -- 排序
+                     , tc.data_type                   AS "dataType"       -- 数据类型
+                     , tc.data_length                 AS "length"         -- 长度
+                     , tc.data_precision              AS "precision"      -- 精度
+                     , tc.data_scale                  AS "scale"          -- 标度
+                     , DECODE(tc.nullable, 'Y', 1, 0) AS "notNull"        -- 不可空
+                     , tc.sample_size                 AS "sampleNum"      -- 采样数据量
+                     , tc.num_nulls                   AS "nullNum"        -- 采样空值数据量
+                     , tc.num_distinct                AS "distinctNum"    -- 采样基数
+                     , tc.density                     AS "density"        -- 采样数据密度
+                     , tc.low_value                   AS "minValue"       -- 采样最小值
+                     , tc.high_value                  AS "maxValue"       -- 采样最大值
+                     , tc.avg_col_len                 AS "avgColumnBytes" -- 字段平均占用空间(单位：Byte)
+                     , tc.last_analyzed               AS "statisticDt"    -- 统计时间
                   FROM all_tab_columns tc
                          LEFT JOIN all_col_comments c ON tc.owner = c.owner AND tc.table_name = c.table_name AND tc.column_name = c.column_name
                  WHERE 1 = 1
@@ -189,11 +190,11 @@ public class OracleDataSourceProvider implements DataSourceProvider {
         String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND c.table_name = '%s'".formatted(tableName) : "";
         // todo 暂时只进行非DBA用户的查询
         return """
-                SELECT c.owner              AS "databasename"  -- 数据库
-                     , c.table_name         AS "tablename"     -- 表
-                     , 'PRIMARY_CONSTRAINT' AS "dimensiontype" -- 维度类型 [PRIMARY_CONSTRAINT("主键约束", 2),UNIQUE_CONSTRAINT("唯一键约束", 3),UNIQUE_INDEX("唯一索引", 4)]
-                     , c.constraint_name    AS "dimensionname" -- 维度
-                     , cc.column_name       AS "columnname"    -- 字段
+                SELECT c.owner              AS "databaseName"  -- 数据库
+                     , c.table_name         AS "tableName"     -- 表
+                     , 'PRIMARY_CONSTRAINT' AS "dimensionType" -- 维度类型 [PRIMARY_CONSTRAINT("主键约束", 2),UNIQUE_CONSTRAINT("唯一键约束", 3),UNIQUE_INDEX("唯一索引", 4)]
+                     , c.constraint_name    AS "dimensionName" -- 维度
+                     , cc.column_name       AS "columnName"    -- 字段
                      , cc.position          AS "sort"          -- 排序
                   FROM all_constraints c
                          INNER JOIN all_cons_columns cc ON c.owner = cc.owner AND c.constraint_name = cc.constraint_name
@@ -210,11 +211,11 @@ public class OracleDataSourceProvider implements DataSourceProvider {
         String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND c.table_name = '%s'".formatted(tableName) : "";
         // todo 暂时只进行非DBA用户的查询
         return """
-                SELECT c.owner              AS "databasename"  -- 数据库
-                     , c.table_name         AS "tablename"     -- 表
-                     , 'UNIQUE_CONSTRAINT'  AS "dimensiontype" -- 维度类型 [PRIMARY_CONSTRAINT("主键约束", 2),UNIQUE_CONSTRAINT("唯一键约束", 3),UNIQUE_INDEX("唯一索引", 4)]
-                     , c.constraint_name    AS "dimensionname" -- 维度
-                     , cc.column_name       AS "columnname"    -- 字段
+                SELECT c.owner              AS "databaseName"  -- 数据库
+                     , c.table_name         AS "tableName"     -- 表
+                     , 'UNIQUE_CONSTRAINT'  AS "dimensionType" -- 维度类型 [PRIMARY_CONSTRAINT("主键约束", 2),UNIQUE_CONSTRAINT("唯一键约束", 3),UNIQUE_INDEX("唯一索引", 4)]
+                     , c.constraint_name    AS "dimensionName" -- 维度
+                     , cc.column_name       AS "columnName"    -- 字段
                      , cc.position          AS "sort"          -- 排序
                   FROM all_constraints c
                          INNER JOIN all_cons_columns cc ON c.owner = cc.owner AND c.constraint_name = cc.constraint_name
@@ -231,11 +232,11 @@ public class OracleDataSourceProvider implements DataSourceProvider {
         String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND i.table_name = '%s'".formatted(tableName) : "";
         // todo 暂时只进行非DBA用户的查询
         return """
-                SELECT i.table_owner     AS "databasename"  -- 数据库
-                     , i.table_name      AS "tablename"     -- 表
-                     , 'UNIQUE_INDEX'    AS "dimensiontype" -- 维度类型 [PRIMARY_CONSTRAINT("主键约束", 2),UNIQUE_CONSTRAINT("唯一键约束", 3),UNIQUE_INDEX("唯一索引", 4)]
-                     , i.index_name      AS "dimensionname" -- 维度
-                     , c.column_name     AS "columnname"    -- 字段
+                SELECT i.table_owner     AS "databaseName"  -- 数据库
+                     , i.table_name      AS "tableName"     -- 表
+                     , 'UNIQUE_INDEX'    AS "dimensionType" -- 维度类型 [PRIMARY_CONSTRAINT("主键约束", 2),UNIQUE_CONSTRAINT("唯一键约束", 3),UNIQUE_INDEX("唯一索引", 4)]
+                     , i.index_name      AS "dimensionName" -- 维度
+                     , c.column_name     AS "columnName"    -- 字段
                      , c.column_position AS "sort"          -- 排序
                   FROM all_indexes i
                          INNER JOIN all_ind_columns c ON i.index_name = c.index_name AND i.table_owner = c.index_owner AND i.table_owner = c.table_owner
