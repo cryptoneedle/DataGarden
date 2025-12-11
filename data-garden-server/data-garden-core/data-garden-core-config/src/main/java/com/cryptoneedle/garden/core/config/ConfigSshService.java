@@ -6,6 +6,7 @@ import com.cryptoneedle.garden.common.vo.config.ConfigSshAddVo;
 import com.cryptoneedle.garden.common.vo.config.ConfigSshUpdateVo;
 import com.cryptoneedle.garden.core.crud.config.*;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,6 +38,11 @@ public class ConfigSshService {
 
     public void add(ConfigSshAddVo vo) {
         ConfigSshKey key = ConfigSshKey.builder().host(vo.getHost()).build();
+        ConfigSsh ssh = select.ssh(key);
+        if (ssh != null) {
+            throw new RuntimeException("隧道配置: " + ssh + "已存在");
+        }
+        
         ConfigSsh entity = ConfigSsh.builder()
                 .id(key)
                 .port(vo.getPort())
@@ -53,10 +59,10 @@ public class ConfigSshService {
         if (vo.getPort() != null) {
             entity.setPort(vo.getPort());
         }
-        if (vo.getUsername() != null) {
+        if (StringUtils.isNotBlank(vo.getUsername())) {
             entity.setUsername(vo.getUsername());
         }
-        if (vo.getPassword() != null) {
+        if (StringUtils.isNotBlank(vo.getPassword())) {
             entity.setPassword(vo.getPassword());
         }
 
