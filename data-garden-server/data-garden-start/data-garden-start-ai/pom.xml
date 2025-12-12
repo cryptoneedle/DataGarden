@@ -6,18 +6,17 @@
 
     <parent>
         <groupId>com.cryptoneedle.garden</groupId>
-        <artifactId>data-garden-server</artifactId>
+        <artifactId>data-garden-start</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>data-garden-start</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>data-garden-start-ai</artifactId>
 
-    <modules>
-        <module>data-garden-start-config</module>
-        <module>data-garden-start-task</module>
-        <module>data-garden-start-api</module>
-        <module>data-garden-start-ai</module>
-    </modules>
+    <dependencies>
+        <dependency>
+            <groupId>com.cryptoneedle.garden</groupId>
+            <artifactId>data-garden-core-ai</artifactId>
+        </dependency>
+    </dependencies>
 </project>
