@@ -14,5 +14,9 @@
     <artifactId>data-garden-core-ai</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.cryptoneedle.garden</groupId>
+            <artifactId>data-garden-core-ads</artifactId>
+        </dependency>
     </dependencies>
 </project>

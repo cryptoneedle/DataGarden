@@ -19,7 +19,7 @@ public interface ConfigSshRepository extends BaseRepository<ConfigSsh, ConfigSsh
 
     @Query("""
              FROM ConfigSsh
-            ORDER BY enabled DESC, id.host
+            ORDER BY id.host
             """)
     List<ConfigSsh> sshs();
 }
