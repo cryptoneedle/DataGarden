@@ -27,6 +27,5 @@
         <module>data-garden-core-dwd</module>
         <module>data-garden-core-dws</module>
         <module>data-garden-core-ads</module>
-        <module>data-garden-core-ai</module>
     </modules>
 </project>
