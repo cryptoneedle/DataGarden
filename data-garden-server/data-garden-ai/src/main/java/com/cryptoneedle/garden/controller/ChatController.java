@@ -16,8 +16,8 @@ import reactor.core.publisher.Flux;
  * @date 2025-12-15
  */
 @RestController
-@RequestMapping("/openai")
-public class OpenAIController {
+@RequestMapping("/chat")
+public class ChatController {
     
     @Autowired
     private OpenAiChatModel chatModel;
