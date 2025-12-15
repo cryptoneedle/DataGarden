@@ -29,7 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "warehouse_dws_table")
 @Comment("数据汇总层(DWS)-表")
 public class DwsTable extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisTableKey id;
 }

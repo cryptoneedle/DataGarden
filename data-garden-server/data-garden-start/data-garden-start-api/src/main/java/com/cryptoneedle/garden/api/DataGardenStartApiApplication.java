@@ -15,7 +15,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @ComponentScan(basePackages = "com.cryptoneedle.garden")
 public class DataGardenStartApiApplication {
-
+    
     static void main() {
         SpringApplication.run(DataGardenStartApiApplication.class);
     }

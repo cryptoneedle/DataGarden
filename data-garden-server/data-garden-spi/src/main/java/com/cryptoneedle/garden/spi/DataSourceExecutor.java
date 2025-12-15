@@ -25,10 +25,10 @@ import java.util.List;
  */
 @Slf4j
 public class DataSourceExecutor {
-
+    
     public static String version(SourceCatalog catalog) {
         DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
-
+        
         // 使用Connection元数据方式获取
         try (Connection connection = DataSourceManager.getConnection(catalog)) {
             DatabaseMetaData metaData = connection.getMetaData();
@@ -36,73 +36,77 @@ public class DataSourceExecutor {
         } catch (SQLException e) {
             throw new RuntimeException("获取数据库版本失败", e);
         }
-
+        
         // todo 使用SQL查询方式
     }
-
+    
     public static List<SourceDatabase> databases(SourceCatalog catalog, String databaseName) {
         return DataSourceManager.getJdbcTemplate(catalog)
-                .query(DataSourceSpiLoader.getProvider(catalog.getDatabaseType()).databaseSql(databaseName),
-                        (rs, rowNum) ->
-                                new BeanProcessor().toBean(rs, SourceDatabase.class)
-                                        .setId(new BeanProcessor().toBean(rs, SourceDatabaseKey.class)
-                                                .setCatalogName(catalog.getId().getCatalogName())));
+                                .query(DataSourceSpiLoader.getProvider(catalog.getDatabaseType())
+                                                          .databaseSql(databaseName),
+                                        (rs, rowNum) ->
+                                                new BeanProcessor().toBean(rs, SourceDatabase.class)
+                                                                   .setId(new BeanProcessor().toBean(rs, SourceDatabaseKey.class)
+                                                                                             .setCatalogName(catalog.getId()
+                                                                                                                    .getCatalogName())));
     }
-
+    
     public static List<SourceTable> tables(SourceCatalog catalog, String databaseName, String tableName) {
         DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
         JdbcTemplate jdbcTemplate = DataSourceManager.getJdbcTemplate(catalog);
-
+        
         List<SourceTable> tables = tables(jdbcTemplate, provider.tableSql(databaseName, tableName), catalog, SourceTableType.TABLE);
         List<SourceTable> views = tables(jdbcTemplate, provider.viewSql(databaseName, tableName), catalog, SourceTableType.VIEW);
         List<SourceTable> materializedView = tables(jdbcTemplate, provider.materializedViewSql(databaseName, tableName), catalog, SourceTableType.MATERIALIZED_VIEW);
-
+        
         List<SourceTable> result = Lists.newArrayListWithCapacity(tables.size() + views.size() + materializedView.size());
         result.addAll(tables);
         result.addAll(views);
         result.addAll(materializedView);
         return result;
     }
-
+    
     private static List<SourceTable> tables(JdbcTemplate jdbcTemplate, String sql, SourceCatalog catalog, SourceTableType sourceTableType) {
         return jdbcTemplate
                 .query(sql, (rs, rowNum) ->
                         new BeanProcessor().toBean(rs, SourceTable.class)
-                                .setId(new BeanProcessor().toBean(rs, SourceTableKey.class)
-                                        .setCatalogName(catalog.getId().getCatalogName()))
-                                .setTableType(sourceTableType));
+                                           .setId(new BeanProcessor().toBean(rs, SourceTableKey.class)
+                                                                     .setCatalogName(catalog.getId().getCatalogName()))
+                                           .setTableType(sourceTableType));
     }
-
+    
     public static List<SourceColumn> columns(SourceCatalog catalog, String databaseName, String tableName) {
         return DataSourceManager.getJdbcTemplate(catalog)
-                .query(DataSourceSpiLoader.getProvider(catalog.getDatabaseType()).columnSql(databaseName, tableName),
-                        (rs, rowNum) ->
-                                new BeanProcessor().toBean(rs, SourceColumn.class)
-                                        .setId(new BeanProcessor().toBean(rs, SourceColumnKey.class)
-                                                .setCatalogName(catalog.getId().getCatalogName())));
+                                .query(DataSourceSpiLoader.getProvider(catalog.getDatabaseType())
+                                                          .columnSql(databaseName, tableName),
+                                        (rs, rowNum) ->
+                                                new BeanProcessor().toBean(rs, SourceColumn.class)
+                                                                   .setId(new BeanProcessor().toBean(rs, SourceColumnKey.class)
+                                                                                             .setCatalogName(catalog.getId()
+                                                                                                                    .getCatalogName())));
     }
-
+    
     public static List<SourceDimension> dimensions(SourceCatalog catalog, String databaseName, String tableName) {
         DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
         JdbcTemplate jdbcTemplate = DataSourceManager.getJdbcTemplate(catalog);
-
+        
         List<SourceDimension> primaryConstraints = dimensions(jdbcTemplate, provider.primaryConstraintSql(databaseName, tableName), catalog, SourceDimensionType.PRIMARY_CONSTRAINT);
         List<SourceDimension> uniqueConstraints = dimensions(jdbcTemplate, provider.uniqueConstraintSql(databaseName, tableName), catalog, SourceDimensionType.UNIQUE_CONSTRAINT);
         List<SourceDimension> uniqueIndexs = dimensions(jdbcTemplate, provider.uniqueIndexSql(databaseName, tableName), catalog, SourceDimensionType.UNIQUE_INDEX);
-
+        
         List<SourceDimension> result = Lists.newArrayListWithCapacity(primaryConstraints.size() + uniqueConstraints.size() + uniqueIndexs.size());
         result.addAll(primaryConstraints);
         result.addAll(uniqueConstraints);
         result.addAll(uniqueIndexs);
         return result;
     }
-
+    
     private static List<SourceDimension> dimensions(JdbcTemplate jdbcTemplate, String sql, SourceCatalog catalog, SourceDimensionType sourceDimensionType) {
         return jdbcTemplate
                 .query(sql, (rs, rowNum) ->
                         new BeanProcessor().toBean(rs, SourceDimension.class)
-                                .setId(new BeanProcessor().toBean(rs, SourceDimensionColumnKey.class)
-                                        .setCatalogName(catalog.getId().getCatalogName())
-                                        .setDimensionType(sourceDimensionType)));
+                                           .setId(new BeanProcessor().toBean(rs, SourceDimensionColumnKey.class)
+                                                                     .setCatalogName(catalog.getId().getCatalogName())
+                                                                     .setDimensionType(sourceDimensionType)));
     }
 }

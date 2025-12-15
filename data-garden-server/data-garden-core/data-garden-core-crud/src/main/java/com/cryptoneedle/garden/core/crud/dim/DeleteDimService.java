@@ -19,34 +19,34 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DeleteDimService {
-
+    
     private final DimTableRepository dimTableRepository;
     private final DimColumnRepository dimColumnRepository;
-
+    
     public DeleteDimService(DimTableRepository dimTableRepository,
                             DimColumnRepository dimColumnRepository) {
         this.dimTableRepository = dimTableRepository;
         this.dimColumnRepository = dimColumnRepository;
     }
-
+    
     /**
      * DimTable
      */
     public void table(DimTable entity) {
         dimTableRepository.delete(entity);
     }
-
+    
     public void tables(List<DimTable> list) {
         dimTableRepository.deleteAll(list);
     }
-
+    
     /**
      * DimColumn
      */
     public void column(DimColumn entity) {
         dimColumnRepository.delete(entity);
     }
-
+    
     public void columns(List<DimColumn> list) {
         dimColumnRepository.deleteAll(list);
     }

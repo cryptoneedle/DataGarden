@@ -16,20 +16,20 @@ import java.util.List;
  */
 @Repository
 public interface SourceTableRepository extends BaseRepository<SourceTable, SourceTableKey> {
-
+    
     @Query("""
              FROM SourceTable
             ORDER BY id.catalogName, id.databaseName, enabled DESC, id.tableName
             """)
     List<SourceTable> tables();
-
+    
     @Query("""
              FROM SourceTable
             WHERE id.catalogName = :catalogName
             ORDER BY id.catalogName, id.databaseName, enabled DESC, id.tableName
             """)
     List<SourceTable> tables(String catalogName);
-
+    
     @Query("""
              FROM SourceTable
             WHERE id.catalogName = :catalogName
@@ -37,14 +37,14 @@ public interface SourceTableRepository extends BaseRepository<SourceTable, Sourc
             ORDER BY id.catalogName, id.databaseName, enabled DESC, id.tableName
             """)
     List<SourceTable> tables(String catalogName, String databaseName);
-
+    
     @Query("""
              FROM SourceTable
             WHERE enabled = TRUE
             ORDER BY id.catalogName, id.databaseName, enabled DESC, id.tableName
             """)
     List<SourceTable> tablesEnabled();
-
+    
     @Query("""
              FROM SourceTable
             WHERE id.catalogName = :catalogName
@@ -52,7 +52,7 @@ public interface SourceTableRepository extends BaseRepository<SourceTable, Sourc
             ORDER BY id.catalogName, id.databaseName, enabled DESC, id.tableName
             """)
     List<SourceTable> tablesEnabled(String catalogName);
-
+    
     @Query("""
              FROM SourceTable
             WHERE id.catalogName = :catalogName

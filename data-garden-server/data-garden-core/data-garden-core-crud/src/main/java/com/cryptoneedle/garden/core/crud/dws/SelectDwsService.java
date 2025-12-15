@@ -22,54 +22,56 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true, rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SelectDwsService {
-
+    
     private final DwsTableRepository dwsTableRepository;
     private final DwsColumnRepository dwsColumnRepository;
-
+    
     public SelectDwsService(DwsTableRepository dwsTableRepository,
                             DwsColumnRepository dwsColumnRepository) {
         this.dwsTableRepository = dwsTableRepository;
         this.dwsColumnRepository = dwsColumnRepository;
     }
-
+    
     /**
      * DwsTable
      */
     public DwsTable table(DorisTableKey id) {
         return dwsTableRepository.findById(id).orElse(null);
     }
-
+    
     public DwsTable table(String tableName) {
         return dwsTableRepository.table(tableName);
     }
-
+    
     public DwsTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
-        return dwsTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("DwsTable", id.toString()));
+        return dwsTableRepository.findById(id)
+                                 .orElseThrow(() -> new EntityNotFoundException("DwsTable", id.toString()));
     }
-
+    
     public List<DwsTable> tables() {
         return dwsTableRepository.tables();
     }
-
+    
     public List<DwsTable> tables(String databaseName) {
         return dwsTableRepository.tables(databaseName);
     }
-
+    
     /**
      * DwsColumn
      */
     public DwsColumn column(DorisColumnKey id) {
         return dwsColumnRepository.findById(id).orElse(null);
     }
-
+    
     public DwsColumn columnCheck(DorisColumnKey id) throws EntityNotFoundException {
-        return dwsColumnRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("DwsColumn", id.toString()));
+        return dwsColumnRepository.findById(id)
+                                  .orElseThrow(() -> new EntityNotFoundException("DwsColumn", id.toString()));
     }
-
+    
     public List<DwsColumn> columns() {
         return dwsColumnRepository.columns();
     }
-
+    
     public List<DwsColumn> columns(String tableName) {
         return dwsColumnRepository.columns(tableName);
     }

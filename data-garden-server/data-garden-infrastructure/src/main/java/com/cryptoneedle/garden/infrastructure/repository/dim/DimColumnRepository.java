@@ -16,13 +16,13 @@ import java.util.List;
  */
 @Repository
 public interface DimColumnRepository extends BaseRepository<DimColumn, DorisColumnKey> {
-
+    
     @Query("""
              FROM DimColumn
             ORDER BY id.databaseName, id.tableName, sort
             """)
     List<DimColumn> columns();
-
+    
     @Query("""
              FROM DimColumn
             WHERE id.tableName = :tableName

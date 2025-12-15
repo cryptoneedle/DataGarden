@@ -12,11 +12,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum DorisTableType {
-
+    
     BASE_TABLE("表"),
     VIEW("视图"),
     SYSTEM_VIEW("系统视图"),
     ;
-
+    
     private final String description;
 }

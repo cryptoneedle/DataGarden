@@ -29,13 +29,13 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "source_dimension")
 @Comment("数据源-目录")
 public class SourceDimension extends BaseEntity {
-
+    
     @EmbeddedId
     private SourceDimensionColumnKey id;
-
+    
     @Comment("排序")
     private Long sort;
-
+    
     @Comment("启用")
     private boolean enabled = false;
 }

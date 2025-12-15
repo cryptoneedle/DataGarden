@@ -13,17 +13,17 @@ import lombok.Data;
 @Data
 @Schema(description = "配置-隧道配置-修改VO")
 public class ConfigSshUpdateVo {
-
+    
     @NotBlank(message = "主机不能为空")
     @Schema(description = "主机")
     private String host;
     
     @Schema(description = "端口")
     private Integer port;
-
+    
     @Schema(description = "用户名")
     private String username;
-
+    
     @Schema(description = "密码")
     private String password;
 }

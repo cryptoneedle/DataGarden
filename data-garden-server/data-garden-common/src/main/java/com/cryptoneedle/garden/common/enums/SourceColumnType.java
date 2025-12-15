@@ -12,10 +12,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SourceColumnType {
-
+    
     UNIQUE("主键字段"),
     COMMON("普通字段"),
     ;
-
+    
     private final String description;
 }

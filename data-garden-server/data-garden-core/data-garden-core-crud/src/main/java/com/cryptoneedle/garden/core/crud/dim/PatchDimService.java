@@ -15,20 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchDimService {
-
+    
     private final DimTableRepository dimTableRepository;
     private final DimColumnRepository dimColumnRepository;
-
+    
     public PatchDimService(DimTableRepository dimTableRepository,
                            DimColumnRepository dimColumnRepository) {
         this.dimTableRepository = dimTableRepository;
         this.dimColumnRepository = dimColumnRepository;
     }
-
+    
     /**
      * DimTable
      */
-
+    
     /**
      * DimColumn
      */

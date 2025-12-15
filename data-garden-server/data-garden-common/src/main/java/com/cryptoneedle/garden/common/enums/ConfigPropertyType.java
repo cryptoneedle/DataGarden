@@ -12,10 +12,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ConfigPropertyType {
-
+    
     AUTO("自动配置"),
     MANUAL("手动配置"),
     ;
-
+    
     private final String description;
 }

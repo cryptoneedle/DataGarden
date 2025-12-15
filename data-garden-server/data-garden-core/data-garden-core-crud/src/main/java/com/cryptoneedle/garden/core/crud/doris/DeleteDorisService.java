@@ -22,12 +22,12 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DeleteDorisService {
-
+    
     private final DorisCatalogRepository dorisCatalogRepository;
     private final DorisDatabaseRepository dorisDatabaseRepository;
     private final DorisTableRepository dorisTableRepository;
     private final DorisColumnRepository dorisColumnRepository;
-
+    
     public DeleteDorisService(DorisCatalogRepository dorisCatalogRepository,
                               DorisDatabaseRepository dorisDatabaseRepository,
                               DorisTableRepository dorisTableRepository,
@@ -37,47 +37,47 @@ public class DeleteDorisService {
         this.dorisTableRepository = dorisTableRepository;
         this.dorisColumnRepository = dorisColumnRepository;
     }
-
+    
     /**
      * DorisCatalog
      */
     public void catalog(DorisCatalog entity) {
         dorisCatalogRepository.delete(entity);
     }
-
+    
     public void catalogs(List<DorisCatalog> list) {
         dorisCatalogRepository.deleteAll(list);
     }
-
+    
     /**
      * DorisDatabase
      */
     public void database(DorisDatabase entity) {
         dorisDatabaseRepository.delete(entity);
     }
-
+    
     public void databases(List<DorisDatabase> list) {
         dorisDatabaseRepository.deleteAll(list);
     }
-
+    
     /**
      * DorisTable
      */
     public void table(DorisTable entity) {
         dorisTableRepository.delete(entity);
     }
-
+    
     public void tables(List<DorisTable> list) {
         dorisTableRepository.deleteAll(list);
     }
-
+    
     /**
      * DorisColumn
      */
     public void column(DorisColumn entity) {
         dorisColumnRepository.delete(entity);
     }
-
+    
     public void columns(List<DorisColumn> list) {
         dorisColumnRepository.deleteAll(list);
     }

@@ -15,20 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchAdsService {
-
+    
     private final AdsTableRepository adsTableRepository;
     private final AdsColumnRepository adsColumnRepository;
-
+    
     public PatchAdsService(AdsTableRepository adsTableRepository,
                            AdsColumnRepository adsColumnRepository) {
         this.adsTableRepository = adsTableRepository;
         this.adsColumnRepository = adsColumnRepository;
     }
-
+    
     /**
      * AdsTable
      */
-
+    
     /**
      * AdsColumn
      */

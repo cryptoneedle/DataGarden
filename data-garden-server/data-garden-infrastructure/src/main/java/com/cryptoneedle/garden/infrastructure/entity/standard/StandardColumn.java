@@ -29,10 +29,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "warehouse_standard_column")
 @Comment("数据标准层(STANDARD)-字段")
 public class StandardColumn extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisColumnKey id;
-
+    
     @Comment("排序")
     private Long sort;
 }

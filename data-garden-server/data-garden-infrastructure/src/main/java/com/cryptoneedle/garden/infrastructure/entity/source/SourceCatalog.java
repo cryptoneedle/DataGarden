@@ -30,10 +30,10 @@ import java.time.LocalDateTime;
 @Table(name = "source_catalog")
 @Comment("数据源-目录")
 public class SourceCatalog extends BaseEntity {
-
+    
     @EmbeddedId
     private SourceCatalogKey id;
-
+    
     @Comment("Doris目录(唯一)")
     private String dorisCatalogName;
     @Comment("默认系统编码")
@@ -43,7 +43,7 @@ public class SourceCatalog extends BaseEntity {
     private SourceCollectFrequencyType collectFrequency;
     @Comment("默认采集频率对应的时间点 (每天为具体小时开始，每小时为具体分钟开始，每分钟为具体分开始)")
     private Integer collectTimePoint;
-
+    
     @Comment("主机")
     private String host;
     @Comment("端口")
@@ -62,7 +62,7 @@ public class SourceCatalog extends BaseEntity {
     private boolean sshEnabled = false;
     @Comment("SSH主机")
     private String sshHost;
-
+    
     @Comment("URL")
     private String url;
     @Comment("数据库版本")
@@ -79,15 +79,15 @@ public class SourceCatalog extends BaseEntity {
     private LocalDateTime jdbcConnectedDt;
     @Comment("Doris最后可连接时间")
     private LocalDateTime dorisConnectedDt;
-
+    
     @Comment("启用")
     private boolean enabled = false;
-
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sshHost", referencedColumnName = "host", insertable = false, updatable = false)
     @Comment("SSH配置关联")
     private ConfigSsh configSsh;
-
+    
     public boolean equalsJdbc(SourceCatalog other) {
         return this.host.equals(other.getHost())
                 && this.port.equals(other.getPort())

@@ -12,10 +12,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SourceSyncType {
-
+    
     FULL("全量"),
     INCREMENT("增量"),
     ;
-
+    
     private final String description;
 }

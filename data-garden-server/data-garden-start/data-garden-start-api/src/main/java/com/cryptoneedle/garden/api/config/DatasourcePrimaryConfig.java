@@ -35,25 +35,25 @@ import java.util.Map;
         entityManagerFactoryRef = "primaryEntityManagerFactory",
         transactionManagerRef = "primaryTransactionManager")
 public class DatasourcePrimaryConfig {
-
+    
     @Bean(name = "primaryDataSource")
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource.primary")
     public DataSource primaryDataSource() {
         return new DruidDataSource();
     }
-
+    
     @Bean(name = "primaryEntityManagerFactory")
     @Primary
     public LocalContainerEntityManagerFactoryBean primaryEntityManagerFactory(
             EntityManagerFactoryBuilder builder,
             @Qualifier("primaryDataSource") DataSource primaryDataSource, Environment environment) {
-
+        
         Map<String, Object> properties = new HashMap<>();
         properties.put("hibernate.default_schema", environment.getProperty("spring.datasource.primary.default_schema", "public"));
         properties.put("hibernate.hbm2ddl.auto", environment.getProperty("spring.datasource.primary.ddl-auto", "none"));
         properties.put("hibernate.show_sql", environment.getProperty("spring.datasource.primary.show-sql", "false"));
-
+        
         return builder
                 .dataSource(primaryDataSource)
                 .packages(
@@ -63,14 +63,14 @@ public class DatasourcePrimaryConfig {
                 .properties(properties)
                 .build();
     }
-
+    
     @Bean(name = "primaryTransactionManager")
     @Primary
     public PlatformTransactionManager primaryTransactionManager(
             @Qualifier("primaryEntityManagerFactory") LocalContainerEntityManagerFactoryBean primaryEntityManagerFactory) {
         return new JpaTransactionManager(primaryEntityManagerFactory.getObject());
     }
-
+    
     @Bean(name = "primaryJdbcTemplate")
     @Primary
     public JdbcTemplate primaryJdbcTemplate(@Qualifier("primaryDataSource") DataSource primaryDataSource) {

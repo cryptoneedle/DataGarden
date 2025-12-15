@@ -16,13 +16,13 @@ import java.util.List;
  */
 @Repository
 public interface DorisTableRepository extends BaseRepository<DorisTable, DorisTableKey> {
-
+    
     @Query("""
              FROM DorisTable
             ORDER BY databaseSort, id.databaseName, id.tableName
             """)
     List<DorisTable> tables();
-
+    
     @Query("""
              FROM DorisTable
             WHERE id.databaseName = :databaseName

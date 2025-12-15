@@ -24,18 +24,18 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class DataSourceManager {
-
+    
     private static final Map<String, PooledDataSourceWrapper> DATA_SOURCE_MAP = new ConcurrentHashMap<>();
     private static final Lock GLOBAL_LOCK = new ReentrantLock();
-
+    
     public static Connection getConnection(SourceCatalog catalog) throws SQLException {
         String catalogName = catalog.getId().getCatalogName();
-
+        
         PooledDataSourceWrapper existing = DATA_SOURCE_MAP.get(catalogName);
         if (existing != null && existing.getSourceCatalog().equalsJdbc(catalog)) {
             return existing.dataSource.getConnection();
         }
-
+        
         GLOBAL_LOCK.lock();
         try {
             existing = DATA_SOURCE_MAP.get(catalogName);
@@ -56,15 +56,15 @@ public class DataSourceManager {
             GLOBAL_LOCK.unlock();
         }
     }
-
+    
     public static JdbcTemplate getJdbcTemplate(SourceCatalog catalog) {
         String catalogName = catalog.getId().getCatalogName();
-
+        
         PooledDataSourceWrapper existing = DATA_SOURCE_MAP.get(catalogName);
         if (existing != null && existing.getSourceCatalog().equalsJdbc(catalog)) {
             return existing.jdbcTemplate;
         }
-
+        
         GLOBAL_LOCK.lock();
         try {
             existing = DATA_SOURCE_MAP.get(catalogName);
@@ -85,17 +85,17 @@ public class DataSourceManager {
             GLOBAL_LOCK.unlock();
         }
     }
-
+    
     public static boolean testConnection(SourceCatalog catalog) {
         String catalogName = catalog.getId().getCatalogName();
         log.info("[JDBC] 测试连接 -> {}", catalogName);
-
+        
         DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
         if (provider == null) {
             log.warn("[JDBC] 测试连接 -> 获取插件 -> 未找到 {} 对应的实现", catalog.getDatabaseType());
             return false;
         }
-
+        
         String jdbcUrl = provider.buildJdbcUrl(catalog);
         try (Connection connection = DriverManager.getConnection(jdbcUrl, catalog.getUsername(), catalog.getPassword())) {
             return connection.isValid(5);
@@ -104,7 +104,7 @@ public class DataSourceManager {
             throw new IllegalStateException("[JDBC] 测试 -> 尝试连接 -> ", e);
         }
     }
-
+    
     public static Map<String, Boolean> healthCheck() {
         return DATA_SOURCE_MAP.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
             try (Connection conn = e.getValue().dataSource.getConnection()) {
@@ -114,14 +114,14 @@ public class DataSourceManager {
             }
         }));
     }
-
+    
     public static void closeDataSource(String catalogName) {
         PooledDataSourceWrapper wrapper = DATA_SOURCE_MAP.remove(catalogName);
         if (wrapper != null) {
             wrapper.close();
         }
     }
-
+    
     public static void closeAllDataSources() {
         // 复制一份防止死锁
         Map<String, PooledDataSourceWrapper> copy = new HashMap<>(DATA_SOURCE_MAP);
@@ -129,11 +129,11 @@ public class DataSourceManager {
         copy.values().parallelStream().forEach(PooledDataSourceWrapper::close);
         log.info("[JDBC] 已关闭所有数据源连接");
     }
-
+    
     private static PooledDataSourceWrapper createPooledDataSource(SourceCatalog catalog) {
         String catalogName = catalog.getId().getCatalogName();
         DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
-
+        
         DruidDataSource dataSource = null;
         try {
             dataSource = new DruidDataSource();
@@ -155,19 +155,19 @@ public class DataSourceManager {
             dataSource.setPoolPreparedStatements(true);                  // 开启PSCache
             dataSource.setMaxPoolPreparedStatementPerConnectionSize(20); // 预处理语句缓存最大数量
             dataSource.setKeepAlive(true);                               // 保持连接
-
+            
             dataSource.init();
-
+            
             // 验证连接
             try (Connection conn = dataSource.getConnection()) {
                 if (!conn.isValid(5)) {
                     throw new SQLException("[JDBC] 连接验证失败");
                 }
             }
-
+            
             log.info("[JDBC] 创建连接成功 -> {}, activeCount={}, poolingCount={}",
                     catalogName, dataSource.getActiveCount(), dataSource.getPoolingCount());
-
+            
             return new PooledDataSourceWrapper(catalog, dataSource);
         } catch (Exception e) {
             if (dataSource != null) {
@@ -180,7 +180,7 @@ public class DataSourceManager {
             throw new RuntimeException("[JDBC] 创建连接失败 -> " + catalogName, e);
         }
     }
-
+    
     /**
      * 数据源-包装器
      */
@@ -190,14 +190,14 @@ public class DataSourceManager {
         private final SourceCatalog sourceCatalog;
         private final DruidDataSource dataSource;
         private final JdbcTemplate jdbcTemplate;
-
+        
         public PooledDataSourceWrapper(SourceCatalog catalog, DruidDataSource dataSource) {
             this.catalogName = catalog.getId().getCatalogName();
             this.sourceCatalog = catalog;
             this.dataSource = dataSource;
             this.jdbcTemplate = new JdbcTemplate(this.dataSource);
         }
-
+        
         public void close() {
             if (dataSource != null && !dataSource.isClosed()) {
                 try {

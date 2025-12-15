@@ -16,12 +16,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchDorisService {
-
+    
     private final DorisCatalogRepository dorisCatalogRepository;
     private final DorisDatabaseRepository dorisDatabaseRepository;
     private final DorisTableRepository dorisTableRepository;
     private final DorisColumnRepository dorisColumnRepository;
-
+    
     public PatchDorisService(DorisCatalogRepository dorisCatalogRepository,
                              DorisDatabaseRepository dorisDatabaseRepository,
                              DorisTableRepository dorisTableRepository,
@@ -31,19 +31,19 @@ public class PatchDorisService {
         this.dorisTableRepository = dorisTableRepository;
         this.dorisColumnRepository = dorisColumnRepository;
     }
-
+    
     /**
      * DorisCatalog
      */
-
+    
     /**
      * DorisDatabase
      */
-
+    
     /**
      * DorisTable
      */
-
+    
     /**
      * DorisColumn
      */

@@ -19,34 +19,34 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SaveDwsService {
-
+    
     private final DwsTableRepository dwsTableRepository;
     private final DwsColumnRepository dwsColumnRepository;
-
+    
     public SaveDwsService(DwsTableRepository dwsTableRepository,
                           DwsColumnRepository dwsColumnRepository) {
         this.dwsTableRepository = dwsTableRepository;
         this.dwsColumnRepository = dwsColumnRepository;
     }
-
+    
     /**
      * DwsTable
      */
     public void table(DwsTable entity) {
         dwsTableRepository.save(entity);
     }
-
+    
     public void tables(List<DwsTable> list) {
         dwsTableRepository.saveAll(list);
     }
-
+    
     /**
      * DwsColumn
      */
     public void column(DwsColumn entity) {
         dwsColumnRepository.save(entity);
     }
-
+    
     public void columns(List<DwsColumn> list) {
         dwsColumnRepository.saveAll(list);
     }

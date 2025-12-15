@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
  * @date 2025-11-29
  */
 public class OracleDataSourceProvider implements DataSourceProvider {
-
+    
     private final String FILTER_SYSTEM_DATABASE_CONDITION = """
             AND owner NOT IN (
               -- 系统核心
@@ -49,12 +49,12 @@ public class OracleDataSourceProvider implements DataSourceProvider {
             )
             AND owner NOT LIKE 'APEX%'
             AND owner NOT LIKE 'FLOWS_%'""";
-
+    
     @Override
     public String databaseType() {
         return "Oracle";
     }
-
+    
     @Override
     public String buildJdbcUrl(SourceCatalog catalog) {
         String connectType = catalog.getConnectType();
@@ -70,7 +70,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
             }
         }
     }
-
+    
     @Override
     public String databaseSql(String databaseName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND owner = '%s'".formatted(databaseName) : "";
@@ -88,7 +88,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                 GROUP BY owner
                 ORDER BY databaseName""".formatted(FILTER_SYSTEM_DATABASE_CONDITION, searchDatabaseCondition);
     }
-
+    
     @Override
     public String tableSql(String databaseName, String tableName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND t.owner = '%s'".formatted(databaseName) : "";
@@ -109,7 +109,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                    %s
                  ORDER BY t.owner, t.table_name""".formatted(searchDatabaseCondition, searchTableCondition);
     }
-
+    
     @Override
     public String viewSql(String databaseName, String viewName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND t.owner = '%s'".formatted(databaseName) : "";
@@ -130,7 +130,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                    %s
                  ORDER BY t.owner, t.view_name""".formatted(searchDatabaseCondition, searchViewCondition);
     }
-
+    
     @Override
     public String materializedViewSql(String databaseName, String viewName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND t.owner = '%s'".formatted(databaseName) : "";
@@ -151,7 +151,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                   %s
                 ORDER BY t.owner, t.mview_name""".formatted(searchDatabaseCondition, searchViewCondition);
     }
-
+    
     @Override
     public String columnSql(String databaseName, String tableName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND tc.owner = '%s'".formatted(databaseName) : "";
@@ -183,7 +183,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                    %s
                  ORDER BY tc.owner, tc.table_name, tc.column_id, tc.column_name""".formatted(searchDatabaseCondition, searchTableCondition);
     }
-
+    
     @Override
     public String primaryConstraintSql(String databaseName, String tableName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND c.owner = '%s'".formatted(databaseName) : "";
@@ -204,7 +204,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                    %s
                 ORDER BY c.owner, c.table_name, c.constraint_name, cc.position""".formatted(searchDatabaseCondition, searchTableCondition);
     }
-
+    
     @Override
     public String uniqueConstraintSql(String databaseName, String tableName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND c.owner = '%s'".formatted(databaseName) : "";
@@ -225,7 +225,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                    %s
                 ORDER BY c.owner, c.table_name, c.constraint_name, cc.position""".formatted(searchDatabaseCondition, searchTableCondition);
     }
-
+    
     @Override
     public String uniqueIndexSql(String databaseName, String tableName) {
         String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND i.table_owner = '%s'".formatted(databaseName) : "";

@@ -17,25 +17,25 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ConfigSshService {
-
+    
     public final AddConfigService add;
     public final SelectConfigService select;
     public final SaveConfigService save;
     public final DeleteConfigService delete;
     public final PatchConfigService patch;
-
+    
     public ConfigSshService(AddConfigService addConfigService,
-                                 SelectConfigService selectConfigService,
-                                 SaveConfigService saveConfigService,
-                                 DeleteConfigService deleteConfigService,
-                                 PatchConfigService patchConfigService) {
+                            SelectConfigService selectConfigService,
+                            SaveConfigService saveConfigService,
+                            DeleteConfigService deleteConfigService,
+                            PatchConfigService patchConfigService) {
         this.add = addConfigService;
         this.select = selectConfigService;
         this.save = saveConfigService;
         this.delete = deleteConfigService;
         this.patch = patchConfigService;
     }
-
+    
     public void add(ConfigSshAddVo vo) {
         ConfigSshKey key = ConfigSshKey.builder().host(vo.getHost()).build();
         ConfigSsh ssh = select.ssh(key);
@@ -44,18 +44,18 @@ public class ConfigSshService {
         }
         
         ConfigSsh entity = ConfigSsh.builder()
-                .id(key)
-                .port(vo.getPort())
-                .username(vo.getUsername())
-                .password(vo.getPassword())
-                .build();
+                                    .id(key)
+                                    .port(vo.getPort())
+                                    .username(vo.getUsername())
+                                    .password(vo.getPassword())
+                                    .build();
         add.ssh(entity);
     }
-
+    
     public void modify(ConfigSshUpdateVo vo) throws EntityNotFoundException {
         ConfigSshKey key = ConfigSshKey.builder().host(vo.getHost()).build();
         ConfigSsh entity = select.sshCheck(key);
-
+        
         if (vo.getPort() != null) {
             entity.setPort(vo.getPort());
         }
@@ -65,10 +65,10 @@ public class ConfigSshService {
         if (StringUtils.isNotBlank(vo.getPassword())) {
             entity.setPassword(vo.getPassword());
         }
-
+        
         save.ssh(entity);
     }
-
+    
     public void delete(ConfigSshKey key) throws EntityNotFoundException {
         ConfigSsh entity = select.sshCheck(key);
         delete.ssh(entity);

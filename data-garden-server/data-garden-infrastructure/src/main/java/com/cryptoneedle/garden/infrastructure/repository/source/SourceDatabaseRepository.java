@@ -16,27 +16,27 @@ import java.util.List;
  */
 @Repository
 public interface SourceDatabaseRepository extends BaseRepository<SourceDatabase, SourceDatabaseKey> {
-
+    
     @Query("""
              FROM SourceDatabase
             ORDER BY id.catalogName, enabled DESC, id.databaseName
             """)
     List<SourceDatabase> databases();
-
+    
     @Query("""
              FROM SourceDatabase
             WHERE id.catalogName = :catalogName
             ORDER BY id.catalogName, enabled DESC, id.databaseName
             """)
     List<SourceDatabase> databases(String catalogName);
-
+    
     @Query("""
              FROM SourceDatabase
             WHERE enabled = TRUE
             ORDER BY id.catalogName, enabled DESC, id.databaseName
             """)
     List<SourceDatabase> databasesEnabled();
-
+    
     @Query("""
              FROM SourceDatabase
             WHERE id.catalogName = :catalogName

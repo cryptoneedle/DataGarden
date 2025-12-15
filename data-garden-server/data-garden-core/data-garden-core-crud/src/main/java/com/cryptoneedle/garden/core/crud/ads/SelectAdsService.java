@@ -22,54 +22,56 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true, rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SelectAdsService {
-
+    
     private final AdsTableRepository adsTableRepository;
     private final AdsColumnRepository adsColumnRepository;
-
+    
     public SelectAdsService(AdsTableRepository adsTableRepository,
                             AdsColumnRepository adsColumnRepository) {
         this.adsTableRepository = adsTableRepository;
         this.adsColumnRepository = adsColumnRepository;
     }
-
+    
     /**
      * AdsTable
      */
     public AdsTable table(DorisTableKey id) {
         return adsTableRepository.findById(id).orElse(null);
     }
-
+    
     public AdsTable table(String tableName) {
         return adsTableRepository.table(tableName);
     }
-
+    
     public AdsTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
-        return adsTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AdsTable", id.toString()));
+        return adsTableRepository.findById(id)
+                                 .orElseThrow(() -> new EntityNotFoundException("AdsTable", id.toString()));
     }
-
+    
     public List<AdsTable> tables() {
         return adsTableRepository.tables();
     }
-
+    
     public List<AdsTable> tables(String databaseName) {
         return adsTableRepository.tables(databaseName);
     }
-
+    
     /**
      * AdsColumn
      */
     public AdsColumn column(DorisColumnKey id) {
         return adsColumnRepository.findById(id).orElse(null);
     }
-
+    
     public AdsColumn columnCheck(DorisColumnKey id) throws EntityNotFoundException {
-        return adsColumnRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("AdsColumn", id.toString()));
+        return adsColumnRepository.findById(id)
+                                  .orElseThrow(() -> new EntityNotFoundException("AdsColumn", id.toString()));
     }
-
+    
     public List<AdsColumn> columns() {
         return adsColumnRepository.columns();
     }
-
+    
     public List<AdsColumn> columns(String tableName) {
         return adsColumnRepository.columns(tableName);
     }

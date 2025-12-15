@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true, rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SelectService {
-
+    
     public final SelectConfigService config;
     public final SelectSourceService source;
     public final SelectDorisService doris;
@@ -31,7 +31,7 @@ public class SelectService {
     public final SelectDwdService dwd;
     public final SelectDwsService dws;
     public final SelectAdsService ads;
-
+    
     public SelectService(SelectConfigService config,
                          SelectSourceService source,
                          SelectDorisService doris,

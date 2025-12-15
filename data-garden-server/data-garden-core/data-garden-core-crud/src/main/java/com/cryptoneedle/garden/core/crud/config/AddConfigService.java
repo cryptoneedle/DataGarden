@@ -18,11 +18,11 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddConfigService {
-
+    
     private final SaveConfigService saveConfigService;
     private final ConfigPropertyRepository configPropertyRepository;
     private final ConfigSshRepository configSshRepository;
-
+    
     public AddConfigService(SaveConfigService saveConfigService,
                             ConfigPropertyRepository configPropertyRepository,
                             ConfigSshRepository configSshRepository) {
@@ -30,25 +30,25 @@ public class AddConfigService {
         this.configPropertyRepository = configPropertyRepository;
         this.configSshRepository = configSshRepository;
     }
-
+    
     /**
      * ConfigProperty
      */
     public void property(ConfigProperty entity) {
         saveConfigService.property(entity);
     }
-
+    
     public void properties(List<ConfigProperty> list) {
         saveConfigService.properties(list);
     }
-
+    
     /**
      * ConfigSsh
      */
     public void ssh(ConfigSsh entity) {
         saveConfigService.ssh(entity);
     }
-
+    
     public void sshs(List<ConfigSsh> list) {
         saveConfigService.sshs(list);
     }

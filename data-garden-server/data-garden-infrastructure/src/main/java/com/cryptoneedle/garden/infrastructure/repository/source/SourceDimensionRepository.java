@@ -17,20 +17,20 @@ import java.util.List;
  */
 @Repository
 public interface SourceDimensionRepository extends BaseRepository<SourceDimension, SourceDimensionKey> {
-
+    
     @Query("""
              FROM SourceDimension
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, id.dimensionType, id.dimensionName, sort
             """)
     List<SourceDimension> dimensions();
-
+    
     @Query("""
              FROM SourceDimension
             WHERE id.catalogName = :catalogName
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, id.dimensionType, id.dimensionName, sort
             """)
     List<SourceDimension> dimensions(String catalogName);
-
+    
     @Query("""
              FROM SourceDimension
             WHERE id.catalogName = :catalogName
@@ -38,7 +38,7 @@ public interface SourceDimensionRepository extends BaseRepository<SourceDimensio
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, id.dimensionType, id.dimensionName, sort
             """)
     List<SourceDimension> dimensions(String catalogName, String databaseName);
-
+    
     @Query("""
              FROM SourceDimension
             WHERE id.catalogName = :catalogName
@@ -47,7 +47,7 @@ public interface SourceDimensionRepository extends BaseRepository<SourceDimensio
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, id.dimensionType, id.dimensionName, sort
             """)
     List<SourceDimension> dimensions(String catalogName, String databaseName, String tableName);
-
+    
     @Query("""
              FROM SourceDimension
             WHERE id.catalogName = :catalogName
@@ -57,7 +57,7 @@ public interface SourceDimensionRepository extends BaseRepository<SourceDimensio
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, id.dimensionType, id.dimensionName, sort
             """)
     List<SourceDimension> dimensions(String catalogName, String databaseName, String tableName, SourceDimensionType dimensionType);
-
+    
     @Query("""
              FROM SourceDimension
             WHERE id.catalogName = :catalogName
@@ -68,7 +68,7 @@ public interface SourceDimensionRepository extends BaseRepository<SourceDimensio
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, id.dimensionType, id.dimensionName, sort
             """)
     List<SourceDimension> dimensions(String catalogName, String databaseName, String tableName, SourceDimensionType dimensionType, String dimensionName);
-
+    
     @Query("""
              FROM SourceDimension
             WHERE id.catalogName = :catalogName
@@ -78,7 +78,7 @@ public interface SourceDimensionRepository extends BaseRepository<SourceDimensio
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, id.dimensionType, id.dimensionName, sort
             """)
     List<SourceDimension> dimensions(String catalogName, String databaseName, String tableName, String columnName);
-
+    
     @Query("""
              FROM SourceDimension
             WHERE id.catalogName = :catalogName

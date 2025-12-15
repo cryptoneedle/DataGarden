@@ -18,34 +18,34 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DeleteConfigService {
-
+    
     private final ConfigPropertyRepository configPropertyRepository;
     private final ConfigSshRepository configSshRepository;
-
+    
     public DeleteConfigService(ConfigPropertyRepository configPropertyRepository,
                                ConfigSshRepository configSshRepository) {
         this.configPropertyRepository = configPropertyRepository;
         this.configSshRepository = configSshRepository;
     }
-
+    
     /**
      * ConfigProperty
      */
     public void property(ConfigProperty entity) {
         configPropertyRepository.delete(entity);
     }
-
+    
     public void properties(List<ConfigProperty> list) {
         configPropertyRepository.deleteAll(list);
     }
-
+    
     /**
      * ConfigSsh
      */
     public void ssh(ConfigSsh entity) {
         configSshRepository.delete(entity);
     }
-
+    
     public void sshs(List<ConfigSsh> list) {
         configSshRepository.deleteAll(list);
     }

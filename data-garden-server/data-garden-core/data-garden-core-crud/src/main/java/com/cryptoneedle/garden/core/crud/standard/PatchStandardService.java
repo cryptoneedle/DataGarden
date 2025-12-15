@@ -15,20 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchStandardService {
-
+    
     private final StandardTableRepository standardTableRepository;
     private final StandardColumnRepository standardColumnRepository;
-
+    
     public PatchStandardService(StandardTableRepository standardTableRepository,
                                 StandardColumnRepository standardColumnRepository) {
         this.standardTableRepository = standardTableRepository;
         this.standardColumnRepository = standardColumnRepository;
     }
-
+    
     /**
      * StandardTable
      */
-
+    
     /**
      * StandardColumn
      */

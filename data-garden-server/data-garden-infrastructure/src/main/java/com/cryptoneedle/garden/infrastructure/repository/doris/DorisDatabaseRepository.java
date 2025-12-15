@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Repository
 public interface DorisDatabaseRepository extends BaseRepository<DorisDatabase, DorisDatabaseKey> {
-
+    
     @Query("""
              FROM DorisDatabase
             ORDER BY sort, id.databaseName

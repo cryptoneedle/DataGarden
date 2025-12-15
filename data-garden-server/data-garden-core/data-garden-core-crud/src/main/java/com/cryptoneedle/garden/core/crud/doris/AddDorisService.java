@@ -22,13 +22,13 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddDorisService {
-
+    
     private final SaveDorisService saveDorisService;
     private final DorisCatalogRepository dorisCatalogRepository;
     private final DorisDatabaseRepository dorisDatabaseRepository;
     private final DorisTableRepository dorisTableRepository;
     private final DorisColumnRepository dorisColumnRepository;
-
+    
     public AddDorisService(SaveDorisService saveDorisService,
                            DorisCatalogRepository dorisCatalogRepository,
                            DorisDatabaseRepository dorisDatabaseRepository,
@@ -40,47 +40,47 @@ public class AddDorisService {
         this.dorisTableRepository = dorisTableRepository;
         this.dorisColumnRepository = dorisColumnRepository;
     }
-
+    
     /**
      * DorisCatalog
      */
     public void catalog(DorisCatalog entity) {
         saveDorisService.catalog(entity);
     }
-
+    
     public void catalogs(List<DorisCatalog> list) {
         saveDorisService.catalogs(list);
     }
-
+    
     /**
      * DorisDatabase
      */
     public void database(DorisDatabase entity) {
         saveDorisService.database(entity);
     }
-
+    
     public void databases(List<DorisDatabase> list) {
         saveDorisService.databases(list);
     }
-
+    
     /**
      * DorisTable
      */
     public void table(DorisTable entity) {
         saveDorisService.table(entity);
     }
-
+    
     public void tables(List<DorisTable> list) {
         saveDorisService.tables(list);
     }
-
+    
     /**
      * DorisColumn
      */
     public void column(DorisColumn entity) {
         saveDorisService.column(entity);
     }
-
+    
     public void columns(List<DorisColumn> list) {
         saveDorisService.columns(list);
     }

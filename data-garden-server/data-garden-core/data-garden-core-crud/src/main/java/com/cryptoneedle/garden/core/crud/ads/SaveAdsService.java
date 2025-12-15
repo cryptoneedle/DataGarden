@@ -19,34 +19,34 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SaveAdsService {
-
+    
     private final AdsTableRepository adsTableRepository;
     private final AdsColumnRepository adsColumnRepository;
-
+    
     public SaveAdsService(AdsTableRepository adsTableRepository,
                           AdsColumnRepository adsColumnRepository) {
         this.adsTableRepository = adsTableRepository;
         this.adsColumnRepository = adsColumnRepository;
     }
-
+    
     /**
      * AdsTable
      */
     public void table(AdsTable entity) {
         adsTableRepository.save(entity);
     }
-
+    
     public void tables(List<AdsTable> list) {
         adsTableRepository.saveAll(list);
     }
-
+    
     /**
      * AdsColumn
      */
     public void column(AdsColumn entity) {
         adsColumnRepository.save(entity);
     }
-
+    
     public void columns(List<AdsColumn> list) {
         adsColumnRepository.saveAll(list);
     }

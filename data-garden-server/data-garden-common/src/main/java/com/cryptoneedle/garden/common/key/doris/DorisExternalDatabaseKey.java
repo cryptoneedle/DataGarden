@@ -25,15 +25,15 @@ import java.io.Serializable;
 @Embeddable
 @Schema(description = "Doris外部数据库-数据库-主键")
 public class DorisExternalDatabaseKey implements Serializable {
-
+    
     @Comment("目录")
     @Schema(description = "目录")
     private String catalogName;
-
+    
     @Comment("数据库")
     @Schema(description = "数据库")
     private String databaseName;
-
+    
     public DorisCatalogKey dorisCatalogKey() {
         return DorisCatalogKey.builder().catalogName(this.catalogName).build();
     }

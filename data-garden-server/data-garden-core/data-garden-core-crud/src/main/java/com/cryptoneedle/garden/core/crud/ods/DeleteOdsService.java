@@ -19,34 +19,34 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DeleteOdsService {
-
+    
     private final OdsTableRepository odsTableRepository;
     private final OdsColumnRepository odsColumnRepository;
-
+    
     public DeleteOdsService(OdsTableRepository odsTableRepository,
                             OdsColumnRepository odsColumnRepository) {
         this.odsTableRepository = odsTableRepository;
         this.odsColumnRepository = odsColumnRepository;
     }
-
+    
     /**
      * OdsTable
      */
     public void table(OdsTable entity) {
         odsTableRepository.delete(entity);
     }
-
+    
     public void tables(List<OdsTable> list) {
         odsTableRepository.deleteAll(list);
     }
-
+    
     /**
      * OdsColumn
      */
     public void column(OdsColumn entity) {
         odsColumnRepository.delete(entity);
     }
-
+    
     public void columns(List<OdsColumn> list) {
         odsColumnRepository.deleteAll(list);
     }

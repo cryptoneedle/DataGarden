@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
  */
 @Slf4j
 class DataSourceSpiLoaderTest {
-
+    
     @Test
     @DisplayName("测试数据源插件注册与重载")
     void test() {

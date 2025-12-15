@@ -15,20 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchDwsService {
-
+    
     private final DwsTableRepository dwsTableRepository;
     private final DwsColumnRepository dwsColumnRepository;
-
+    
     public PatchDwsService(DwsTableRepository dwsTableRepository,
                            DwsColumnRepository dwsColumnRepository) {
         this.dwsTableRepository = dwsTableRepository;
         this.dwsColumnRepository = dwsColumnRepository;
     }
-
+    
     /**
      * DwsTable
      */
-
+    
     /**
      * DwsColumn
      */

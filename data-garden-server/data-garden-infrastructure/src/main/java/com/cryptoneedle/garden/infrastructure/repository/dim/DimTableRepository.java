@@ -16,20 +16,20 @@ import java.util.List;
  */
 @Repository
 public interface DimTableRepository extends BaseRepository<DimTable, DorisTableKey> {
-
+    
     @Query("""
              FROM DimTable
             WHERE id.tableName = :tableName
             ORDER BY id.databaseName, id.tableName
             """)
     DimTable table(String tableName);
-
+    
     @Query("""
              FROM DimTable
             ORDER BY id.databaseName, id.tableName
             """)
     List<DimTable> tables();
-
+    
     @Query("""
              FROM DimTable
             WHERE id.databaseName = :databaseName

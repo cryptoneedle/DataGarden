@@ -26,17 +26,17 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "doris_column")
 @Comment("DORIS-字段")
 public class DorisColumn extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisColumnKey id;
-
+    
     @Column(length = 2048)
     @Comment("详情")
     private String comment;
-
+    
     @Comment("排序")
     private Long sort;
-
+    
     // todo Enums DorisColumnType
     @Column(length = 3)
     @Comment("如果是 UNI，则表示当前字段是 Unique Key 字段")
@@ -67,7 +67,7 @@ public class DorisColumn extends BaseEntity {
     private Long charMaxLength;
     @Comment("字符类型允许的最大字节数")
     private Long byteMaxLength;
-
+    
     @Comment("排序")
     private Integer databaseSort;
 }

@@ -25,7 +25,7 @@ import java.io.Serializable;
 @Embeddable
 @Schema(description = "数据源-目录-主键")
 public class SourceCatalogKey implements Serializable {
-
+    
     @Comment("目录")
     @Schema(description = "目录")
     private String catalogName;

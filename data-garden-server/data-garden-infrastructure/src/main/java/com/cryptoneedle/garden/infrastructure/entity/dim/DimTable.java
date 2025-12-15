@@ -29,7 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "warehouse_dim_table")
 @Comment("数据维度层(DIM)-表")
 public class DimTable extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisTableKey id;
 }

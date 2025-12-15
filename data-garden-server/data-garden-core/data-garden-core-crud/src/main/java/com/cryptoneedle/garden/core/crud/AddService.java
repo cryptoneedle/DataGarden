@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddService {
-
+    
     public final AddConfigService config;
     public final AddSourceService source;
     public final AddDorisService doris;
@@ -31,7 +31,7 @@ public class AddService {
     public final AddDwdService dwd;
     public final AddDwsService dws;
     public final AddAdsService ads;
-
+    
     public AddService(AddConfigService config,
                       AddSourceService source,
                       AddDorisService doris,

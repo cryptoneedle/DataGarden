@@ -12,11 +12,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum DorisTableModelType {
-
+    
     UNIQUE_KEY("主键模型"),
     DUPLICATE_KEY("明细模型"),
     AGGREGATE_KEY("聚合模型"),
     ;
-
+    
     private final String description;
 }

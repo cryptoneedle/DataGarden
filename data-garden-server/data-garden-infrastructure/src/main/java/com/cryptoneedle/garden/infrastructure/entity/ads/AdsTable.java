@@ -29,7 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "warehouse_ads_table")
 @Comment("数据应用层(ADS)-表")
 public class AdsTable extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisTableKey id;
 }

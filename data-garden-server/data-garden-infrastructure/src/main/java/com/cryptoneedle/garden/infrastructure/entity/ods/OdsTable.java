@@ -29,7 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "warehouse_ods_table")
 @Comment("操作数据存储层(ODS)-表")
 public class OdsTable extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisTableKey id;
 }

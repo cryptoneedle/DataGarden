@@ -15,20 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchOdsService {
-
+    
     private final OdsTableRepository odsTableRepository;
     private final OdsColumnRepository odsColumnRepository;
-
+    
     public PatchOdsService(OdsTableRepository odsTableRepository,
                            OdsColumnRepository odsColumnRepository) {
         this.odsTableRepository = odsTableRepository;
         this.odsColumnRepository = odsColumnRepository;
     }
-
+    
     /**
      * OdsTable
      */
-
+    
     /**
      * OdsColumn
      */

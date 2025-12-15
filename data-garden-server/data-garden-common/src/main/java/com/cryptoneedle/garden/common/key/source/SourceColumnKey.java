@@ -25,32 +25,36 @@ import java.io.Serializable;
 @Embeddable
 @Schema(description = "数据源-字段-主键")
 public class SourceColumnKey implements Serializable {
-
+    
     @Comment("目录")
     @Schema(description = "目录")
     private String catalogName;
-
+    
     @Comment("数据库")
     @Schema(description = "数据库")
     private String databaseName;
-
+    
     @Comment("表")
     @Schema(description = "表")
     private String tableName;
-
+    
     @Comment("字段")
     @Schema(description = "字段")
     private String columnName;
-
+    
     public SourceCatalogKey sourceCatalogKey() {
         return SourceCatalogKey.builder().catalogName(this.catalogName).build();
     }
-
+    
     public SourceDatabaseKey sourceDatabaseKey() {
         return SourceDatabaseKey.builder().catalogName(this.catalogName).databaseName(this.databaseName).build();
     }
-
+    
     public SourceTableKey sourceTableKey() {
-        return SourceTableKey.builder().catalogName(this.catalogName).databaseName(this.databaseName).tableName(this.tableName).build();
+        return SourceTableKey.builder()
+                             .catalogName(this.catalogName)
+                             .databaseName(this.databaseName)
+                             .tableName(this.tableName)
+                             .build();
     }
 }

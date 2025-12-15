@@ -30,19 +30,19 @@ import java.time.LocalDateTime;
 @Table(name = "source_column")
 @Comment("数据源-字段")
 public class SourceColumn extends BaseEntity {
-
+    
     @EmbeddedId
     private SourceColumnKey id;
-
+    
     @Column(columnDefinition = "TEXT")
     @Comment("字段说明")
     private String comment;
-
+    
     @Comment("Doris目录")
     private String dorisCatalogName;
     @Comment("系统编码 (会覆盖目录、数据库、表配置)")
     private String systemCode;
-
+    
     @Enumerated(EnumType.STRING)
     @Comment("字段类型")
     private SourceColumnType columnType;
@@ -57,7 +57,7 @@ public class SourceColumn extends BaseEntity {
     private Long sort;
     @Comment("排序")
     private Integer transSort;
-
+    
     @Comment("数据类型格式化")
     private Long dataTypeFormat;
     @Comment("数据类型格式化")
@@ -82,7 +82,7 @@ public class SourceColumn extends BaseEntity {
     private boolean notNull = false;
     @Comment("非空")
     private boolean transNotNull;
-
+    
     @Comment("数据量")
     private Long rowNum;
     @Comment("采样数据量")
@@ -113,14 +113,14 @@ public class SourceColumn extends BaseEntity {
     private String storageFormat;
     @Comment("统计时间")
     private LocalDateTime statisticDt;
-
+    
     @Comment("锁定字段")
     private boolean transColumnLocked = false;
     @Comment("锁定说明")
     private boolean transCommentLocked = false;
     @Comment("锁定数据类型")
     private String transDataTypeLocked;
-
+    
     @Comment("启用")
     private boolean enabled = false;
 }

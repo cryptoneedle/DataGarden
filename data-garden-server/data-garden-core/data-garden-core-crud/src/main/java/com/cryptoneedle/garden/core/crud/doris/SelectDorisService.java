@@ -27,12 +27,12 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true, rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SelectDorisService {
-
+    
     private final DorisCatalogRepository dorisCatalogRepository;
     private final DorisDatabaseRepository dorisDatabaseRepository;
     private final DorisTableRepository dorisTableRepository;
     private final DorisColumnRepository dorisColumnRepository;
-
+    
     public SelectDorisService(DorisCatalogRepository dorisCatalogRepository,
                               DorisDatabaseRepository dorisDatabaseRepository,
                               DorisTableRepository dorisTableRepository,
@@ -42,87 +42,91 @@ public class SelectDorisService {
         this.dorisTableRepository = dorisTableRepository;
         this.dorisColumnRepository = dorisColumnRepository;
     }
-
+    
     /**
      * DorisCatalog
      */
     public DorisCatalog catalog(DorisCatalogKey id) {
         return dorisCatalogRepository.findById(id).orElse(null);
     }
-
+    
     public DorisCatalog catalog(String catalogName) {
         return catalog(DorisCatalogKey.builder().catalogName(catalogName).build());
     }
-
+    
     public DorisCatalog catalogCheck(DorisCatalogKey id) throws EntityNotFoundException {
-        return dorisCatalogRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("DorisCatalog", id.toString()));
+        return dorisCatalogRepository.findById(id)
+                                     .orElseThrow(() -> new EntityNotFoundException("DorisCatalog", id.toString()));
     }
-
+    
     public DorisCatalog catalogBySource(String sourceCatalogName) {
         return dorisCatalogRepository.catalogBySource(sourceCatalogName);
     }
-
+    
     public List<DorisCatalog> catalogs() {
         return dorisCatalogRepository.catalogs();
     }
-
+    
     /**
      * DorisDatabase
      */
     public DorisDatabase database(DorisDatabaseKey id) {
         return dorisDatabaseRepository.findById(id).orElse(null);
     }
-
+    
     public DorisDatabase database(String databaseName) {
         return database(DorisDatabaseKey.builder().databaseName(databaseName).build());
     }
-
+    
     public DorisDatabase databaseCheck(DorisDatabaseKey id) throws EntityNotFoundException {
-        return dorisDatabaseRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("DorisDatabase", id.toString()));
+        return dorisDatabaseRepository.findById(id)
+                                      .orElseThrow(() -> new EntityNotFoundException("DorisDatabase", id.toString()));
     }
-
+    
     public List<DorisDatabase> databases() {
         return dorisDatabaseRepository.databases();
     }
-
+    
     /**
      * DorisTable
      */
     public DorisTable table(DorisTableKey id) {
         return dorisTableRepository.findById(id).orElse(null);
     }
-
+    
     public DorisTable tableCheck(DorisTableKey id) throws EntityNotFoundException {
-        return dorisTableRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("DorisTable", id.toString()));
+        return dorisTableRepository.findById(id)
+                                   .orElseThrow(() -> new EntityNotFoundException("DorisTable", id.toString()));
     }
-
+    
     public List<DorisTable> tables() {
         return dorisTableRepository.tables();
     }
-
+    
     public List<DorisTable> tables(String databaseName) {
         return dorisTableRepository.tables(databaseName);
     }
-
+    
     /**
      * DorisColumn
      */
     public DorisColumn column(DorisColumnKey id) {
         return dorisColumnRepository.findById(id).orElse(null);
     }
-
+    
     public DorisColumn columnCheck(DorisColumnKey id) throws EntityNotFoundException {
-        return dorisColumnRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("DorisColumn", id.toString()));
+        return dorisColumnRepository.findById(id)
+                                    .orElseThrow(() -> new EntityNotFoundException("DorisColumn", id.toString()));
     }
-
+    
     public List<DorisColumn> columns() {
         return dorisColumnRepository.columns();
     }
-
+    
     public List<DorisColumn> columns(String databaseName) {
         return dorisColumnRepository.columns(databaseName);
     }
-
+    
     public List<DorisColumn> columns(String databaseName, String tableName) {
         return dorisColumnRepository.columns(databaseName, tableName);
     }

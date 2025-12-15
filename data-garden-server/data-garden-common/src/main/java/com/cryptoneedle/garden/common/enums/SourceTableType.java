@@ -12,11 +12,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SourceTableType {
-
+    
     TABLE("表"),
     VIEW("视图"),
-    MATERIALIZED_VIEW("物化视图")
-    ;
-
+    MATERIALIZED_VIEW("物化视图");
+    
     private final String description;
 }

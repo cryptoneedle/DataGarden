@@ -31,14 +31,14 @@ import java.time.LocalDateTime;
 @Table(name = "doris_table")
 @Comment("DORIS-表")
 public class DorisTable extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisTableKey id;
-
+    
     @Column(length = 2048)
     @Comment("说明")
     private String comment;
-
+    
     @Column(length = 64)
     @Enumerated(EnumType.STRING)
     @Comment("表类型")
@@ -46,7 +46,7 @@ public class DorisTable extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Comment("表模型类型")
     private DorisTableModelType tableModelType;
-
+    
     @Comment("副本数量")
     private Integer replicaCount;
     @Comment("是否分区")
@@ -69,11 +69,11 @@ public class DorisTable extends BaseEntity {
     @Column(precision = 30, scale = 20)
     @Comment("行平均占用空间(单位：Byte)")
     private BigDecimal avgRowBytes;
-
+    
     @Column(columnDefinition = "TEXT")
     @Comment("建表语句")
     private String createTableSql;
-
+    
     @Comment("存储格式")
     private String storageFormat;
     @Comment("倒排索引存储格式")
@@ -88,7 +88,7 @@ public class DorisTable extends BaseEntity {
     private LocalDateTime createDt;
     @Comment("更新时间")
     private LocalDateTime updateDt;
-
+    
     @Comment("排序")
     private Integer databaseSort;
 }

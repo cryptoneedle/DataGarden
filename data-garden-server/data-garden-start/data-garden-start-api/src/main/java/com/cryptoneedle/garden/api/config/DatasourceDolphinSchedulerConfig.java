@@ -19,13 +19,13 @@ import javax.sql.DataSource;
 @Configuration
 @ConditionalOnBooleanProperty(name = "dolphin-scheduler.enabled")
 public class DatasourceDolphinSchedulerConfig {
-
+    
     @Bean(name = "dolphinSchedulerDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.dolphin-scheduler")
     public DataSource dolphinSchedulerDataSource() {
         return new DruidDataSource();
     }
-
+    
     @Bean(name = "dolphinSchedulerJdbcTemplate")
     public JdbcTemplate dolphinSchedulerJdbcTemplate(@Qualifier("dolphinSchedulerDataSource") DataSource dolphinSchedulerDataSource) {
         return new JdbcTemplate(dolphinSchedulerDataSource);

@@ -29,23 +29,23 @@ import java.util.List;
 @Table(name = "config_ssh")
 @Comment("配置-隧道配置")
 public class ConfigSsh extends BaseEntity {
-
+    
     @EmbeddedId
     @Comment("主机")
     private ConfigSshKey id;
-
+    
     @Comment("端口")
     private int port = 22;
-
+    
     @Comment("用户名")
     private String username;
     @Comment("密码")
     private String password;
-
+    
     @OneToMany(mappedBy = "configSsh", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<SourceCatalog> catalogs;
-
+    
     public boolean equalsConnect(ConfigSsh other) {
         return this.id.equals(other.id)
                 && this.port == other.port

@@ -16,20 +16,20 @@ import java.util.List;
  */
 @Repository
 public interface DorisColumnRepository extends BaseRepository<DorisColumn, DorisColumnKey> {
-
+    
     @Query("""
              FROM DorisColumn
             ORDER BY databaseSort, id.databaseName, id.tableName, sort
             """)
     List<DorisColumn> columns();
-
+    
     @Query("""
              FROM DorisColumn
             WHERE id.databaseName = :databaseName
             ORDER BY databaseSort, id.databaseName, id.tableName, sort
             """)
     List<DorisColumn> columns(String databaseName);
-
+    
     @Query("""
              FROM DorisColumn
             WHERE id.databaseName = :databaseName

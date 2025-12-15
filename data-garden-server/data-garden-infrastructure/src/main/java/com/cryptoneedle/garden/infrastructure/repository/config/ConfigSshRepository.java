@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Repository
 public interface ConfigSshRepository extends BaseRepository<ConfigSsh, ConfigSshKey> {
-
+    
     @Query("""
              FROM ConfigSsh
             ORDER BY id.host

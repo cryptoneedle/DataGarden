@@ -12,10 +12,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum DorisCatalogType {
-
+    
     INTERNAL("内部目录"),
     EXTERN("外部目录"),
     ;
-
+    
     private final String description;
 }

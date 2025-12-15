@@ -16,13 +16,13 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DeleteSourceService {
-
+    
     private final SourceCatalogRepository sourceCatalogRepository;
     private final SourceDatabaseRepository sourceDatabaseRepository;
     private final SourceTableRepository sourceTableRepository;
     private final SourceColumnRepository sourceColumnRepository;
     private final SourceDimensionRepository sourceDimensionRepository;
-
+    
     public DeleteSourceService(SourceCatalogRepository sourceCatalogRepository,
                                SourceDatabaseRepository sourceDatabaseRepository,
                                SourceTableRepository sourceTableRepository,
@@ -34,58 +34,58 @@ public class DeleteSourceService {
         this.sourceColumnRepository = sourceColumnRepository;
         this.sourceDimensionRepository = sourceDimensionRepository;
     }
-
+    
     /**
      * SourceCatalog
      */
     public void catalog(SourceCatalog entity) {
         sourceCatalogRepository.delete(entity);
     }
-
+    
     public void catalogs(List<SourceCatalog> entity) {
         sourceCatalogRepository.deleteAll(entity);
     }
-
+    
     /**
      * SourceDatabase
      */
     public void database(SourceDatabase entity) {
         sourceDatabaseRepository.delete(entity);
     }
-
+    
     public void databases(List<SourceDatabase> entity) {
         sourceDatabaseRepository.deleteAll(entity);
     }
-
+    
     /**
      * SourceTable
      */
     public void table(SourceTable entity) {
         sourceTableRepository.delete(entity);
     }
-
+    
     public void tables(List<SourceTable> entity) {
         sourceTableRepository.deleteAll(entity);
     }
-
+    
     /**
      * SourceColumn
      */
     public void column(SourceColumn entity) {
         sourceColumnRepository.delete(entity);
     }
-
+    
     public void columns(List<SourceColumn> entity) {
         sourceColumnRepository.deleteAll(entity);
     }
-
+    
     /**
      * SourceDimension
      */
     public void dimension(SourceDimension entity) {
         sourceDimensionRepository.delete(entity);
     }
-
+    
     public void dimensions(List<SourceDimension> entity) {
         sourceDimensionRepository.deleteAll(entity);
     }

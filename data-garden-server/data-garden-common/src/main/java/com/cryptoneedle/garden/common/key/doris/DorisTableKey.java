@@ -26,17 +26,17 @@ import java.io.Serializable;
 @Embeddable
 @Schema(description = "Doris数据库-表-主键")
 public class DorisTableKey implements Serializable {
-
+    
     @Column(length = 64)
     @Comment("数据库")
     @Schema(description = "数据库")
     private String databaseName;
-
+    
     @Column(length = 64)
     @Comment("表")
     @Schema(description = "表")
     private String tableName;
-
+    
     public DorisDatabaseKey dorisDatabaseKey() {
         return DorisDatabaseKey.builder().databaseName(this.databaseName).build();
     }

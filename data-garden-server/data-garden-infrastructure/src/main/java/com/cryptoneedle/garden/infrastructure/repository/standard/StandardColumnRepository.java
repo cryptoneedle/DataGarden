@@ -16,13 +16,13 @@ import java.util.List;
  */
 @Repository
 public interface StandardColumnRepository extends BaseRepository<StandardColumn, DorisColumnKey> {
-
+    
     @Query("""
              FROM StandardColumn
             ORDER BY id.databaseName, id.tableName, sort
             """)
     List<StandardColumn> columns();
-
+    
     @Query("""
              FROM StandardColumn
             WHERE id.tableName = :tableName

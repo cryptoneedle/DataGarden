@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ConfigPropertyService {
-
+    
     public final AddConfigService add;
     public final SelectConfigService select;
     public final SaveConfigService save;
     public final DeleteConfigService delete;
     public final PatchConfigService patch;
-
+    
     public ConfigPropertyService(AddConfigService addConfigService,
                                  SelectConfigService selectConfigService,
                                  SaveConfigService saveConfigService,
@@ -36,7 +36,7 @@ public class ConfigPropertyService {
         this.delete = deleteConfigService;
         this.patch = patchConfigService;
     }
-
+    
     public void add(ConfigPropertyAddVo vo) {
         ConfigPropertyKey key = ConfigPropertyKey.builder().propertyName(vo.getPropertyName()).build();
         ConfigProperty configProperty = select.property(key);
@@ -45,14 +45,14 @@ public class ConfigPropertyService {
         }
         
         ConfigProperty entity = ConfigProperty.builder()
-                .id(key)
-                .value(vo.getValue())
-                .comment(vo.getComment())
-                .type(ConfigPropertyType.MANUAL)
-                .build();
+                                              .id(key)
+                                              .value(vo.getValue())
+                                              .comment(vo.getComment())
+                                              .type(ConfigPropertyType.MANUAL)
+                                              .build();
         add.property(entity);
     }
-
+    
     public void modify(ConfigPropertyUpdateVo vo) throws EntityNotFoundException {
         ConfigPropertyKey key = ConfigPropertyKey.builder().propertyName(vo.getPropertyName()).build();
         ConfigProperty entity = select.propertyCheck(key);
@@ -65,10 +65,10 @@ public class ConfigPropertyService {
             entity.setComment(vo.getComment())
                   .setType(ConfigPropertyType.MANUAL);
         }
-
+        
         save.property(entity);
     }
-
+    
     public void delete(ConfigPropertyKey key) throws EntityNotFoundException {
         ConfigProperty entity = select.propertyCheck(key);
         if (ConfigPropertyType.AUTO.equals(entity.getType())) {

@@ -16,20 +16,20 @@ import java.util.List;
  */
 @Repository
 public interface AdsTableRepository extends BaseRepository<AdsTable, DorisTableKey> {
-
+    
     @Query("""
              FROM AdsTable
             WHERE id.tableName = :tableName
             ORDER BY id.databaseName, id.tableName
             """)
     AdsTable table(String tableName);
-
+    
     @Query("""
              FROM AdsTable
             ORDER BY id.databaseName, id.tableName
             """)
     List<AdsTable> tables();
-
+    
     @Query("""
              FROM AdsTable
             WHERE id.databaseName = :databaseName

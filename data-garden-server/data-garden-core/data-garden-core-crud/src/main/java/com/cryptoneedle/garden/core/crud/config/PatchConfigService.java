@@ -14,20 +14,20 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchConfigService {
-
+    
     private final ConfigPropertyRepository configPropertyRepository;
     private final ConfigSshRepository configSshRepository;
-
+    
     public PatchConfigService(ConfigPropertyRepository configPropertyRepository,
-                               ConfigSshRepository configSshRepository) {
+                              ConfigSshRepository configSshRepository) {
         this.configPropertyRepository = configPropertyRepository;
         this.configSshRepository = configSshRepository;
     }
-
+    
     /**
      * ConfigProperty
      */
-
+    
     /**
      * ConfigSsh
      */

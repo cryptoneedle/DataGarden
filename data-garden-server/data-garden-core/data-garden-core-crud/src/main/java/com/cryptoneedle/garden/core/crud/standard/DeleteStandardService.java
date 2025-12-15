@@ -19,34 +19,34 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DeleteStandardService {
-
+    
     private final StandardTableRepository standardTableRepository;
     private final StandardColumnRepository standardColumnRepository;
-
+    
     public DeleteStandardService(StandardTableRepository standardTableRepository,
                                  StandardColumnRepository standardColumnRepository) {
         this.standardTableRepository = standardTableRepository;
         this.standardColumnRepository = standardColumnRepository;
     }
-
+    
     /**
      * StandardTable
      */
     public void table(StandardTable entity) {
         standardTableRepository.delete(entity);
     }
-
+    
     public void tables(List<StandardTable> list) {
         standardTableRepository.deleteAll(list);
     }
-
+    
     /**
      * StandardColumn
      */
     public void column(StandardColumn entity) {
         standardColumnRepository.delete(entity);
     }
-
+    
     public void columns(List<StandardColumn> list) {
         standardColumnRepository.deleteAll(list);
     }

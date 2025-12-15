@@ -9,14 +9,14 @@ import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
  * @date 2025-11-29
  */
 public interface DataSourceProvider {
-
+    
     /**
      * 获取数据库类型
      *
      * @return 数据库类型
      */
     String databaseType();
-
+    
     /**
      * 构建JDBC连接URL
      *
@@ -24,7 +24,7 @@ public interface DataSourceProvider {
      * @return JDBC URL
      */
     String buildJdbcUrl(SourceCatalog catalog);
-
+    
     /**
      * 获取数据库信息查询SQL
      * - databaseName: 数据库
@@ -37,7 +37,7 @@ public interface DataSourceProvider {
      * @return 数据库信息查询SQL
      */
     String databaseSql(String databaseName);
-
+    
     /**
      * 获取表信息查询SQL
      * - databaseName: 数据库
@@ -49,11 +49,11 @@ public interface DataSourceProvider {
      * - statisticDt: 统计时间
      *
      * @param databaseName 数据库(可以为空)
-     * @param tableName 表(可以为空)
+     * @param tableName    表(可以为空)
      * @return 表信息查询SQL
      */
     String tableSql(String databaseName, String tableName);
-
+    
     /**
      * 获取视图信息查询SQL
      * - databaseName: 数据库
@@ -65,11 +65,11 @@ public interface DataSourceProvider {
      * - statisticDt: 统计时间
      *
      * @param databaseName 数据库(可以为空)
-     * @param viewName 视图(可以为空)
+     * @param viewName     视图(可以为空)
      * @return 视图信息查询SQL
      */
     String viewSql(String databaseName, String viewName);
-
+    
     /**
      * 获取物化视图信息查询SQL
      * - databaseName: 数据库
@@ -81,11 +81,11 @@ public interface DataSourceProvider {
      * - statisticDt: 统计时间
      *
      * @param databaseName 数据库(可以为空)
-     * @param viewName 物化视图(可以为空)
+     * @param viewName     物化视图(可以为空)
      * @return 物化视图信息查询SQL
      */
     String materializedViewSql(String databaseName, String viewName);
-
+    
     /**
      * 获取字段信息查询SQL
      * - databaseName: 数据库
@@ -108,11 +108,11 @@ public interface DataSourceProvider {
      * - statisticDt: 统计时间
      *
      * @param databaseName 数据库(可以为空)
-     * @param tableName 表(可以为空)
+     * @param tableName    表(可以为空)
      * @return 字段信息查询SQL
      */
     String columnSql(String databaseName, String tableName);
-
+    
     /**
      * 获取主键查询SQL
      * - databaseName: 数据库
@@ -123,11 +123,11 @@ public interface DataSourceProvider {
      * - sort: 排序
      *
      * @param databaseName 数据库(可以为空)
-     * @param tableName 表(可以为空)
+     * @param tableName    表(可以为空)
      * @return 主键查询SQL
      */
     String primaryConstraintSql(String databaseName, String tableName);
-
+    
     /**
      * 获取唯一键查询SQL
      * - databaseName: 数据库
@@ -138,11 +138,11 @@ public interface DataSourceProvider {
      * - sort: 排序
      *
      * @param databaseName 数据库(可以为空)
-     * @param tableName 表(可以为空)
+     * @param tableName    表(可以为空)
      * @return 唯一键查询SQL
      */
     String uniqueConstraintSql(String databaseName, String tableName);
-
+    
     /**
      * 获取唯一索引查询SQL
      * - databaseName: 数据库
@@ -153,7 +153,7 @@ public interface DataSourceProvider {
      * - sort: 排序
      *
      * @param databaseName 数据库(可以为空)
-     * @param tableName 表(可以为空)
+     * @param tableName    表(可以为空)
      * @return 唯一索引查询SQL
      */
     String uniqueIndexSql(String databaseName, String tableName);

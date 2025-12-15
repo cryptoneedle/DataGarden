@@ -29,10 +29,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "warehouse_dim_column")
 @Comment("数据维度层(DIM)-字段")
 public class DimColumn extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisColumnKey id;
-
+    
     @Comment("排序")
     private Long sort;
 }

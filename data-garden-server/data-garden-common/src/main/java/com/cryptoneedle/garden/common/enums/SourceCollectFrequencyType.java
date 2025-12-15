@@ -12,11 +12,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SourceCollectFrequencyType {
-
+    
     DAY("每一天"),
     HOUR(" 每小时"),
     FIVE_MINUTE("每五分钟"),
     ;
-
+    
     private final String description;
 }

@@ -25,7 +25,7 @@ import java.io.Serializable;
 @Embeddable
 @Schema(description = "配置-属性配置-主键")
 public class ConfigPropertyKey implements Serializable {
-
+    
     @Comment("属性名称")
     @Schema(description = "属性名称")
     private String propertyName;

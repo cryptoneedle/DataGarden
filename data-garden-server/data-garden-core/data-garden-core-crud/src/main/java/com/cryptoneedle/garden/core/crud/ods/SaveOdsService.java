@@ -19,34 +19,34 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SaveOdsService {
-
+    
     private final OdsTableRepository odsTableRepository;
     private final OdsColumnRepository odsColumnRepository;
-
+    
     public SaveOdsService(OdsTableRepository odsTableRepository,
                           OdsColumnRepository odsColumnRepository) {
         this.odsTableRepository = odsTableRepository;
         this.odsColumnRepository = odsColumnRepository;
     }
-
+    
     /**
      * OdsTable
      */
     public void table(OdsTable entity) {
         odsTableRepository.save(entity);
     }
-
+    
     public void tables(List<OdsTable> list) {
         odsTableRepository.saveAll(list);
     }
-
+    
     /**
      * OdsColumn
      */
     public void column(OdsColumn entity) {
         odsColumnRepository.save(entity);
     }
-
+    
     public void columns(List<OdsColumn> list) {
         odsColumnRepository.saveAll(list);
     }

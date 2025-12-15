@@ -19,11 +19,11 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddStandardService {
-
+    
     private final SaveStandardService saveStandardService;
     private final StandardTableRepository standardTableRepository;
     private final StandardColumnRepository standardColumnRepository;
-
+    
     public AddStandardService(SaveStandardService saveStandardService,
                               StandardTableRepository standardTableRepository,
                               StandardColumnRepository standardColumnRepository) {
@@ -31,25 +31,25 @@ public class AddStandardService {
         this.standardTableRepository = standardTableRepository;
         this.standardColumnRepository = standardColumnRepository;
     }
-
+    
     /**
      * StandardTable
      */
     public void table(StandardTable entity) {
         saveStandardService.table(entity);
     }
-
+    
     public void tables(List<StandardTable> list) {
         saveStandardService.tables(list);
     }
-
+    
     /**
      * StandardColumn
      */
     public void column(StandardColumn entity) {
         saveStandardService.column(entity);
     }
-
+    
     public void columns(List<StandardColumn> list) {
         saveStandardService.columns(list);
     }

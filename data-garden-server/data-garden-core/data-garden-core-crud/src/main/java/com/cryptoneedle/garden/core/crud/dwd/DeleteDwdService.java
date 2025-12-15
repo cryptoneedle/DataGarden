@@ -19,34 +19,34 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DeleteDwdService {
-
+    
     private final DwdTableRepository dwdTableRepository;
     private final DwdColumnRepository dwdColumnRepository;
-
+    
     public DeleteDwdService(DwdTableRepository dwdTableRepository,
                             DwdColumnRepository dwdColumnRepository) {
         this.dwdTableRepository = dwdTableRepository;
         this.dwdColumnRepository = dwdColumnRepository;
     }
-
+    
     /**
      * DwdTable
      */
     public void table(DwdTable entity) {
         dwdTableRepository.delete(entity);
     }
-
+    
     public void tables(List<DwdTable> list) {
         dwdTableRepository.deleteAll(list);
     }
-
+    
     /**
      * DwdColumn
      */
     public void column(DwdColumn entity) {
         dwdColumnRepository.delete(entity);
     }
-
+    
     public void columns(List<DwdColumn> list) {
         dwdColumnRepository.deleteAll(list);
     }

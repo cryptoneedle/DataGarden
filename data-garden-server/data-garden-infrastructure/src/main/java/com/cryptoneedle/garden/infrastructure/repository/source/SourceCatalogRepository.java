@@ -16,26 +16,26 @@ import java.util.List;
  */
 @Repository
 public interface SourceCatalogRepository extends BaseRepository<SourceCatalog, SourceCatalogKey> {
-
+    
     @Query("""
              FROM SourceCatalog
             WHERE dorisCatalogName = :dorisCatalogName
             """)
     SourceCatalog catalogByDoris(String dorisCatalogName);
-
+    
     @Query("""
              FROM SourceCatalog
             ORDER BY enabled DESC, id.catalogName
             """)
     List<SourceCatalog> catalogs();
-
+    
     @Query("""
              FROM SourceCatalog
             WHERE enabled = TRUE
             ORDER BY enabled DESC, id.catalogName
             """)
     List<SourceCatalog> catalogsEnabled();
-
+    
     @Query("""
              FROM SourceCatalog
             WHERE host = :host

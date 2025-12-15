@@ -29,7 +29,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "warehouse_standard_table")
 @Comment("数据标准层(STANDARD)-表")
 public class StandardTable extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisTableKey id;
 }

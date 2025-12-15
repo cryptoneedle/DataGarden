@@ -31,17 +31,17 @@ import java.time.LocalDateTime;
 @Table(name = "source_table")
 @Comment("数据源-数据库")
 public class SourceTable extends BaseEntity {
-
+    
     @EmbeddedId
     private SourceTableKey id;
-
+    
     @Column(columnDefinition = "TEXT")
     @Comment("表说明")
     private String comment;
     @Enumerated(EnumType.STRING)
     @Comment("表类型")
     private SourceTableType tableType;
-
+    
     @Comment("Doris目录")
     private String dorisCatalog;
     @Comment("系统编码 (会覆盖目录、数据库配置)")
@@ -55,7 +55,7 @@ public class SourceTable extends BaseEntity {
     private Integer collectTimePoint;
     @Comment("采集任务分组序号")
     private Integer collectGroupNum;
-
+    
     @Comment("表")
     private String transTableName;
     @Column(columnDefinition = "TEXT")
@@ -63,7 +63,7 @@ public class SourceTable extends BaseEntity {
     private String transComment;
     @Comment("分桶数量")
     private Integer transBucketNum;
-
+    
     @Comment("字段数量")
     private Integer columnNum;
     @Comment("数据量")
@@ -78,12 +78,12 @@ public class SourceTable extends BaseEntity {
     private BigDecimal avgRowBytes;
     @Comment("统计时间")
     private LocalDateTime statisticDt;
-
+    
     @Comment("锁定表")
     private boolean transTableLocked = false;
     @Comment("锁定说明")
     private boolean transCommentLocked = false;
-
+    
     @Comment("启用")
     private boolean enabled = false;
 }

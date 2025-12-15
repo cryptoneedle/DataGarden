@@ -16,20 +16,20 @@ import java.util.List;
  */
 @Repository
 public interface SourceColumnRepository extends BaseRepository<SourceColumn, SourceColumnKey> {
-
+    
     @Query("""
              FROM SourceColumn
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, sort
             """)
     List<SourceColumn> columns();
-
+    
     @Query("""
              FROM SourceColumn
             WHERE id.catalogName = :catalogName
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, sort
             """)
     List<SourceColumn> columns(String catalogName);
-
+    
     @Query("""
              FROM SourceColumn
             WHERE id.catalogName = :catalogName
@@ -37,7 +37,7 @@ public interface SourceColumnRepository extends BaseRepository<SourceColumn, Sou
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, sort
             """)
     List<SourceColumn> columns(String catalogName, String databaseName);
-
+    
     @Query("""
              FROM SourceColumn
             WHERE id.catalogName = :catalogName
@@ -46,14 +46,14 @@ public interface SourceColumnRepository extends BaseRepository<SourceColumn, Sou
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, sort
             """)
     List<SourceColumn> columns(String catalogName, String databaseName, String columnName);
-
+    
     @Query("""
               FROM SourceColumn
              WHERE enabled = TRUE
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, sort
             """)
     List<SourceColumn> columnsEnabled();
-
+    
     @Query("""
              FROM SourceColumn
             WHERE id.catalogName = :catalogName
@@ -61,7 +61,7 @@ public interface SourceColumnRepository extends BaseRepository<SourceColumn, Sou
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, sort
             """)
     List<SourceColumn> columnsEnabled(String catalogName);
-
+    
     @Query("""
              FROM SourceColumn
             WHERE id.catalogName = :catalogName
@@ -70,7 +70,7 @@ public interface SourceColumnRepository extends BaseRepository<SourceColumn, Sou
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, sort
             """)
     List<SourceColumn> columnsEnabled(String catalogName, String databaseName);
-
+    
     @Query("""
              FROM SourceColumn
             WHERE id.catalogName = :catalogName

@@ -25,7 +25,7 @@ import java.io.Serializable;
 @Embeddable
 @Schema(description = "配置-隧道配置-主键")
 public class ConfigSshKey implements Serializable {
-
+    
     @Comment("主机名称")
     @Schema(description = "主机名称")
     private String host;

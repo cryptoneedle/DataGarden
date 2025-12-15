@@ -16,13 +16,13 @@ import java.util.List;
  */
 @Repository
 public interface AdsColumnRepository extends BaseRepository<AdsColumn, DorisColumnKey> {
-
+    
     @Query("""
              FROM AdsColumn
             ORDER BY id.databaseName, id.tableName, sort
             """)
     List<AdsColumn> columns();
-
+    
     @Query("""
              FROM AdsColumn
             WHERE id.tableName = :tableName

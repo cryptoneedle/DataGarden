@@ -29,10 +29,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "warehouse_dws_column")
 @Comment("数据汇总层(DWS)-字段")
 public class DwsColumn extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisColumnKey id;
-
+    
     @Comment("排序")
     private Long sort;
 }

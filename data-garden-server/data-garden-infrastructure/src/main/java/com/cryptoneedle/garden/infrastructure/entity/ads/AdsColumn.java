@@ -29,10 +29,10 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "warehouse_ads_column")
 @Comment("数据应用层(ADS)-字段")
 public class AdsColumn extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisColumnKey id;
-
+    
     @Comment("排序")
     private Long sort;
 }

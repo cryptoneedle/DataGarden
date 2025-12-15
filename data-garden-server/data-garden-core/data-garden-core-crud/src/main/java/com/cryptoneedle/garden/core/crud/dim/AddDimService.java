@@ -19,11 +19,11 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddDimService {
-
+    
     private final SaveDimService saveDimService;
     private final DimTableRepository dimTableRepository;
     private final DimColumnRepository dimColumnRepository;
-
+    
     public AddDimService(SaveDimService saveDimService,
                          DimTableRepository dimTableRepository,
                          DimColumnRepository dimColumnRepository) {
@@ -31,25 +31,25 @@ public class AddDimService {
         this.dimTableRepository = dimTableRepository;
         this.dimColumnRepository = dimColumnRepository;
     }
-
+    
     /**
      * DimTable
      */
     public void table(DimTable entity) {
         saveDimService.table(entity);
     }
-
+    
     public void tables(List<DimTable> list) {
         saveDimService.tables(list);
     }
-
+    
     /**
      * DimColumn
      */
     public void column(DimColumn entity) {
         saveDimService.column(entity);
     }
-
+    
     public void columns(List<DimColumn> list) {
         saveDimService.columns(list);
     }

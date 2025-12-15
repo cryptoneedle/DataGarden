@@ -29,22 +29,22 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "doris_database")
 @Comment("DORIS-数据库")
 public class DorisDatabase extends BaseEntity {
-
+    
     @EmbeddedId
     private DorisDatabaseKey id;
-
+    
     @Comment("表数量")
     private Integer tableNum;
     @Comment("数据源关联表数量")
     private Integer sourceTableNum;
-
+    
     @Comment("唯一模型表数量")
     private Integer uniqueNum;
     @Comment("明细模型表数量")
     private Integer duplicateNum;
     @Comment("明细模型表数量")
     private Integer aggregateNum;
-
+    
     @Comment("排序")
     private Integer sort;
 }

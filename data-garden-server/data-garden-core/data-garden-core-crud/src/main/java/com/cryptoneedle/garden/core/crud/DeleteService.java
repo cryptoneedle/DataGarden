@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DeleteService {
-
+    
     public final DeleteConfigService config;
     public final DeleteSourceService source;
     public final DeleteDorisService doris;
@@ -31,7 +31,7 @@ public class DeleteService {
     public final DeleteDwdService dwd;
     public final DeleteDwsService dws;
     public final DeleteAdsService ads;
-
+    
     public DeleteService(DeleteConfigService config,
                          DeleteSourceService source,
                          DeleteDorisService doris,

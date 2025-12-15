@@ -18,34 +18,34 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SaveConfigService {
-
+    
     private final ConfigPropertyRepository configPropertyRepository;
     private final ConfigSshRepository configSshRepository;
-
+    
     public SaveConfigService(ConfigPropertyRepository configPropertyRepository,
-                               ConfigSshRepository configSshRepository) {
+                             ConfigSshRepository configSshRepository) {
         this.configPropertyRepository = configPropertyRepository;
         this.configSshRepository = configSshRepository;
     }
-
+    
     /**
      * ConfigProperty
      */
     public void property(ConfigProperty entity) {
         configPropertyRepository.save(entity);
     }
-
+    
     public void properties(List<ConfigProperty> list) {
         configPropertyRepository.saveAll(list);
     }
-
+    
     /**
      * ConfigSsh
      */
     public void ssh(ConfigSsh entity) {
         configSshRepository.save(entity);
     }
-
+    
     public void sshs(List<ConfigSsh> list) {
         configSshRepository.saveAll(list);
     }

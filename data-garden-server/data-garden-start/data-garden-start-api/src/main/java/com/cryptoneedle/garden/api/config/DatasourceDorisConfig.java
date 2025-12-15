@@ -21,13 +21,13 @@ import javax.sql.DataSource;
 @EnableTransactionManagement
 @ConditionalOnBooleanProperty(name = "doris.enabled")
 public class DatasourceDorisConfig {
-
+    
     @Bean(name = "dorisDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.doris")
     public DataSource dorisDataSource() {
         return new DruidDataSource();
     }
-
+    
     @Bean(name = "dorisJdbcTemplate")
     public JdbcTemplate dorisJdbcTemplate(@Qualifier("dorisDataSource") DataSource dorisDataSource) {
         return new JdbcTemplate(dorisDataSource);

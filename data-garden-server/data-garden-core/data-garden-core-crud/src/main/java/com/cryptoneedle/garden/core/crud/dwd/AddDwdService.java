@@ -19,11 +19,11 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddDwdService {
-
+    
     private final SaveDwdService saveDwdService;
     private final DwdTableRepository dwdTableRepository;
     private final DwdColumnRepository dwdColumnRepository;
-
+    
     public AddDwdService(SaveDwdService saveDwdService,
                          DwdTableRepository dwdTableRepository,
                          DwdColumnRepository dwdColumnRepository) {
@@ -31,25 +31,25 @@ public class AddDwdService {
         this.dwdTableRepository = dwdTableRepository;
         this.dwdColumnRepository = dwdColumnRepository;
     }
-
+    
     /**
      * DwdTable
      */
     public void table(DwdTable entity) {
         saveDwdService.table(entity);
     }
-
+    
     public void tables(List<DwdTable> list) {
         saveDwdService.tables(list);
     }
-
+    
     /**
      * DwdColumn
      */
     public void column(DwdColumn entity) {
         saveDwdService.column(entity);
     }
-
+    
     public void columns(List<DwdColumn> list) {
         saveDwdService.columns(list);
     }

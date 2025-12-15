@@ -16,13 +16,13 @@ import java.util.List;
  */
 @Repository
 public interface DorisCatalogRepository extends BaseRepository<DorisCatalog, DorisCatalogKey> {
-
+    
     @Query("""
              FROM DorisCatalog
             WHERE sourceCatalogName = :sourceCatalogName
             """)
     DorisCatalog catalogBySource(String sourceCatalogName);
-
+    
     @Query("""
              FROM DorisCatalog
             ORDER BY CASE id.catalogName WHEN 'internal' THEN 0 ELSE 1 END, id.catalogName DESC

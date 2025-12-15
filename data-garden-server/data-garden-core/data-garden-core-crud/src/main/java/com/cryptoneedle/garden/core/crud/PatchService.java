@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchService {
-
+    
     public final PatchConfigService config;
     public final PatchSourceService source;
     public final PatchDorisService doris;
@@ -31,7 +31,7 @@ public class PatchService {
     public final PatchDwdService dwd;
     public final PatchDwsService dws;
     public final PatchAdsService ads;
-
+    
     public PatchService(PatchConfigService config,
                         PatchSourceService source,
                         PatchDorisService doris,

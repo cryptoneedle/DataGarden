@@ -16,7 +16,7 @@ import java.util.List;
  */
 @Repository
 public interface ConfigPropertyRepository extends BaseRepository<ConfigProperty, ConfigPropertyKey> {
-
+    
     @Query("""
              FROM ConfigProperty
             ORDER BY id.propertyName
