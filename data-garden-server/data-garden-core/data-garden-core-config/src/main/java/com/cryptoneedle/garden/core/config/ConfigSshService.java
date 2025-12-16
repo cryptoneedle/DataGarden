@@ -6,6 +6,7 @@ import com.cryptoneedle.garden.common.vo.config.ConfigSshAddVo;
 import com.cryptoneedle.garden.common.vo.config.ConfigSshUpdateVo;
 import com.cryptoneedle.garden.core.crud.config.*;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
+import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public class ConfigSshService {
         this.patch = patchConfigService;
     }
     
-    public void add(ConfigSshAddVo vo) {
+    public void add(@Valid ConfigSshAddVo vo) {
         ConfigSshKey key = ConfigSshKey.builder().host(vo.getHost()).build();
         ConfigSsh ssh = select.ssh(key);
         if (ssh != null) {
@@ -52,7 +53,7 @@ public class ConfigSshService {
         add.ssh(entity);
     }
     
-    public void modify(ConfigSshUpdateVo vo) throws EntityNotFoundException {
+    public void modify(@Valid ConfigSshUpdateVo vo) throws EntityNotFoundException {
         ConfigSshKey key = ConfigSshKey.builder().host(vo.getHost()).build();
         ConfigSsh entity = select.sshCheck(key);
         

@@ -18,8 +18,9 @@ public class ConfigSshAddVo {
     @Schema(description = "主机")
     private String host;
     
+    @NotBlank(message = "端口不能为空")
     @Schema(description = "端口")
-    private int port = 22;
+    private Integer port;
     
     @NotBlank(message = "用户名不能为空")
     @Schema(description = "用户名")
