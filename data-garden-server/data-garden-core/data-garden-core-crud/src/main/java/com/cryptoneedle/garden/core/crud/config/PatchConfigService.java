@@ -8,8 +8,6 @@ import com.cryptoneedle.garden.common.vo.config.ConfigPropertyUpdateVo;
 import com.cryptoneedle.garden.common.vo.config.ConfigSshUpdateVo;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigProperty;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
-import com.cryptoneedle.garden.infrastructure.repository.config.ConfigPropertyRepository;
-import com.cryptoneedle.garden.infrastructure.repository.config.ConfigSshRepository;
 import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -27,17 +25,11 @@ public class PatchConfigService {
     
     private final SelectConfigService select;
     private final SaveConfigService save;
-    private final ConfigPropertyRepository configPropertyRepository;
-    private final ConfigSshRepository configSshRepository;
     
     public PatchConfigService(SelectConfigService selectConfigService,
-                              SaveConfigService saveConfigService,
-                              ConfigPropertyRepository configPropertyRepository,
-                              ConfigSshRepository configSshRepository) {
+                              SaveConfigService saveConfigService) {
         this.select = selectConfigService;
         this.save = saveConfigService;
-        this.configPropertyRepository = configPropertyRepository;
-        this.configSshRepository = configSshRepository;
     }
     
     /**

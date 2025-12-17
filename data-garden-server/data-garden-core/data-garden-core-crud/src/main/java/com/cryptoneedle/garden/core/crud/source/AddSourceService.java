@@ -5,7 +5,6 @@ import com.cryptoneedle.garden.common.vo.source.SourceCatalogAddVo;
 import com.cryptoneedle.garden.core.crud.config.SelectConfigService;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import com.cryptoneedle.garden.infrastructure.entity.source.*;
-import com.cryptoneedle.garden.infrastructure.repository.source.*;
 import com.cryptoneedle.garden.spi.DataSourceSpiLoader;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -24,46 +23,31 @@ import java.util.List;
 public class AddSourceService {
     
     private final SelectConfigService selectConfigService;
-    private final SelectSourceService selectSourceService;
-    private final SaveSourceService saveSourceService;
-    private final SourceCatalogRepository sourceCatalogRepository;
-    private final SourceDatabaseRepository sourceDatabaseRepository;
-    private final SourceTableRepository sourceTableRepository;
-    private final SourceColumnRepository sourceColumnRepository;
-    private final SourceDimensionRepository sourceDimensionRepository;
+    private final SelectSourceService select;
+    private final SaveSourceService save;
     
     public AddSourceService(SelectConfigService selectConfigService,
                             SelectSourceService selectSourceService,
-                            SaveSourceService saveSourceService,
-                            SourceCatalogRepository sourceCatalogRepository,
-                            SourceDatabaseRepository sourceDatabaseRepository,
-                            SourceTableRepository sourceTableRepository,
-                            SourceColumnRepository sourceColumnRepository,
-                            SourceDimensionRepository sourceDimensionRepository) {
+                            SaveSourceService saveSourceService) {
         this.selectConfigService = selectConfigService;
-        this.selectSourceService = selectSourceService;
-        this.saveSourceService = saveSourceService;
-        this.sourceCatalogRepository = sourceCatalogRepository;
-        this.sourceDatabaseRepository = sourceDatabaseRepository;
-        this.sourceTableRepository = sourceTableRepository;
-        this.sourceColumnRepository = sourceColumnRepository;
-        this.sourceDimensionRepository = sourceDimensionRepository;
+        this.select = selectSourceService;
+        this.save = saveSourceService;
     }
     
     /**
      * SourceCatalog
      */
     public void catalog(SourceCatalog entity) {
-        saveSourceService.catalog(entity);
+        save.catalog(entity);
     }
     
     public void catalogs(List<SourceCatalog> list) {
-        saveSourceService.catalogs(list);
+        save.catalogs(list);
     }
     
     public SourceCatalog catalog(SourceCatalogAddVo vo) {
         SourceCatalogKey key = SourceCatalogKey.builder().catalogName(vo.getCatalogName()).build();
-        SourceCatalog entity = selectSourceService.catalog(key);
+        SourceCatalog entity = select.catalog(key);
         if (entity != null) {
             throw new RuntimeException("数据源目录: " + key + "已存在");
         }
@@ -100,7 +84,7 @@ public class AddSourceService {
             entity.setConfigSsh(configSsh);
         }
         
-        saveSourceService.catalog(entity);
+        save.catalog(entity);
         
         return entity;
     }
@@ -109,43 +93,43 @@ public class AddSourceService {
      * SourceDatabase
      */
     public void database(SourceDatabase entity) {
-        saveSourceService.database(entity);
+        save.database(entity);
     }
     
     public void databases(List<SourceDatabase> list) {
-        saveSourceService.databases(list);
+        save.databases(list);
     }
     
     /**
      * SourceTable
      */
     public void table(SourceTable entity) {
-        saveSourceService.table(entity);
+        save.table(entity);
     }
     
     public void tables(List<SourceTable> list) {
-        saveSourceService.tables(list);
+        save.tables(list);
     }
     
     /**
      * SourceColumn
      */
     public void column(SourceColumn entity) {
-        saveSourceService.column(entity);
+        save.column(entity);
     }
     
     public void columns(List<SourceColumn> list) {
-        saveSourceService.columns(list);
+        save.columns(list);
     }
     
     /**
      * SourceDimension
      */
     public void dimension(SourceDimension entity) {
-        saveSourceService.dimension(entity);
+        save.dimension(entity);
     }
     
     public void dimensions(List<SourceDimension> list) {
-        saveSourceService.dimensions(list);
+        save.dimensions(list);
     }
 }

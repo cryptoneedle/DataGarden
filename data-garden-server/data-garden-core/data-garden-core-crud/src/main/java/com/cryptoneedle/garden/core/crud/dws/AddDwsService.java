@@ -3,8 +3,6 @@ package com.cryptoneedle.garden.core.crud.dws;
 
 import com.cryptoneedle.garden.infrastructure.entity.dws.DwsColumn;
 import com.cryptoneedle.garden.infrastructure.entity.dws.DwsTable;
-import com.cryptoneedle.garden.infrastructure.repository.dws.DwsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.dws.DwsTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,37 +18,34 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddDwsService {
     
-    private final SaveDwsService saveDwsService;
-    private final DwsTableRepository dwsTableRepository;
-    private final DwsColumnRepository dwsColumnRepository;
+    private final SelectDwsService select;
+    private final SaveDwsService save;
     
-    public AddDwsService(SaveDwsService saveDwsService,
-                         DwsTableRepository dwsTableRepository,
-                         DwsColumnRepository dwsColumnRepository) {
-        this.saveDwsService = saveDwsService;
-        this.dwsTableRepository = dwsTableRepository;
-        this.dwsColumnRepository = dwsColumnRepository;
+    public AddDwsService(SelectDwsService selectDwsService,
+                         SaveDwsService saveDwsService) {
+        this.select = selectDwsService;
+        this.save = saveDwsService;
     }
     
     /**
      * DwsTable
      */
     public void table(DwsTable entity) {
-        saveDwsService.table(entity);
+        save.table(entity);
     }
     
     public void tables(List<DwsTable> list) {
-        saveDwsService.tables(list);
+        save.tables(list);
     }
     
     /**
      * DwsColumn
      */
     public void column(DwsColumn entity) {
-        saveDwsService.column(entity);
+        save.column(entity);
     }
     
     public void columns(List<DwsColumn> list) {
-        saveDwsService.columns(list);
+        save.columns(list);
     }
 }

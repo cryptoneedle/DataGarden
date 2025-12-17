@@ -3,8 +3,6 @@ package com.cryptoneedle.garden.core.crud.dim;
 
 import com.cryptoneedle.garden.infrastructure.entity.dim.DimColumn;
 import com.cryptoneedle.garden.infrastructure.entity.dim.DimTable;
-import com.cryptoneedle.garden.infrastructure.repository.dim.DimColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.dim.DimTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,37 +18,34 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddDimService {
     
-    private final SaveDimService saveDimService;
-    private final DimTableRepository dimTableRepository;
-    private final DimColumnRepository dimColumnRepository;
+    private final SelectDimService select;
+    private final SaveDimService save;
     
-    public AddDimService(SaveDimService saveDimService,
-                         DimTableRepository dimTableRepository,
-                         DimColumnRepository dimColumnRepository) {
-        this.saveDimService = saveDimService;
-        this.dimTableRepository = dimTableRepository;
-        this.dimColumnRepository = dimColumnRepository;
+    public AddDimService(SelectDimService selectDimService,
+                         SaveDimService saveDimService) {
+        this.select = selectDimService;
+        this.save = saveDimService;
     }
     
     /**
      * DimTable
      */
     public void table(DimTable entity) {
-        saveDimService.table(entity);
+        save.table(entity);
     }
     
     public void tables(List<DimTable> list) {
-        saveDimService.tables(list);
+        save.tables(list);
     }
     
     /**
      * DimColumn
      */
     public void column(DimColumn entity) {
-        saveDimService.column(entity);
+        save.column(entity);
     }
     
     public void columns(List<DimColumn> list) {
-        saveDimService.columns(list);
+        save.columns(list);
     }
 }

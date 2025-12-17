@@ -3,8 +3,6 @@ package com.cryptoneedle.garden.core.crud.standard;
 
 import com.cryptoneedle.garden.infrastructure.entity.standard.StandardColumn;
 import com.cryptoneedle.garden.infrastructure.entity.standard.StandardTable;
-import com.cryptoneedle.garden.infrastructure.repository.standard.StandardColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.standard.StandardTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,37 +18,34 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddStandardService {
     
-    private final SaveStandardService saveStandardService;
-    private final StandardTableRepository standardTableRepository;
-    private final StandardColumnRepository standardColumnRepository;
+    private final SelectStandardService select;
+    private final SaveStandardService save;
     
-    public AddStandardService(SaveStandardService saveStandardService,
-                              StandardTableRepository standardTableRepository,
-                              StandardColumnRepository standardColumnRepository) {
-        this.saveStandardService = saveStandardService;
-        this.standardTableRepository = standardTableRepository;
-        this.standardColumnRepository = standardColumnRepository;
+    public AddStandardService(SelectStandardService selectStandardService,
+                         SaveStandardService saveStandardService) {
+        this.select = selectStandardService;
+        this.save = saveStandardService;
     }
     
     /**
      * StandardTable
      */
     public void table(StandardTable entity) {
-        saveStandardService.table(entity);
+        save.table(entity);
     }
     
     public void tables(List<StandardTable> list) {
-        saveStandardService.tables(list);
+        save.tables(list);
     }
     
     /**
      * StandardColumn
      */
     public void column(StandardColumn entity) {
-        saveStandardService.column(entity);
+        save.column(entity);
     }
     
     public void columns(List<StandardColumn> list) {
-        saveStandardService.columns(list);
+        save.columns(list);
     }
 }

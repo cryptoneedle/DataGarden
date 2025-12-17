@@ -7,8 +7,6 @@ import com.cryptoneedle.garden.common.vo.config.ConfigPropertyAddVo;
 import com.cryptoneedle.garden.common.vo.config.ConfigSshAddVo;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigProperty;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
-import com.cryptoneedle.garden.infrastructure.repository.config.ConfigPropertyRepository;
-import com.cryptoneedle.garden.infrastructure.repository.config.ConfigSshRepository;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,17 +25,11 @@ public class AddConfigService {
     
     private final SelectConfigService select;
     private final SaveConfigService save;
-    private final ConfigPropertyRepository configPropertyRepository;
-    private final ConfigSshRepository configSshRepository;
     
     public AddConfigService(SelectConfigService selectConfigService,
-                            SaveConfigService saveConfigService,
-                            ConfigPropertyRepository configPropertyRepository,
-                            ConfigSshRepository configSshRepository) {
+                            SaveConfigService saveConfigService) {
         this.select = selectConfigService;
         this.save = saveConfigService;
-        this.configPropertyRepository = configPropertyRepository;
-        this.configSshRepository = configSshRepository;
     }
     
     /**

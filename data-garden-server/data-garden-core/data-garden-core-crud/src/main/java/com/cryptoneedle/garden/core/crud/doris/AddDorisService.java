@@ -4,10 +4,6 @@ import com.cryptoneedle.garden.infrastructure.entity.doris.DorisCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.doris.DorisColumn;
 import com.cryptoneedle.garden.infrastructure.entity.doris.DorisDatabase;
 import com.cryptoneedle.garden.infrastructure.entity.doris.DorisTable;
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisCatalogRepository;
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisDatabaseRepository;
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,65 +19,56 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddDorisService {
     
-    private final SaveDorisService saveDorisService;
-    private final DorisCatalogRepository dorisCatalogRepository;
-    private final DorisDatabaseRepository dorisDatabaseRepository;
-    private final DorisTableRepository dorisTableRepository;
-    private final DorisColumnRepository dorisColumnRepository;
+    private final SelectDorisService select;
+    private final SaveDorisService save;
     
-    public AddDorisService(SaveDorisService saveDorisService,
-                           DorisCatalogRepository dorisCatalogRepository,
-                           DorisDatabaseRepository dorisDatabaseRepository,
-                           DorisTableRepository dorisTableRepository,
-                           DorisColumnRepository dorisColumnRepository) {
-        this.saveDorisService = saveDorisService;
-        this.dorisCatalogRepository = dorisCatalogRepository;
-        this.dorisDatabaseRepository = dorisDatabaseRepository;
-        this.dorisTableRepository = dorisTableRepository;
-        this.dorisColumnRepository = dorisColumnRepository;
+    public AddDorisService(SelectDorisService selectDorisService,
+                         SaveDorisService saveDorisService) {
+        this.select = selectDorisService;
+        this.save = saveDorisService;
     }
     
     /**
      * DorisCatalog
      */
     public void catalog(DorisCatalog entity) {
-        saveDorisService.catalog(entity);
+        save.catalog(entity);
     }
     
     public void catalogs(List<DorisCatalog> list) {
-        saveDorisService.catalogs(list);
+        save.catalogs(list);
     }
     
     /**
      * DorisDatabase
      */
     public void database(DorisDatabase entity) {
-        saveDorisService.database(entity);
+        save.database(entity);
     }
     
     public void databases(List<DorisDatabase> list) {
-        saveDorisService.databases(list);
+        save.databases(list);
     }
     
     /**
      * DorisTable
      */
     public void table(DorisTable entity) {
-        saveDorisService.table(entity);
+        save.table(entity);
     }
     
     public void tables(List<DorisTable> list) {
-        saveDorisService.tables(list);
+        save.tables(list);
     }
     
     /**
      * DorisColumn
      */
     public void column(DorisColumn entity) {
-        saveDorisService.column(entity);
+        save.column(entity);
     }
     
     public void columns(List<DorisColumn> list) {
-        saveDorisService.columns(list);
+        save.columns(list);
     }
 }

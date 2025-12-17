@@ -3,8 +3,6 @@ package com.cryptoneedle.garden.core.crud.ods;
 
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
-import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ods.OdsTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,37 +18,34 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class AddOdsService {
     
-    private final SaveOdsService saveOdsService;
-    private final OdsTableRepository odsTableRepository;
-    private final OdsColumnRepository odsColumnRepository;
+    private final SelectOdsService select;
+    private final SaveOdsService save;
     
-    public AddOdsService(SaveOdsService saveOdsService,
-                         OdsTableRepository odsTableRepository,
-                         OdsColumnRepository odsColumnRepository) {
-        this.saveOdsService = saveOdsService;
-        this.odsTableRepository = odsTableRepository;
-        this.odsColumnRepository = odsColumnRepository;
+    public AddOdsService(SelectOdsService selectOdsService,
+                         SaveOdsService saveOdsService) {
+        this.select = selectOdsService;
+        this.save = saveOdsService;
     }
     
     /**
      * OdsTable
      */
     public void table(OdsTable entity) {
-        saveOdsService.table(entity);
+        save.table(entity);
     }
     
     public void tables(List<OdsTable> list) {
-        saveOdsService.tables(list);
+        save.tables(list);
     }
     
     /**
      * OdsColumn
      */
     public void column(OdsColumn entity) {
-        saveOdsService.column(entity);
+        save.column(entity);
     }
     
     public void columns(List<OdsColumn> list) {
-        saveOdsService.columns(list);
+        save.columns(list);
     }
 }
