@@ -1,8 +1,6 @@
 package com.cryptoneedle.garden.core.crud.ods;
 
 
-import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ods.OdsTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchOdsService {
     
-    private final OdsTableRepository odsTableRepository;
-    private final OdsColumnRepository odsColumnRepository;
+    private final SelectOdsService select;
+    private final SaveOdsService save;
     
-    public PatchOdsService(OdsTableRepository odsTableRepository,
-                           OdsColumnRepository odsColumnRepository) {
-        this.odsTableRepository = odsTableRepository;
-        this.odsColumnRepository = odsColumnRepository;
+    public PatchOdsService(SelectOdsService selectOdsService,
+                         SaveOdsService saveOdsService) {
+        this.select = selectOdsService;
+        this.save = saveOdsService;
     }
     
     /**

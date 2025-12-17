@@ -1,8 +1,6 @@
 package com.cryptoneedle.garden.core.crud.dws;
 
 
-import com.cryptoneedle.garden.infrastructure.repository.dws.DwsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.dws.DwsTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchDwsService {
     
-    private final DwsTableRepository dwsTableRepository;
-    private final DwsColumnRepository dwsColumnRepository;
+    private final SelectDwsService select;
+    private final SaveDwsService save;
     
-    public PatchDwsService(DwsTableRepository dwsTableRepository,
-                           DwsColumnRepository dwsColumnRepository) {
-        this.dwsTableRepository = dwsTableRepository;
-        this.dwsColumnRepository = dwsColumnRepository;
+    public PatchDwsService(SelectDwsService selectDwsService,
+                         SaveDwsService saveDwsService) {
+        this.select = selectDwsService;
+        this.save = saveDwsService;
     }
     
     /**

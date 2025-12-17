@@ -1,8 +1,6 @@
 package com.cryptoneedle.garden.core.crud.standard;
 
 
-import com.cryptoneedle.garden.infrastructure.repository.standard.StandardColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.standard.StandardTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchStandardService {
     
-    private final StandardTableRepository standardTableRepository;
-    private final StandardColumnRepository standardColumnRepository;
+    private final SelectStandardService select;
+    private final SaveStandardService save;
     
-    public PatchStandardService(StandardTableRepository standardTableRepository,
-                                StandardColumnRepository standardColumnRepository) {
-        this.standardTableRepository = standardTableRepository;
-        this.standardColumnRepository = standardColumnRepository;
+    public PatchStandardService(SelectStandardService selectStandardService,
+                              SaveStandardService saveStandardService) {
+        this.select = selectStandardService;
+        this.save = saveStandardService;
     }
     
     /**

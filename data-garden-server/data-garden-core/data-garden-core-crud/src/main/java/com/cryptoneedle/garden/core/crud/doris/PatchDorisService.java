@@ -1,9 +1,5 @@
 package com.cryptoneedle.garden.core.crud.doris;
 
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisCatalogRepository;
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisDatabaseRepository;
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,19 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchDorisService {
     
-    private final DorisCatalogRepository dorisCatalogRepository;
-    private final DorisDatabaseRepository dorisDatabaseRepository;
-    private final DorisTableRepository dorisTableRepository;
-    private final DorisColumnRepository dorisColumnRepository;
+    private final SelectDorisService select;
+    private final SaveDorisService save;
     
-    public PatchDorisService(DorisCatalogRepository dorisCatalogRepository,
-                             DorisDatabaseRepository dorisDatabaseRepository,
-                             DorisTableRepository dorisTableRepository,
-                             DorisColumnRepository dorisColumnRepository) {
-        this.dorisCatalogRepository = dorisCatalogRepository;
-        this.dorisDatabaseRepository = dorisDatabaseRepository;
-        this.dorisTableRepository = dorisTableRepository;
-        this.dorisColumnRepository = dorisColumnRepository;
+    public PatchDorisService(SelectDorisService selectDorisService,
+                           SaveDorisService saveDorisService) {
+        this.select = selectDorisService;
+        this.save = saveDorisService;
     }
     
     /**

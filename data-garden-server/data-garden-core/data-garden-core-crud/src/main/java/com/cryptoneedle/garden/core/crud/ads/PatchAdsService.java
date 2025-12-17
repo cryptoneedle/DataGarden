@@ -1,8 +1,6 @@
 package com.cryptoneedle.garden.core.crud.ads;
 
 
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.ads.AdsTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchAdsService {
     
-    private final AdsTableRepository adsTableRepository;
-    private final AdsColumnRepository adsColumnRepository;
+    private final SelectAdsService select;
+    private final SaveAdsService save;
     
-    public PatchAdsService(AdsTableRepository adsTableRepository,
-                           AdsColumnRepository adsColumnRepository) {
-        this.adsTableRepository = adsTableRepository;
-        this.adsColumnRepository = adsColumnRepository;
+    public PatchAdsService(SelectAdsService selectAdsService,
+                         SaveAdsService saveAdsService) {
+        this.select = selectAdsService;
+        this.save = saveAdsService;
     }
     
     /**

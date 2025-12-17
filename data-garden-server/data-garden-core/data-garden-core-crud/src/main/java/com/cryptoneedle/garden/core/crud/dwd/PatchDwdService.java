@@ -1,8 +1,6 @@
 package com.cryptoneedle.garden.core.crud.dwd;
 
 
-import com.cryptoneedle.garden.infrastructure.repository.dwd.DwdColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.dwd.DwdTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchDwdService {
     
-    private final DwdTableRepository dwdTableRepository;
-    private final DwdColumnRepository dwdColumnRepository;
+    private final SelectDwdService select;
+    private final SaveDwdService save;
     
-    public PatchDwdService(DwdTableRepository dwdTableRepository,
-                           DwdColumnRepository dwdColumnRepository) {
-        this.dwdTableRepository = dwdTableRepository;
-        this.dwdColumnRepository = dwdColumnRepository;
+    public PatchDwdService(SelectDwdService selectDwdService,
+                         SaveDwdService saveDwdService) {
+        this.select = selectDwdService;
+        this.save = saveDwdService;
     }
     
     /**

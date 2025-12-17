@@ -1,8 +1,6 @@
 package com.cryptoneedle.garden.core.crud.dim;
 
 
-import com.cryptoneedle.garden.infrastructure.repository.dim.DimColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.dim.DimTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,13 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchDimService {
     
-    private final DimTableRepository dimTableRepository;
-    private final DimColumnRepository dimColumnRepository;
+    private final SelectDimService select;
+    private final SaveDimService save;
     
-    public PatchDimService(DimTableRepository dimTableRepository,
-                           DimColumnRepository dimColumnRepository) {
-        this.dimTableRepository = dimTableRepository;
-        this.dimColumnRepository = dimColumnRepository;
+    public PatchDimService(SelectDimService selectDimService,
+                         SaveDimService saveDimService) {
+        this.select = selectDimService;
+        this.save = saveDimService;
     }
     
     /**

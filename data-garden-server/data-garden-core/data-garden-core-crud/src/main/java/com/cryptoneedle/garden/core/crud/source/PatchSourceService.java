@@ -1,6 +1,6 @@
 package com.cryptoneedle.garden.core.crud.source;
 
-import com.cryptoneedle.garden.infrastructure.repository.source.*;
+import com.cryptoneedle.garden.core.crud.config.SelectConfigService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,22 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchSourceService {
     
-    private final SourceCatalogRepository sourceCatalogRepository;
-    private final SourceDatabaseRepository sourceDatabaseRepository;
-    private final SourceTableRepository sourceTableRepository;
-    private final SourceColumnRepository sourceColumnRepository;
-    private final SourceDimensionRepository sourceDimensionRepository;
+    private final SelectConfigService selectConfigService;
+    private final SelectSourceService select;
+    private final SaveSourceService save;
     
-    public PatchSourceService(SourceCatalogRepository sourceCatalogRepository,
-                              SourceDatabaseRepository sourceDatabaseRepository,
-                              SourceTableRepository sourceTableRepository,
-                              SourceColumnRepository sourceColumnRepository,
-                              SourceDimensionRepository sourceDimensionRepository) {
-        this.sourceCatalogRepository = sourceCatalogRepository;
-        this.sourceDatabaseRepository = sourceDatabaseRepository;
-        this.sourceTableRepository = sourceTableRepository;
-        this.sourceColumnRepository = sourceColumnRepository;
-        this.sourceDimensionRepository = sourceDimensionRepository;
+    public PatchSourceService(SelectConfigService selectConfigService,
+                            SelectSourceService selectSourceService,
+                            SaveSourceService saveSourceService) {
+        this.selectConfigService = selectConfigService;
+        this.select = selectSourceService;
+        this.save = saveSourceService;
     }
     
     /**
