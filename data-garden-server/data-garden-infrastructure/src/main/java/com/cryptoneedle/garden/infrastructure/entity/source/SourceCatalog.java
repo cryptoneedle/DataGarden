@@ -7,6 +7,7 @@ import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.Strings;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -58,10 +59,6 @@ public class SourceCatalog extends BaseEntity {
     private String username;
     @Comment("密码")
     private String password;
-    @Comment("SSH启用")
-    private boolean sshEnabled = false;
-    @Comment("SSH主机")
-    private String sshHost;
     
     @Comment("URL")
     private String url;
@@ -89,15 +86,13 @@ public class SourceCatalog extends BaseEntity {
     private ConfigSsh configSsh;
     
     public boolean equalsJdbc(SourceCatalog other) {
-        return this.host.equals(other.getHost())
+        return Strings.CI.equals(this.host, other.getHost())
                 && this.port.equals(other.getPort())
-                && this.databaseType.equals(other.getConnectType())
-                && this.connectType.equals(other.getConnectType())
-                && this.route.equals(other.getRoute())
-                && this.username.equals(other.getUsername())
-                && this.password.equals(other.getPassword())
-                && this.sshEnabled == other.isSshEnabled()
-                && this.sshHost.equals(other.getSshHost())
+                && Strings.CI.equals(this.databaseType, other.getConnectType())
+                && Strings.CI.equals(this.connectType, other.getConnectType())
+                && Strings.CI.equals(this.route, other.getRoute())
+                && Strings.CI.equals(this.username, other.getUsername())
+                && Strings.CI.equals(this.password, other.getPassword())
                 && this.configSsh.equalsConnect(other.getConfigSsh());
     }
 }

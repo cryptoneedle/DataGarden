@@ -1,5 +1,6 @@
 package com.cryptoneedle.garden.core.crud.source;
 
+import com.cryptoneedle.garden.common.key.source.*;
 import com.cryptoneedle.garden.infrastructure.entity.source.*;
 import com.cryptoneedle.garden.infrastructure.repository.source.*;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,10 @@ public class DeleteSourceService {
     /**
      * SourceCatalog
      */
+    public void catalog(SourceCatalogKey key) {
+        sourceCatalogRepository.deleteById(key);
+    }
+    
     public void catalog(SourceCatalog entity) {
         sourceCatalogRepository.delete(entity);
     }
@@ -49,6 +54,10 @@ public class DeleteSourceService {
     /**
      * SourceDatabase
      */
+    public void database(SourceDatabaseKey key) {
+        sourceDatabaseRepository.deleteById(key);
+    }
+    
     public void database(SourceDatabase entity) {
         sourceDatabaseRepository.delete(entity);
     }
@@ -60,6 +69,10 @@ public class DeleteSourceService {
     /**
      * SourceTable
      */
+    public void table(SourceTableKey key) {
+        sourceTableRepository.deleteById(key);
+    }
+    
     public void table(SourceTable entity) {
         sourceTableRepository.delete(entity);
     }
@@ -71,6 +84,10 @@ public class DeleteSourceService {
     /**
      * SourceColumn
      */
+    public void column(SourceColumnKey key) {
+        sourceColumnRepository.deleteById(key);
+    }
+    
     public void column(SourceColumn entity) {
         sourceColumnRepository.delete(entity);
     }
@@ -82,6 +99,10 @@ public class DeleteSourceService {
     /**
      * SourceDimension
      */
+    public void dimension(SourceDimensionKey key) {
+        sourceDimensionRepository.deleteById(key);
+    }
+    
     public void dimension(SourceDimension entity) {
         sourceDimensionRepository.delete(entity);
     }

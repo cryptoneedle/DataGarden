@@ -1,5 +1,7 @@
 package com.cryptoneedle.garden.core.crud.config;
 
+import com.cryptoneedle.garden.common.key.config.ConfigPropertyKey;
+import com.cryptoneedle.garden.common.key.config.ConfigSshKey;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigProperty;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import com.cryptoneedle.garden.infrastructure.repository.config.ConfigPropertyRepository;
@@ -31,6 +33,10 @@ public class DeleteConfigService {
     /**
      * ConfigProperty
      */
+    public void property(ConfigPropertyKey key) {
+        configPropertyRepository.deleteById(key);
+    }
+    
     public void property(ConfigProperty entity) {
         configPropertyRepository.delete(entity);
     }
@@ -42,6 +48,10 @@ public class DeleteConfigService {
     /**
      * ConfigSsh
      */
+    public void ssh(ConfigSshKey key) {
+        configSshRepository.deleteById(key);
+    }
+    
     public void ssh(ConfigSsh entity) {
         configSshRepository.delete(entity);
     }

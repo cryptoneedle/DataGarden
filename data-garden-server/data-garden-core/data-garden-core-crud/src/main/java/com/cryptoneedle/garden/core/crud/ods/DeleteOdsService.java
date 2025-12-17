@@ -1,6 +1,8 @@
 package com.cryptoneedle.garden.core.crud.ods;
 
 
+import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
+import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
 import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnRepository;
@@ -32,6 +34,10 @@ public class DeleteOdsService {
     /**
      * OdsTable
      */
+    public void table(DorisTableKey key) {
+        odsTableRepository.deleteById(key);
+    }
+    
     public void table(OdsTable entity) {
         odsTableRepository.delete(entity);
     }
@@ -43,6 +49,10 @@ public class DeleteOdsService {
     /**
      * OdsColumn
      */
+    public void column(DorisColumnKey key) {
+        odsColumnRepository.deleteById(key);
+    }
+    
     public void column(OdsColumn entity) {
         odsColumnRepository.delete(entity);
     }

@@ -1,6 +1,8 @@
 package com.cryptoneedle.garden.core.crud.ads;
 
 
+import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
+import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.ads.AdsColumn;
 import com.cryptoneedle.garden.infrastructure.entity.ads.AdsTable;
 import com.cryptoneedle.garden.infrastructure.repository.ads.AdsColumnRepository;
@@ -32,6 +34,10 @@ public class DeleteAdsService {
     /**
      * AdsTable
      */
+    public void table(DorisTableKey key) {
+        adsTableRepository.deleteById(key);
+    }
+    
     public void table(AdsTable entity) {
         adsTableRepository.delete(entity);
     }
@@ -43,6 +49,10 @@ public class DeleteAdsService {
     /**
      * AdsColumn
      */
+    public void column(DorisColumnKey key) {
+        adsColumnRepository.deleteById(key);
+    }
+    
     public void column(AdsColumn entity) {
         adsColumnRepository.delete(entity);
     }

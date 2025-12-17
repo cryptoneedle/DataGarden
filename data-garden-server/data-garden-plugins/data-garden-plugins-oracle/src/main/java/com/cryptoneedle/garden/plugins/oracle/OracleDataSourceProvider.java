@@ -58,7 +58,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     @Override
     public String buildJdbcUrl(SourceCatalog catalog) {
         String connectType = catalog.getConnectType();
-        if (catalog.isSshEnabled()) {
+        if (catalog.getConfigSsh() != null) {
             throw new RuntimeException("[ORACLE] 不支持SSH连接");
         } else {
             if (SourceConnectType.SERVICE_NAME.equals(connectType)) {

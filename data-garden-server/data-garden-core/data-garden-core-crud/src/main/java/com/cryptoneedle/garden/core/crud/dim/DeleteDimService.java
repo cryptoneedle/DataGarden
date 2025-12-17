@@ -1,6 +1,8 @@
 package com.cryptoneedle.garden.core.crud.dim;
 
 
+import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
+import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.dim.DimColumn;
 import com.cryptoneedle.garden.infrastructure.entity.dim.DimTable;
 import com.cryptoneedle.garden.infrastructure.repository.dim.DimColumnRepository;
@@ -32,6 +34,10 @@ public class DeleteDimService {
     /**
      * DimTable
      */
+    public void table(DorisTableKey key) {
+        dimTableRepository.deleteById(key);
+    }
+    
     public void table(DimTable entity) {
         dimTableRepository.delete(entity);
     }
@@ -43,6 +49,10 @@ public class DeleteDimService {
     /**
      * DimColumn
      */
+    public void column(DorisColumnKey key) {
+        dimColumnRepository.deleteById(key);
+    }
+    
     public void column(DimColumn entity) {
         dimColumnRepository.delete(entity);
     }

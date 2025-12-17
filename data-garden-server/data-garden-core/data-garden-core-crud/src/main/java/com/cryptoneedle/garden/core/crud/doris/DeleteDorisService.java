@@ -1,5 +1,9 @@
 package com.cryptoneedle.garden.core.crud.doris;
 
+import com.cryptoneedle.garden.common.key.doris.DorisCatalogKey;
+import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
+import com.cryptoneedle.garden.common.key.doris.DorisDatabaseKey;
+import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.doris.DorisCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.doris.DorisColumn;
 import com.cryptoneedle.garden.infrastructure.entity.doris.DorisDatabase;
@@ -41,6 +45,10 @@ public class DeleteDorisService {
     /**
      * DorisCatalog
      */
+    public void catalog(DorisCatalogKey key) {
+        dorisCatalogRepository.deleteById(key);
+    }
+    
     public void catalog(DorisCatalog entity) {
         dorisCatalogRepository.delete(entity);
     }
@@ -52,6 +60,10 @@ public class DeleteDorisService {
     /**
      * DorisDatabase
      */
+    public void database(DorisDatabaseKey key) {
+        dorisDatabaseRepository.deleteById(key);
+    }
+    
     public void database(DorisDatabase entity) {
         dorisDatabaseRepository.delete(entity);
     }
@@ -63,6 +75,10 @@ public class DeleteDorisService {
     /**
      * DorisTable
      */
+    public void table(DorisTableKey key) {
+        dorisTableRepository.deleteById(key);
+    }
+    
     public void table(DorisTable entity) {
         dorisTableRepository.delete(entity);
     }
@@ -74,6 +90,10 @@ public class DeleteDorisService {
     /**
      * DorisColumn
      */
+    public void column(DorisColumnKey key) {
+        dorisColumnRepository.deleteById(key);
+    }
+    
     public void column(DorisColumn entity) {
         dorisColumnRepository.delete(entity);
     }

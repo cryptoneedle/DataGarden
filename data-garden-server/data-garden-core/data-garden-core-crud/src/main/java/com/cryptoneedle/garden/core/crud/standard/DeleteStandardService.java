@@ -1,6 +1,8 @@
 package com.cryptoneedle.garden.core.crud.standard;
 
 
+import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
+import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.standard.StandardColumn;
 import com.cryptoneedle.garden.infrastructure.entity.standard.StandardTable;
 import com.cryptoneedle.garden.infrastructure.repository.standard.StandardColumnRepository;
@@ -32,6 +34,10 @@ public class DeleteStandardService {
     /**
      * StandardTable
      */
+    public void table(DorisTableKey key) {
+        standardTableRepository.deleteById(key);
+    }
+    
     public void table(StandardTable entity) {
         standardTableRepository.delete(entity);
     }
@@ -43,6 +49,10 @@ public class DeleteStandardService {
     /**
      * StandardColumn
      */
+    public void column(DorisColumnKey key) {
+        standardColumnRepository.deleteById(key);
+    }
+    
     public void column(StandardColumn entity) {
         standardColumnRepository.delete(entity);
     }

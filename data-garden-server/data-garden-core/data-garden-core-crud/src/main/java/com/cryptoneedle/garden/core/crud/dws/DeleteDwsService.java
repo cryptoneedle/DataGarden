@@ -1,6 +1,8 @@
 package com.cryptoneedle.garden.core.crud.dws;
 
 
+import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
+import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.dws.DwsColumn;
 import com.cryptoneedle.garden.infrastructure.entity.dws.DwsTable;
 import com.cryptoneedle.garden.infrastructure.repository.dws.DwsColumnRepository;
@@ -32,6 +34,10 @@ public class DeleteDwsService {
     /**
      * DwsTable
      */
+    public void table(DorisTableKey key) {
+        dwsTableRepository.deleteById(key);
+    }
+    
     public void table(DwsTable entity) {
         dwsTableRepository.delete(entity);
     }
@@ -43,6 +49,10 @@ public class DeleteDwsService {
     /**
      * DwsColumn
      */
+    public void column(DorisColumnKey key) {
+        dwsColumnRepository.deleteById(key);
+    }
+    
     public void column(DwsColumn entity) {
         dwsColumnRepository.delete(entity);
     }
