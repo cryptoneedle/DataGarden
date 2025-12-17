@@ -16,15 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-spi</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-plugins-oracle</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-core-crud</artifactId>
+            <artifactId>data-garden-core-source</artifactId>
         </dependency>
         <dependency>
             <groupId>com.cryptoneedle.garden</groupId>

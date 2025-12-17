@@ -16,7 +16,7 @@
     <dependencies>
         <dependency>
             <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-core-crud</artifactId>
+            <artifactId>data-garden-core-config</artifactId>
         </dependency>
     </dependencies>
 </project>

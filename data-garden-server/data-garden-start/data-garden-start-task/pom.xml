@@ -12,15 +12,4 @@
     </parent>
 
     <artifactId>data-garden-start-task</artifactId>
-
-    <dependencies>
-        <dependency>
-            <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-start-config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-core-sync</artifactId>
-        </dependency>
-    </dependencies>
 </project>

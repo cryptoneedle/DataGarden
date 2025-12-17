@@ -15,11 +15,6 @@
     <dependencies>
         <dependency>
             <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-infrastructure</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.cryptoneedle.garden</groupId>
             <artifactId>data-garden-spi</artifactId>
         </dependency>
     </dependencies>
