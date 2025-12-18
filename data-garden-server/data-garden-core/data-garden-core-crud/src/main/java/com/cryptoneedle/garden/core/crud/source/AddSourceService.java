@@ -41,10 +41,6 @@ public class AddSourceService {
         save.catalog(entity);
     }
     
-    public void catalogs(List<SourceCatalog> list) {
-        save.catalogs(list);
-    }
-    
     public SourceCatalog catalog(SourceCatalogAddVo vo) {
         SourceCatalogKey key = SourceCatalogKey.builder().catalogName(vo.getCatalogName()).build();
         SourceCatalog entity = select.catalog(key);
@@ -87,6 +83,10 @@ public class AddSourceService {
         save.catalog(entity);
         
         return entity;
+    }
+    
+    public void catalogs(List<SourceCatalog> list) {
+        save.catalogs(list);
     }
     
     /**

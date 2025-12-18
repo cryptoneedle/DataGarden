@@ -8,6 +8,7 @@ import com.cryptoneedle.garden.spi.DataSourceProvider;
 import com.cryptoneedle.garden.spi.DataSourceSpiLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>description: 配置-数据源目录-服务 </p>
@@ -17,19 +18,23 @@ import org.springframework.stereotype.Service;
  */
 @Slf4j
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SourceCatalogService {
     
+    public final SourceCatalogService service;
     public final AddService add;
     public final SelectService select;
     public final SaveService save;
     public final DeleteService delete;
     public final PatchService patch;
     
-    public SourceCatalogService(AddService addService,
+    public SourceCatalogService(SourceCatalogService sourceCatalogService,
+                                AddService addService,
                                 SelectService selectService,
                                 SaveService saveService,
                                 DeleteService deleteService,
                                 PatchService patchService) {
+        this.service = sourceCatalogService;
         this.add = addService;
         this.select = selectService;
         this.save = saveService;
@@ -39,13 +44,13 @@ public class SourceCatalogService {
     
     public void add(SourceCatalogAddVo vo) {
         SourceCatalog catalog = add.source.catalog(vo);
-        
-        // testServer
-        // testJdbc
-        // testDoris
+        // 测试
+        service.testServer(catalog);
+        service.testJdbc(catalog);
+        service.testDoris(catalog);
     }
     
-    private boolean testConnection(SourceCatalog catalog) {
+    public boolean testServer(SourceCatalog catalog) {
         try {
             DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
             if (provider != null) {
@@ -57,5 +62,23 @@ public class SourceCatalogService {
             log.warn("Test connection failed", e);
             return false;
         }
+    }
+    
+    public boolean testJdbc(SourceCatalog catalog) {
+        try {
+            DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
+            if (provider != null) {
+                String url = provider.buildJdbcUrl(catalog);
+                catalog.setUrl(url);
+            }
+            return DataSourceManager.testConnection(catalog);
+        } catch (Exception e) {
+            log.warn("Test connection failed", e);
+            return false;
+        }
+    }
+    
+    public boolean testDoris(SourceCatalog catalog) {
+        return true;
     }
 }

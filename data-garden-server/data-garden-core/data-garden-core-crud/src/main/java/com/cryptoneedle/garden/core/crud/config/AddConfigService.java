@@ -39,10 +39,6 @@ public class AddConfigService {
         save.property(entity);
     }
     
-    public void properties(List<ConfigProperty> list) {
-        save.properties(list);
-    }
-    
     public void property(ConfigPropertyAddVo vo) {
         ConfigPropertyKey key = ConfigPropertyKey.builder().propertyName(vo.getPropertyName()).build();
         ConfigProperty entity = select.property(key);
@@ -59,15 +55,15 @@ public class AddConfigService {
         save.property(entity);
     }
     
+    public void properties(List<ConfigProperty> list) {
+        save.properties(list);
+    }
+    
     /**
      * ConfigSsh
      */
     public void ssh(ConfigSsh entity) {
         save.ssh(entity);
-    }
-    
-    public void sshs(List<ConfigSsh> list) {
-        save.sshs(list);
     }
     
     public void ssh(@Valid ConfigSshAddVo vo) {
@@ -84,5 +80,9 @@ public class AddConfigService {
                           .password(vo.getPassword())
                           .build();
         save.ssh(entity);
+    }
+    
+    public void sshs(List<ConfigSsh> list) {
+        save.sshs(list);
     }
 }
