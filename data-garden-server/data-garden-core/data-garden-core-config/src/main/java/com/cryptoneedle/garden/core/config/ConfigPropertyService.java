@@ -2,6 +2,7 @@ package com.cryptoneedle.garden.core.config;
 
 import com.cryptoneedle.garden.core.crud.config.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>description: 配置-属性配置-服务 </p>
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
  * @date 2025-12-08
  */
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class ConfigPropertyService {
     
     public final AddConfigService add;

@@ -191,6 +191,11 @@
                 <artifactId>hibernate-commons-annotations</artifactId>
                 <version>7.0.3.Final</version>
             </dependency>
+            <dependency>
+                <groupId>com.hierynomus</groupId>
+                <artifactId>sshj</artifactId>
+                <version>0.40.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

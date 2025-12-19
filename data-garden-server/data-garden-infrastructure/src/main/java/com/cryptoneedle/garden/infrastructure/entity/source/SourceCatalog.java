@@ -95,4 +95,8 @@ public class SourceCatalog extends BaseEntity {
                 && Strings.CI.equals(this.password, other.getPassword())
                 && this.configSsh.equalsConnect(other.getConfigSsh());
     }
+    
+    public String address() {
+        return this.host+ ":" + this.port;
+    }
 }

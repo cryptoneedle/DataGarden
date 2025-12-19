@@ -52,4 +52,8 @@ public class ConfigSsh extends BaseEntity {
                 && this.username.equals(other.username)
                 && this.password.equals(other.password);
     }
+    
+    public String address() {
+        return this.id.getHost() + ":" + this.port;
+    }
 }
