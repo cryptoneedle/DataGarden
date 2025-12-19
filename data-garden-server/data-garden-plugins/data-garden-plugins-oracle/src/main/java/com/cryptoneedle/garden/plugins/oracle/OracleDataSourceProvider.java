@@ -1,8 +1,10 @@
 package com.cryptoneedle.garden.plugins.oracle;
 
+import com.cryptoneedle.garden.common.constants.CommonConstant;
 import com.cryptoneedle.garden.common.enums.SourceConnectType;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.spi.DataSourceProvider;
+import com.cryptoneedle.garden.spi.SshUtil;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -23,6 +25,9 @@ import org.apache.commons.lang3.StringUtils;
  * @date 2025-11-29
  */
 public class OracleDataSourceProvider implements DataSourceProvider {
+    
+    private final String JDBC_URL_SERVICE_NAME_TEMPLATE = "jdbc:oracle:thin:@//%s:%s/%s";
+    private final String JDBC_URL_SID_TEMPLATE = "jdbc:oracle:thin:@%s:%s:%s";
     
     private final String FILTER_SYSTEM_DATABASE_CONDITION = """
             AND owner NOT IN (
@@ -59,12 +64,19 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     public String buildJdbcUrl(SourceCatalog catalog) {
         String connectType = catalog.getConnectType();
         if (catalog.getConfigSsh() != null) {
-            throw new RuntimeException("[ORACLE] 不支持SSH连接");
+            Integer forwardPort = SshUtil.getForwardPort(catalog);
+            if (SourceConnectType.SERVICE_NAME.equals(connectType)) {
+                return JDBC_URL_SERVICE_NAME_TEMPLATE.formatted(CommonConstant.LOCAL_HOST, forwardPort, catalog.getRoute());
+            } else if (SourceConnectType.SID.equals(connectType)) {
+                return JDBC_URL_SID_TEMPLATE.formatted(CommonConstant.LOCAL_HOST, forwardPort, catalog.getRoute());
+            } else {
+                throw new RuntimeException("[ORACLE] 不支持的链接类型" + connectType);
+            }
         } else {
             if (SourceConnectType.SERVICE_NAME.equals(connectType)) {
-                return "jdbc:oracle:thin:@//" + catalog.getHost() + ":" + catalog.getPort() + "/" + catalog.getRoute();
+                return JDBC_URL_SERVICE_NAME_TEMPLATE.formatted(catalog.getHost(), catalog.getPort(), catalog.getRoute());
             } else if (SourceConnectType.SID.equals(connectType)) {
-                return "jdbc:oracle:thin:@" + catalog.getHost() + ":" + catalog.getPort() + ":" + catalog.getRoute();
+                return JDBC_URL_SID_TEMPLATE.formatted(catalog.getHost(), catalog.getPort(), catalog.getRoute());
             } else {
                 throw new RuntimeException("[ORACLE] 不支持的链接类型" + connectType);
             }

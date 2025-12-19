@@ -18,9 +18,5 @@
             <groupId>com.cryptoneedle.garden</groupId>
             <artifactId>data-garden-core-crud</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.hierynomus</groupId>
-            <artifactId>sshj</artifactId>
-        </dependency>
     </dependencies>
 </project>
