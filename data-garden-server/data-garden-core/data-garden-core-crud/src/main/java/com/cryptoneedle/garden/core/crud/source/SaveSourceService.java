@@ -1,7 +1,13 @@
 package com.cryptoneedle.garden.core.crud.source;
 
+import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
+import com.cryptoneedle.garden.core.crud.config.SelectConfigService;
+import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import com.cryptoneedle.garden.infrastructure.entity.source.*;
 import com.cryptoneedle.garden.infrastructure.repository.source.*;
+import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
+import com.cryptoneedle.garden.spi.DataSourceSpiLoader;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,17 +23,26 @@ import java.util.List;
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class SaveSourceService {
     
+    private final SelectConfigService selectConfigService;
+    private final SelectSourceService select;
+    private final SaveSourceService save;
     private final SourceCatalogRepository sourceCatalogRepository;
     private final SourceDatabaseRepository sourceDatabaseRepository;
     private final SourceTableRepository sourceTableRepository;
     private final SourceColumnRepository sourceColumnRepository;
     private final SourceDimensionRepository sourceDimensionRepository;
     
-    public SaveSourceService(SourceCatalogRepository sourceCatalogRepository,
+    public SaveSourceService(SelectConfigService selectConfigService,
+                             SelectSourceService selectSourceService,
+                             SaveSourceService saveSourceService,
+                             SourceCatalogRepository sourceCatalogRepository,
                              SourceDatabaseRepository sourceDatabaseRepository,
                              SourceTableRepository sourceTableRepository,
                              SourceColumnRepository sourceColumnRepository,
                              SourceDimensionRepository sourceDimensionRepository) {
+        this.selectConfigService = selectConfigService;
+        this.select = selectSourceService;
+        this.save = saveSourceService;
         this.sourceCatalogRepository = sourceCatalogRepository;
         this.sourceDatabaseRepository = sourceDatabaseRepository;
         this.sourceTableRepository = sourceTableRepository;
@@ -40,6 +55,22 @@ public class SaveSourceService {
      */
     public void catalog(SourceCatalog entity) {
         sourceCatalogRepository.save(entity);
+    }
+    
+    public SourceCatalog catalog(SourceCatalogSaveVo vo) {
+        SourceCatalogKey key = vo.sourceCatalogKey();
+        SourceCatalog old = select.catalog(key);
+        
+        SourceCatalog entity = vo.sourceCatalog(old);
+        entity.setUrl(DataSourceSpiLoader.getProvider(entity.getDatabaseType()).buildJdbcUrl(entity));
+        if (StringUtils.isNotBlank(vo.getSshHost())) {
+            ConfigSsh configSsh = selectConfigService.ssh(vo.getSshHost());
+            entity.setConfigSsh(configSsh);
+        }
+        
+        save.catalog(entity);
+        
+        return entity;
     }
     
     public void catalogs(List<SourceCatalog> list) {

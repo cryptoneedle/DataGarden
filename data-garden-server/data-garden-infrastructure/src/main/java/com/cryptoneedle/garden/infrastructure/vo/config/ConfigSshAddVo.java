@@ -1,4 +1,4 @@
-package com.cryptoneedle.garden.common.vo.config;
+package com.cryptoneedle.garden.infrastructure.vo.config;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

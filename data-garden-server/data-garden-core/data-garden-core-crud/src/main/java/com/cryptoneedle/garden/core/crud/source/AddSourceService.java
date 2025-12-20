@@ -1,10 +1,10 @@
 package com.cryptoneedle.garden.core.crud.source;
 
 import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
-import com.cryptoneedle.garden.common.vo.source.SourceCatalogAddVo;
 import com.cryptoneedle.garden.core.crud.config.SelectConfigService;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import com.cryptoneedle.garden.infrastructure.entity.source.*;
+import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import com.cryptoneedle.garden.spi.DataSourceSpiLoader;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -41,39 +41,14 @@ public class AddSourceService {
         save.catalog(entity);
     }
     
-    public SourceCatalog catalog(SourceCatalogAddVo vo) {
-        SourceCatalogKey key = SourceCatalogKey.builder().catalogName(vo.getCatalogName()).build();
+    public SourceCatalog catalog(SourceCatalogSaveVo vo) {
+        SourceCatalogKey key = vo.sourceCatalogKey();
         SourceCatalog entity = select.catalog(key);
         if (entity != null) {
             throw new RuntimeException("数据源目录: " + key + "已存在");
         }
         
-        entity = SourceCatalog.builder()
-                              .id(key)
-                              .dorisCatalogName(vo.getDorisCatalogName())
-                              .systemCode(vo.getSystemCode())
-                              .collectFrequency(vo.getCollectFrequency())
-                              .collectTimePoint(vo.getCollectTimePoint())
-                              .host(vo.getHost())
-                              .port(vo.getPort())
-                              .databaseType(vo.getDatabaseType())
-                              .connectType(vo.getConnectType())
-                              .route(vo.getRoute())
-                              .username(vo.getUsername())
-                              .password(vo.getPassword())
-                              // 初始化
-                              .url(null)
-                              .version(null)
-                              .serverConnected(false)
-                              .jdbcConnected(false)
-                              .dorisConnected(false)
-                              .serverConnectedDt(null)
-                              .jdbcConnectedDt(null)
-                              .dorisConnectedDt(null)
-                              .enabled(false)
-                              .configSsh(null)
-                              .build();
-        
+        entity = vo.sourceCatalog();
         entity.setUrl(DataSourceSpiLoader.getProvider(entity.getDatabaseType()).buildJdbcUrl(entity));
         if (StringUtils.isNotBlank(vo.getSshHost())) {
             ConfigSsh configSsh = selectConfigService.ssh(vo.getSshHost());

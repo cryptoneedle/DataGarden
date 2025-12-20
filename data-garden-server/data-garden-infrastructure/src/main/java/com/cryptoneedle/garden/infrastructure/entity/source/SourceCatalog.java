@@ -65,11 +65,11 @@ public class SourceCatalog extends BaseEntity {
     @Comment("数据库版本")
     private String version;
     @Comment("服务器可连接")
-    private boolean serverConnected = false;
+    private Boolean serverConnected = false;
     @Comment("Jdbc可连接")
-    private boolean jdbcConnected = false;
+    private Boolean jdbcConnected = false;
     @Comment("Doris可连接")
-    private boolean dorisConnected = false;
+    private Boolean dorisConnected = false;
     @Comment("服务器最后可连接时间")
     private LocalDateTime serverConnectedDt;
     @Comment("Jdbc最后可连接时间")
@@ -78,7 +78,7 @@ public class SourceCatalog extends BaseEntity {
     private LocalDateTime dorisConnectedDt;
     
     @Comment("启用")
-    private boolean enabled = false;
+    private Boolean enabled = false;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sshHost", referencedColumnName = "host", insertable = false, updatable = false)
