@@ -1,5 +1,6 @@
 package com.cryptoneedle.garden.core.source;
 
+import cn.hutool.v7.socket.SocketUtil;
 import com.cryptoneedle.garden.common.vo.source.SourceCatalogAddVo;
 import com.cryptoneedle.garden.core.crud.*;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
@@ -9,6 +10,9 @@ import com.cryptoneedle.garden.spi.DataSourceSpiLoader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.net.Socket;
+import java.time.LocalDateTime;
 
 /**
  * <p>description: 配置-数据源目录-服务 </p>
@@ -51,31 +55,39 @@ public class SourceCatalogService {
     }
     
     public boolean testServer(SourceCatalog catalog) {
-        try {
-            DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
-            if (provider != null) {
-                String url = provider.buildJdbcUrl(catalog);
-                catalog.setUrl(url);
+        boolean connected = false;
+        try (Socket socket = SocketUtil.connect(catalog.getHost(), catalog.getPort())) {
+            connected = socket.isConnected();
+            catalog.setServerConnected(connected);
+            if (connected) {
+                catalog.setServerConnectedDt(LocalDateTime.now());
             }
-            return DataSourceManager.testConnection(catalog);
+            save.source.catalog(catalog);
         } catch (Exception e) {
-            log.warn("Test connection failed", e);
-            return false;
+            e.printStackTrace();
         }
+        return connected;
     }
     
     public boolean testJdbc(SourceCatalog catalog) {
+        boolean connected = false;
         try {
             DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
             if (provider != null) {
                 String url = provider.buildJdbcUrl(catalog);
                 catalog.setUrl(url);
             }
-            return DataSourceManager.testConnection(catalog);
+            connected = DataSourceManager.testConnection(catalog);
+            catalog.setJdbcConnected(connected);
+            if (connected) {
+                catalog.setJdbcConnectedDt(LocalDateTime.now());
+            }
+            save.source.catalog(catalog);
         } catch (Exception e) {
             log.warn("Test connection failed", e);
             return false;
         }
+        return connected;
     }
     
     public boolean testDoris(SourceCatalog catalog) {

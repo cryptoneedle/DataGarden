@@ -65,17 +65,17 @@ public class OracleDataSourceProvider implements DataSourceProvider {
         String connectType = catalog.getConnectType();
         if (catalog.getConfigSsh() != null) {
             Integer forwardPort = SshUtil.getForwardPort(catalog);
-            if (SourceConnectType.SERVICE_NAME.equals(connectType)) {
+            if (SourceConnectType.SERVICE_NAME.equals(SourceConnectType.valueOf(connectType))) {
                 return JDBC_URL_SERVICE_NAME_TEMPLATE.formatted(CommonConstant.LOCAL_HOST, forwardPort, catalog.getRoute());
-            } else if (SourceConnectType.SID.equals(connectType)) {
+            } else if (SourceConnectType.SID.equals(SourceConnectType.valueOf(connectType))) {
                 return JDBC_URL_SID_TEMPLATE.formatted(CommonConstant.LOCAL_HOST, forwardPort, catalog.getRoute());
             } else {
                 throw new RuntimeException("[ORACLE] 不支持的链接类型" + connectType);
             }
         } else {
-            if (SourceConnectType.SERVICE_NAME.equals(connectType)) {
+            if (SourceConnectType.SERVICE_NAME.equals(SourceConnectType.valueOf(connectType))) {
                 return JDBC_URL_SERVICE_NAME_TEMPLATE.formatted(catalog.getHost(), catalog.getPort(), catalog.getRoute());
-            } else if (SourceConnectType.SID.equals(connectType)) {
+            } else if (SourceConnectType.SID.equals(SourceConnectType.valueOf(connectType))) {
                 return JDBC_URL_SID_TEMPLATE.formatted(catalog.getHost(), catalog.getPort(), catalog.getRoute());
             } else {
                 throw new RuntimeException("[ORACLE] 不支持的链接类型" + connectType);
