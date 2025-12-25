@@ -57,7 +57,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     
     @Override
     public String databaseType() {
-        return "Oracle";
+        return "ORACLE";
     }
     
     @Override

@@ -9,6 +9,7 @@ import com.cryptoneedle.garden.spi.DataSourceProvider;
 import com.cryptoneedle.garden.spi.DataSourceSpiLoader;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class SourceCatalogService {
     public final DeleteService delete;
     public final PatchService patch;
     
-    public SourceCatalogService(SourceCatalogService sourceCatalogService,
+    public SourceCatalogService(@Lazy SourceCatalogService sourceCatalogService,
                                 AddService addService,
                                 SelectService selectService,
                                 SaveService saveService,

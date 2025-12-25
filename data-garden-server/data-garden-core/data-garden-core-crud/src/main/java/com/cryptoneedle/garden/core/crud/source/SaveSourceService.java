@@ -8,6 +8,7 @@ import com.cryptoneedle.garden.infrastructure.repository.source.*;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import com.cryptoneedle.garden.spi.DataSourceSpiLoader;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +35,7 @@ public class SaveSourceService {
     
     public SaveSourceService(SelectConfigService selectConfigService,
                              SelectSourceService selectSourceService,
-                             SaveSourceService saveSourceService,
+                             @Lazy SaveSourceService saveSourceService,
                              SourceCatalogRepository sourceCatalogRepository,
                              SourceDatabaseRepository sourceDatabaseRepository,
                              SourceTableRepository sourceTableRepository,
