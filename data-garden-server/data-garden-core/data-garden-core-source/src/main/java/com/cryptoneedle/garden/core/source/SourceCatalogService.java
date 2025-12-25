@@ -33,6 +33,19 @@ public class SourceCatalogService {
     public final DeleteService delete;
     public final PatchService patch;
     
+    public SourceCatalogService(SourceCatalogService sourceCatalogService,
+                                AddService addService,
+                                SelectService selectService,
+                                SaveService saveService,
+                                DeleteService deleteService,
+                                PatchService patchService) {
+        this.service = sourceCatalogService;
+        this.add = addService;
+        this.select = selectService;
+        this.save = saveService;
+        this.delete = deleteService;
+        this.patch = patchService;
+    }
     
     public boolean testServer(SourceCatalog catalog, boolean needStore) {
         boolean connected = false;
@@ -79,20 +92,6 @@ public class SourceCatalogService {
     
     public boolean testDoris(SourceCatalog catalog, boolean needStore) {
         return true;
-    }
-    
-    public SourceCatalogService(SourceCatalogService sourceCatalogService,
-                                AddService addService,
-                                SelectService selectService,
-                                SaveService saveService,
-                                DeleteService deleteService,
-                                PatchService patchService) {
-        this.service = sourceCatalogService;
-        this.add = addService;
-        this.select = selectService;
-        this.save = saveService;
-        this.delete = deleteService;
-        this.patch = patchService;
     }
     
     public void addVo(SourceCatalogSaveVo vo) {
