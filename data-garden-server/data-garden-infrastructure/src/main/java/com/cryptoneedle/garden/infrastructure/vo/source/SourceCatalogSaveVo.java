@@ -19,6 +19,9 @@ import lombok.Data;
 @Schema(description = "配置-数据源目录-新增VO")
 public class SourceCatalogSaveVo {
     
+    @Schema(description = "需要业务逻辑保存数据")
+    private boolean needStore = false;
+    
     @NotBlank(message = "目录不能为空")
     @Schema(description = "目录")
     private String catalogName;

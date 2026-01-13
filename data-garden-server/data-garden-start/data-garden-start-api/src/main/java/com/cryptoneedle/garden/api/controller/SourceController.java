@@ -42,50 +42,39 @@ public class SourceController {
         this.patch = patch;
     }
     
-    @PostMapping("/catalog/add/test/server")
+    @PostMapping("/catalog/test/server")
     public Result<?> testAddCatalogServer(@Valid @RequestBody SourceCatalogSaveVo vo) {
-        return Result.success(sourceCatalogService.testServer(vo.sourceCatalog(), false));
+        return Result.success(sourceCatalogService.testServer(vo.sourceCatalog(), vo.isNeedStore()));
     }
     
-    @PostMapping("/catalog/add/test/jdbc")
+    @PostMapping("/catalog/test/jdbc")
     public Result<?> testAddCatalogJdbc(@Valid @RequestBody SourceCatalogSaveVo vo) {
-        return Result.success(sourceCatalogService.testJdbc(vo.sourceCatalog(), false));
+        SourceCatalog catalog = vo.sourceCatalog();
+        if (vo.getPassword() == null) {
+            SourceCatalog old = select.catalog(vo.sourceCatalogKey());
+            if (old != null) {
+                catalog.setPassword(old.getPassword());
+            }
+        }
+        return Result.success(sourceCatalogService.testJdbc(vo.sourceCatalog(), vo.isNeedStore()));
     }
     
-    @PostMapping("/catalog/add/test/doris")
+    @PostMapping("/catalog/test/doris")
     public Result<?> testAddCatalogDoris(@Valid @RequestBody SourceCatalogSaveVo vo) {
-        return Result.success(sourceCatalogService.testDoris(vo.sourceCatalog(), false));
+        SourceCatalog catalog = vo.sourceCatalog();
+        if (vo.getPassword() == null) {
+            SourceCatalog old = select.catalog(vo.sourceCatalogKey());
+            if (old != null) {
+                catalog.setPassword(old.getPassword());
+            }
+        }
+        return Result.success(sourceCatalogService.testDoris(vo.sourceCatalog(), vo.isNeedStore()));
     }
     
     @PostMapping("/catalog/add")
     public Result<?> addCatalog(@Valid @RequestBody SourceCatalogSaveVo vo) {
         sourceCatalogService.addVo(vo);
         return Result.success();
-    }
-    
-    @PostMapping("/catalog/save/test/server")
-    public Result<?> testSaveCatalogServer(@Valid @RequestBody SourceCatalogSaveVo vo) {
-        return Result.success(sourceCatalogService.testServer(vo.sourceCatalog(), false));
-    }
-    
-    @PostMapping("/catalog/save/test/jdbc")
-    public Result<?> testSaveCatalogJdbc(@Valid @RequestBody SourceCatalogSaveVo vo) {
-        SourceCatalog catalog = vo.sourceCatalog();
-        if (vo.getPassword() == null) {
-            SourceCatalog old = select.catalog(vo.sourceCatalogKey());
-            catalog.setPassword(old.getPassword());
-        }
-        return Result.success(sourceCatalogService.testJdbc(catalog, false));
-    }
-    
-    @PostMapping("/catalog/save/test/doris")
-    public Result<?> testSaveCatalogDoris(@Valid @RequestBody SourceCatalogSaveVo vo) {
-        SourceCatalog catalog = vo.sourceCatalog();
-        if (vo.getPassword() == null) {
-            SourceCatalog old = select.catalog(vo.sourceCatalogKey());
-            catalog.setPassword(old.getPassword());
-        }
-        return Result.success(sourceCatalogService.testDoris(catalog, false));
     }
     
     @PostMapping("/catalog/save")

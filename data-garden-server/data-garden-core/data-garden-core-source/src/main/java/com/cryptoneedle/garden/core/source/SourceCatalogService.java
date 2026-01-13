@@ -55,6 +55,7 @@ public class SourceCatalogService {
             
             // 持久化
             if (needStore) {
+                select.source.catalogCheck(catalog.getId());
                 catalog.setServerConnected(connected);
                 if (connected) {
                     catalog.setServerConnectedDt(LocalDateTime.now());
@@ -78,6 +79,7 @@ public class SourceCatalogService {
             connected = DataSourceManager.testConnection(catalog);
             // 持久化
             if (needStore) {
+                select.source.catalogCheck(catalog.getId());
                 catalog.setJdbcConnected(connected);
                 if (connected) {
                     catalog.setJdbcConnectedDt(LocalDateTime.now());
