@@ -44,7 +44,7 @@ public class DataSourceManager {
             }
             // 关闭旧数据源
             log.info("[JDBC] 检测到配置变更，关闭旧数据源: {}", catalogName);
-            if (existing.dataSource != null && !existing.dataSource.isClosed()) {
+            if (existing != null && existing.dataSource != null && !existing.dataSource.isClosed()) {
                 existing.dataSource.close();
                 log.info("[JDBC] 关闭连接 -> {}", existing.catalogName);
             }
@@ -73,7 +73,7 @@ public class DataSourceManager {
             }
             // 关闭旧数据源
             log.info("[JDBC] 检测到配置变更，关闭旧数据源: {}", catalogName);
-            if (existing.dataSource != null && !existing.dataSource.isClosed()) {
+            if (existing != null && existing.dataSource != null && !existing.dataSource.isClosed()) {
                 existing.dataSource.close();
                 log.info("[JDBC] 关闭连接 -> {}", existing.catalogName);
             }

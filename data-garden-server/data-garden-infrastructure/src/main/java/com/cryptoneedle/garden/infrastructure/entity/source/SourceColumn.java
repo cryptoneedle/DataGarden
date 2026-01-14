@@ -79,9 +79,9 @@ public class SourceColumn extends BaseEntity {
     @Comment("标度")
     private Long transScale;
     @Comment("非空")
-    private boolean notNull = false;
+    private Boolean notNull = false;
     @Comment("非空")
-    private boolean transNotNull;
+    private Boolean transNotNull;
     
     @Comment("数据量")
     private Long rowNum;
@@ -115,12 +115,12 @@ public class SourceColumn extends BaseEntity {
     private LocalDateTime statisticDt;
     
     @Comment("锁定字段")
-    private boolean transColumnLocked = false;
+    private Boolean transColumnLocked = false;
     @Comment("锁定说明")
-    private boolean transCommentLocked = false;
+    private Boolean transCommentLocked = false;
     @Comment("锁定数据类型")
     private String transDataTypeLocked;
     
     @Comment("启用")
-    private boolean enabled = false;
+    private Boolean enabled = false;
 }

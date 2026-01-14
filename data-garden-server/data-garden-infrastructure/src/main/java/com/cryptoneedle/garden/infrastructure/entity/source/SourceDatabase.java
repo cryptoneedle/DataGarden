@@ -55,5 +55,5 @@ public class SourceDatabase extends BaseEntity {
     private LocalDateTime statisticDt;
     
     @Comment("启用")
-    private boolean enabled = false;
+    private Boolean enabled = false;
 }

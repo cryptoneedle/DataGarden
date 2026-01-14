@@ -1,15 +1,14 @@
 package com.cryptoneedle.garden.api.controller;
 
 import com.bubbles.engine.common.core.result.Result;
+import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
+import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
 import com.cryptoneedle.garden.core.crud.source.*;
 import com.cryptoneedle.garden.core.source.SourceCatalogService;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>description:  </p>
@@ -49,25 +48,13 @@ public class SourceController {
     
     @PostMapping("/catalog/test/jdbc")
     public Result<?> testAddCatalogJdbc(@Valid @RequestBody SourceCatalogSaveVo vo) {
-        SourceCatalog catalog = vo.sourceCatalog();
-        if (vo.getPassword() == null) {
-            SourceCatalog old = select.catalog(vo.sourceCatalogKey());
-            if (old != null) {
-                catalog.setPassword(old.getPassword());
-            }
-        }
+        sourceCatalogService.fillPassword(vo);
         return Result.success(sourceCatalogService.testJdbc(vo.sourceCatalog(), vo.isNeedStore()));
     }
     
     @PostMapping("/catalog/test/doris")
     public Result<?> testAddCatalogDoris(@Valid @RequestBody SourceCatalogSaveVo vo) {
-        SourceCatalog catalog = vo.sourceCatalog();
-        if (vo.getPassword() == null) {
-            SourceCatalog old = select.catalog(vo.sourceCatalogKey());
-            if (old != null) {
-                catalog.setPassword(old.getPassword());
-            }
-        }
+        sourceCatalogService.fillPassword(vo);
         return Result.success(sourceCatalogService.testDoris(vo.sourceCatalog(), vo.isNeedStore()));
     }
     
@@ -79,7 +66,15 @@ public class SourceController {
     
     @PostMapping("/catalog/save")
     public Result<?> saveCatalog(@Valid @RequestBody SourceCatalogSaveVo vo) {
+        sourceCatalogService.fillPassword(vo);
         sourceCatalogService.saveVo(vo);
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/sync")
+    public Result<?> syncCatalog(@PathVariable("catalogName") String catalogName) throws EntityNotFoundException {
+        SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
+        sourceCatalogService.syncCatalog(catalog);
         return Result.success();
     }
 }

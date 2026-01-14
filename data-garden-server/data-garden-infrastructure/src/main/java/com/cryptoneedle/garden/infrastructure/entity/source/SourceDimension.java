@@ -37,5 +37,5 @@ public class SourceDimension extends BaseEntity {
     private Long sort;
     
     @Comment("启用")
-    private boolean enabled = false;
+    private Boolean enabled = false;
 }

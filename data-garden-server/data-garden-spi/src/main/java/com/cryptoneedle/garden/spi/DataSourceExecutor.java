@@ -1,5 +1,6 @@
 package com.cryptoneedle.garden.spi;
 
+import cn.hutool.v7.db.handler.ResultSetUtil;
 import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import com.cryptoneedle.garden.common.enums.SourceTableType;
 import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
@@ -9,7 +10,6 @@ import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.source.*;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.dbutils.BeanProcessor;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Connection;
@@ -40,15 +40,15 @@ public class DataSourceExecutor {
         // todo 使用SQL查询方式
     }
     
-    public static List<SourceDatabase> databases(SourceCatalog catalog, String databaseName) {
+    public static List<SourceDatabase> databases(SourceCatalog catalog, SourceDatabase database) {
         return DataSourceManager.getJdbcTemplate(catalog)
                                 .query(DataSourceSpiLoader.getProvider(catalog.getDatabaseType())
-                                                          .databaseSql(databaseName),
+                                                          .databaseSql(database != null ? database.getId().getDatabaseName() : null),
                                         (rs, rowNum) ->
-                                                new BeanProcessor().toBean(rs, SourceDatabase.class)
-                                                                   .setId(new BeanProcessor().toBean(rs, SourceDatabaseKey.class)
-                                                                                             .setCatalogName(catalog.getId()
-                                                                                                                    .getCatalogName())));
+                                                ResultSetUtil.toBean(rs.getMetaData(), rs, SourceDatabase.class)
+                                                             .setId(ResultSetUtil.toBean(rs.getMetaData(), rs, SourceDatabaseKey.class)
+                                                                                 .setCatalogName(catalog.getId()
+                                                                                                        .getCatalogName())));
     }
     
     public static List<SourceTable> tables(SourceCatalog catalog, String databaseName, String tableName) {
@@ -69,10 +69,10 @@ public class DataSourceExecutor {
     private static List<SourceTable> tables(JdbcTemplate jdbcTemplate, String sql, SourceCatalog catalog, SourceTableType sourceTableType) {
         return jdbcTemplate
                 .query(sql, (rs, rowNum) ->
-                        new BeanProcessor().toBean(rs, SourceTable.class)
-                                           .setId(new BeanProcessor().toBean(rs, SourceTableKey.class)
-                                                                     .setCatalogName(catalog.getId().getCatalogName()))
-                                           .setTableType(sourceTableType));
+                        ResultSetUtil.toBean(rs.getMetaData(), rs, SourceTable.class)
+                                     .setId(ResultSetUtil.toBean(rs.getMetaData(), rs, SourceTableKey.class)
+                                                         .setCatalogName(catalog.getId().getCatalogName()))
+                                     .setTableType(sourceTableType));
     }
     
     public static List<SourceColumn> columns(SourceCatalog catalog, String databaseName, String tableName) {
@@ -80,10 +80,10 @@ public class DataSourceExecutor {
                                 .query(DataSourceSpiLoader.getProvider(catalog.getDatabaseType())
                                                           .columnSql(databaseName, tableName),
                                         (rs, rowNum) ->
-                                                new BeanProcessor().toBean(rs, SourceColumn.class)
-                                                                   .setId(new BeanProcessor().toBean(rs, SourceColumnKey.class)
-                                                                                             .setCatalogName(catalog.getId()
-                                                                                                                    .getCatalogName())));
+                                                ResultSetUtil.toBean(rs.getMetaData(), rs, SourceColumn.class)
+                                                             .setId(ResultSetUtil.toBean(rs.getMetaData(), rs, SourceColumnKey.class)
+                                                                                 .setCatalogName(catalog.getId()
+                                                                                                        .getCatalogName())));
     }
     
     public static List<SourceDimension> dimensions(SourceCatalog catalog, String databaseName, String tableName) {
@@ -104,9 +104,9 @@ public class DataSourceExecutor {
     private static List<SourceDimension> dimensions(JdbcTemplate jdbcTemplate, String sql, SourceCatalog catalog, SourceDimensionType sourceDimensionType) {
         return jdbcTemplate
                 .query(sql, (rs, rowNum) ->
-                        new BeanProcessor().toBean(rs, SourceDimension.class)
-                                           .setId(new BeanProcessor().toBean(rs, SourceDimensionColumnKey.class)
-                                                                     .setCatalogName(catalog.getId().getCatalogName())
-                                                                     .setDimensionType(sourceDimensionType)));
+                        ResultSetUtil.toBean(rs.getMetaData(), rs, SourceDimension.class)
+                                     .setId(ResultSetUtil.toBean(rs.getMetaData(), rs, SourceDimensionColumnKey.class)
+                                                         .setCatalogName(catalog.getId().getCatalogName())
+                                                         .setDimensionType(sourceDimensionType)));
     }
 }
