@@ -3,9 +3,13 @@ package com.cryptoneedle.garden.api.controller;
 import com.bubbles.engine.common.core.result.Result;
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
+import com.cryptoneedle.garden.common.key.source.SourceDatabaseKey;
+import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.core.crud.source.*;
 import com.cryptoneedle.garden.core.source.SourceCatalogService;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -75,6 +79,26 @@ public class SourceController {
     public Result<?> syncCatalog(@PathVariable("catalogName") String catalogName) throws EntityNotFoundException {
         SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
         sourceCatalogService.syncCatalog(catalog);
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/sync")
+    public Result<?> syncCatalog(@PathVariable("catalogName") String catalogName,
+                                 @PathVariable("databaseName") String databaseName) throws EntityNotFoundException {
+        SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
+        SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
+        sourceCatalogService.syncDatabase(catalog, database);
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/sync")
+    public Result<?> syncCatalog(@PathVariable("catalogName") String catalogName,
+                                 @PathVariable("databaseName") String databaseName,
+                                 @PathVariable("tableName") String tableName) throws EntityNotFoundException {
+        SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
+        SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
+        SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
+        sourceCatalogService.syncTable(catalog, database, table);
         return Result.success();
     }
 }
