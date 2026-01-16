@@ -9,4 +9,5 @@ package com.cryptoneedle.garden.common.constants;
 public interface CommonConstant {
     
     String LOCAL_HOST = "127.0.0.1";
+    String DORIS_CATALOG = "internal";;
 }

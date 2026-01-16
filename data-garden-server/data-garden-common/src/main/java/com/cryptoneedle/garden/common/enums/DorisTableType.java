@@ -19,4 +19,17 @@ public enum DorisTableType {
     ;
     
     private final String description;
+    
+    public static DorisTableType convert(String tableType) {
+        switch (tableType) {
+            case "BASE TABLE":
+                return BASE_TABLE;
+            case "VIEW":
+                return VIEW;
+            case "SYSTEM VIEW":
+                return SYSTEM_VIEW;
+            default:
+                return null;
+        }
+    }
 }

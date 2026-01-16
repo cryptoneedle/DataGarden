@@ -19,14 +19,14 @@ public interface DorisTableRepository extends BaseRepository<DorisTable, DorisTa
     
     @Query("""
              FROM DorisTable
-            ORDER BY databaseSort, id.databaseName, id.tableName
+            ORDER BY id.databaseName, id.tableName
             """)
     List<DorisTable> tables();
     
     @Query("""
              FROM DorisTable
             WHERE id.databaseName = :databaseName
-            ORDER BY databaseSort, id.databaseName, id.tableName
+            ORDER BY id.databaseName, id.tableName
             """)
     List<DorisTable> tables(String databaseName);
 }

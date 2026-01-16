@@ -52,22 +52,13 @@ public class DorisColumn extends BaseEntity {
     @Column(length = 1024)
     @Comment("精度")
     private Long precision;
-    @Comment("DATETIME类型的精度")
-    private Long datetimePrecision;
     @Comment("标度")
     private Long scale;
-    @Comment("数值类型的小数位数")
-    private Long decimalDigits;
+    @Comment("非空")
+    private Boolean notNull;
     @Column(length = 27)
     @Comment("字段的一些额外信息。包括展示是否为自增字段，是否为 Generated 字段等")
     private String extra;
     @Comment("默认值")
     private String defaultValue;
-    @Comment("字符类型允许的最大字符数")
-    private Long charMaxLength;
-    @Comment("字符类型允许的最大字节数")
-    private Long byteMaxLength;
-    
-    @Comment("排序")
-    private Integer databaseSort;
 }

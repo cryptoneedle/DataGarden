@@ -10,7 +10,6 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -50,45 +49,31 @@ public class DorisTable extends BaseEntity {
     @Comment("副本数量")
     private Integer replicaCount;
     @Comment("是否分区")
-    private boolean partitioned = false;
+    private Boolean partitioned = false;
     @Comment("真实桶数量")
     private String bucketNum;
     @Comment("推荐桶数量")
     private Integer estimateBucketNum;
     @Comment("远程存储数据量")
     private String remoteSize;
-    @Comment("字段据量")
+    @Comment("字段数量")
     private Integer columnNum;
     @Comment("数据量")
     private Long rowNum;
     @Comment("占用空间(格式化)")
     private String storageSpaceFormat;
-    @Column(name = "storage_mb", precision = 30, scale = 20)
-    @Comment("占用空间(单位：MBytes)")
-    private BigDecimal storageMegaBytes;
-    @Column(precision = 30, scale = 20)
+    @Column(name = "storage_bytes")
+    @Comment("占用空间(单位：Bytes)")
+    private Long storageBytes;
     @Comment("行平均占用空间(单位：Byte)")
-    private BigDecimal avgRowBytes;
+    private Long avgRowBytes;
     
-    @Column(columnDefinition = "TEXT")
-    @Comment("建表语句")
-    private String createTableSql;
-    
-    @Comment("存储格式")
-    private String storageFormat;
-    @Comment("倒排索引存储格式")
-    private String invertedIndexStorageFormat;
-    @Column(length = 64)
-    @Comment("表引擎类型")
-    private String engine;
-    @Column(length = 32)
-    @Comment("固定值：utf-8")
-    private String collationName;
     @Comment("创建时间")
     private LocalDateTime createDt;
     @Comment("更新时间")
     private LocalDateTime updateDt;
     
-    @Comment("排序")
-    private Integer databaseSort;
+    @Column(columnDefinition = "TEXT")
+    @Comment("建表语句")
+    private String createTableScript;
 }

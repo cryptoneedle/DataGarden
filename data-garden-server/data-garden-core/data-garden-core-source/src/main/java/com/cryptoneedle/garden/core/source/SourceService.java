@@ -34,22 +34,22 @@ import java.util.Map;
 @Slf4j
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
-public class SourceCatalogService {
+public class SourceService {
     
-    public final SourceCatalogService service;
+    public final SourceService service;
     public final AddService add;
     public final SelectService select;
     public final SaveService save;
     public final DeleteService delete;
     public final PatchService patch;
     
-    public SourceCatalogService(@Lazy SourceCatalogService sourceCatalogService,
-                                AddService addService,
-                                SelectService selectService,
-                                SaveService saveService,
-                                DeleteService deleteService,
-                                PatchService patchService) {
-        this.service = sourceCatalogService;
+    public SourceService(@Lazy SourceService sourceService,
+                         AddService addService,
+                         SelectService selectService,
+                         SaveService saveService,
+                         DeleteService deleteService,
+                         PatchService patchService) {
+        this.service = sourceService;
         this.add = addService;
         this.select = selectService;
         this.save = saveService;

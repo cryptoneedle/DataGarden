@@ -19,14 +19,14 @@ public interface DorisColumnRepository extends BaseRepository<DorisColumn, Doris
     
     @Query("""
              FROM DorisColumn
-            ORDER BY databaseSort, id.databaseName, id.tableName, sort
+            ORDER BY id.databaseName, id.tableName, sort
             """)
     List<DorisColumn> columns();
     
     @Query("""
              FROM DorisColumn
             WHERE id.databaseName = :databaseName
-            ORDER BY databaseSort, id.databaseName, id.tableName, sort
+            ORDER BY id.databaseName, id.tableName, sort
             """)
     List<DorisColumn> columns(String databaseName);
     
@@ -34,7 +34,7 @@ public interface DorisColumnRepository extends BaseRepository<DorisColumn, Doris
              FROM DorisColumn
             WHERE id.databaseName = :databaseName
               AND id.tableName = :tableName
-            ORDER BY databaseSort, id.databaseName, id.tableName, sort
+            ORDER BY id.databaseName, id.tableName, sort
             """)
     List<DorisColumn> columns(String databaseName, String tableName);
 }

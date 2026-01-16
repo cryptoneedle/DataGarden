@@ -1,7 +1,6 @@
 package com.cryptoneedle.garden.infrastructure.entity.doris;
 
 import com.bubbles.engine.data.core.entity.BaseEntity;
-import com.cryptoneedle.garden.common.enums.DorisCatalogType;
 import com.cryptoneedle.garden.common.key.doris.DorisCatalogKey;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,7 +31,7 @@ public class DorisCatalog extends BaseEntity {
     private DorisCatalogKey id;
     
     @Comment("目录类型")
-    private DorisCatalogType catalogType;
+    private String catalogType;
     @Column(length = 2048)
     @Comment("说明")
     private String comment;

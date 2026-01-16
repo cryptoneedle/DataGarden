@@ -8,7 +8,7 @@ package com.cryptoneedle.garden.common.util;
  */
 public class DorisBucketUtil {
 
-    public static Integer estimateBucket(Double estimateMegaBytes, double compressRatio) {
+    public static Integer estimateBucket(long estimateBytes, double compressRatio) {
         // 表预估占用空间 MB
 
         // 是否需要分区
@@ -18,7 +18,7 @@ public class DorisBucketUtil {
 
 
         // 原始数压缩率（压缩采用LZ4，实际压缩率约为0.1~0.3）
-        estimateMegaBytes = estimateMegaBytes * compressRatio;
+        estimateBytes = (long) (estimateBytes * compressRatio / 1024  / 1024);
 
         // 1.分区策略
         // 单分区大小不超过50GB
@@ -63,7 +63,7 @@ public class DorisBucketUtil {
         // 最终分桶数 P
 
         // 7.实际计算方法（做了一些简化）
-        if (estimateMegaBytes >= 1024 * 50) {
+        if (estimateBytes >= 1024 * 50) {
             needPartition = true;
         }
         // 以下不考虑分区
@@ -73,22 +73,22 @@ public class DorisBucketUtil {
         } else {
             //int s; // 暂不启用
             int c = 5 * 20 / 2;
-            if (estimateMegaBytes < 100) {
+            if (estimateBytes < 100) {
                 bucketNum = 1;
-            } else if (estimateMegaBytes < 500) {
+            } else if (estimateBytes < 500) {
                 bucketNum = 3;
-            } else if (estimateMegaBytes < 1024) {
+            } else if (estimateBytes < 1024) {
                 bucketNum = 4;
-            } else if (estimateMegaBytes < 1024 * 3) {
+            } else if (estimateBytes < 1024 * 3) {
                 bucketNum = 6;
-            } else if (estimateMegaBytes < 1024 * 5) {
+            } else if (estimateBytes < 1024 * 5) {
                 bucketNum = 8;
-            } else if (estimateMegaBytes < 1024 * 10) {
+            } else if (estimateBytes < 1024 * 10) {
                 bucketNum = 10;
-            } else if (estimateMegaBytes < 1024 * 64) {
-                bucketNum = (int) Math.ceil(estimateMegaBytes / 1024);
+            } else if (estimateBytes < 1024 * 64) {
+                bucketNum = (int) Math.ceil(estimateBytes / 1024);
             } else {
-                bucketNum = Math.max(Math.max((int) Math.ceil(estimateMegaBytes / 1024), c), 64);
+                bucketNum = Math.max(Math.max((int) Math.ceil(estimateBytes / 1024), c), 64);
             }
         }
         return bucketNum;
