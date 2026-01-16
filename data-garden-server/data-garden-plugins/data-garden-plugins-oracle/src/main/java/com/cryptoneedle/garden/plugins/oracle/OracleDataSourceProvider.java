@@ -169,8 +169,8 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     
     @Override
     public String columnSql(String databaseName, String tableName) {
-        String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND tc.owner = '%s'".formatted(databaseName) : "";
-        String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND tc.table_name = '%s'".formatted(tableName) : "";
+        String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND t.owner = '%s'".formatted(databaseName) : "";
+        String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND t.table_name = '%s'".formatted(tableName) : "";
         // todo 暂时只进行非DBA用户的查询
         return """
                 SELECT t.owner                       AS "databaseName"   -- 数据库
@@ -202,8 +202,8 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     
     @Override
     public String primaryConstraintSql(String databaseName, String tableName) {
-        String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND c.owner = '%s'".formatted(databaseName) : "";
-        String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND c.table_name = '%s'".formatted(tableName) : "";
+        String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND t.owner = '%s'".formatted(databaseName) : "";
+        String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND t.table_name = '%s'".formatted(tableName) : "";
         // todo 暂时只进行非DBA用户的查询
         return """
                 SELECT t.owner              AS "databaseName"  -- 数据库
@@ -224,8 +224,8 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     
     @Override
     public String uniqueConstraintSql(String databaseName, String tableName) {
-        String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND c.owner = '%s'".formatted(databaseName) : "";
-        String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND c.table_name = '%s'".formatted(tableName) : "";
+        String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND t.owner = '%s'".formatted(databaseName) : "";
+        String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND t.table_name = '%s'".formatted(tableName) : "";
         // todo 暂时只进行非DBA用户的查询
         return """
                 SELECT t.owner              AS "databaseName"  -- 数据库
@@ -246,8 +246,8 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     
     @Override
     public String uniqueIndexSql(String databaseName, String tableName) {
-        String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND i.table_owner = '%s'".formatted(databaseName) : "";
-        String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND i.table_name = '%s'".formatted(tableName) : "";
+        String searchDatabaseCondition = StringUtils.isNotBlank(databaseName) ? "AND t.table_owner = '%s'".formatted(databaseName) : "";
+        String searchTableCondition = StringUtils.isNotBlank(tableName) ? "AND t.table_name = '%s'".formatted(tableName) : "";
         // todo 暂时只进行非DBA用户的查询
         return """
                 SELECT t.table_owner     AS "databaseName"  -- 数据库

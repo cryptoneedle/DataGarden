@@ -169,7 +169,14 @@ public class SourceService {
         // 新增
         List<SourceDatabase> extraList = dealList.stream()
                                                  .filter(deal -> !originMap.containsKey(deal.getId()))
-                                                 .peek(deal -> {})
+                                                 .filter(deal -> deal.getTotalNum() > 0)
+                                                 .peek(deal -> {
+                                                     deal.setDorisCatalogName(catalog.getDorisCatalogName())
+                                                         .setSystemCode(catalog.getSystemCode())
+                                                         .setCollectFrequency(catalog.getCollectFrequency())
+                                                         .setCollectTimePoint(catalog.getCollectTimePoint())
+                                                         .setStatisticDt(localDateTime);
+                                                 })
                                                  .toList();
         
         // 保存
@@ -221,7 +228,8 @@ public class SourceService {
         // 新增
         List<SourceTable> extraList = dealList.stream()
                                               .filter(deal -> !originMap.containsKey(deal.getId()))
-                                              .peek(deal -> {})
+                                              .peek(deal -> {
+                                              })
                                               .toList();
         
         // 保存

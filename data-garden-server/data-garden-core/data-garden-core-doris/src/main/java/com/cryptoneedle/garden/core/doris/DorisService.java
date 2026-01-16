@@ -106,7 +106,7 @@ public class DorisService {
         service.syncDatabase(null, null);
     }
     
-    public void syncDatabase(DorisDatabase database, DorisTable dorisTable) {
+    public void syncDatabase(DorisDatabase database, DorisTable table) {
         // 查询所有
         List<DorisDatabase> originList = select.doris.databases();
         
@@ -143,14 +143,7 @@ public class DorisService {
         save.doris.databases(saveList);
         delete.doris.databases(removeList);
         
-        if (database == null) {
-            for (DorisDatabase dorisDatabase : select.doris.databases()) {
-                syncTable(dorisDatabase, dorisTable);
-            }
-        } else {
-            syncTable(database, dorisTable);
-        }
-        
+        service.syncTable(database, table);
     }
     
     public void syncTable(DorisDatabase database, DorisTable table) {
