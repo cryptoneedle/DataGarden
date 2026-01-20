@@ -10,12 +10,12 @@ import com.cryptoneedle.garden.infrastructure.dto.*;
 import com.cryptoneedle.garden.infrastructure.entity.doris.DorisColumn;
 import com.cryptoneedle.garden.infrastructure.entity.doris.DorisShowCreateTable;
 import com.cryptoneedle.garden.infrastructure.entity.doris.DorisTable;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -34,11 +34,37 @@ import java.util.List;
  */
 @Service
 @Slf4j
-@Transactional(rollbackFor = Exception.class)
 public class DorisMetadataRepository {
     
     @Resource
     private JdbcTemplate dorisJdbcTemplate;
+    
+    public boolean execReturnBoolean(String sql) {
+        boolean result = false;
+        try {
+            dorisJdbcTemplate.execute(sql);
+            result  = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    public void execDropCatalogIfExists(SourceCatalog catalog, boolean needTest) {
+        String catalogPrefix = needTest ? "temp_test_" : "";
+        String dorisCatalog = catalogPrefix + catalog.getDorisCatalog();
+        
+        String sql = String.format("DROP CATALOG IF EXISTS %s", dorisCatalog);
+        dorisJdbcTemplate.execute(sql);
+    }
+    
+    public void execDropCatalog(SourceCatalog catalog, boolean needTest) {
+        String catalogPrefix = needTest ? "temp_test_" : "";
+        String dorisCatalog = catalogPrefix + catalog.getDorisCatalog();
+        
+        String sql = String.format("DROP CATALOG %s", dorisCatalog);
+        dorisJdbcTemplate.execute(sql);
+    }
     
     public List<DorisExecShowCatalogs> showCatalogs() {
         List<DorisExecShowCatalogs> list = new ArrayList<>();

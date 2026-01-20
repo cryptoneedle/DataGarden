@@ -39,7 +39,7 @@ public class SourceColumn extends BaseEntity {
     private String comment;
     
     @Comment("Doris目录")
-    private String dorisCatalogName;
+    private String dorisCatalog;
     @Comment("系统编码 (会覆盖目录、数据库、表配置)")
     private String systemCode;
     

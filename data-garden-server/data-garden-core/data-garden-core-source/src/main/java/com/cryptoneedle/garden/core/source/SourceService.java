@@ -6,6 +6,7 @@ import com.cryptoneedle.garden.common.key.source.SourceDatabaseKey;
 import com.cryptoneedle.garden.common.key.source.SourceDimensionColumnKey;
 import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.core.crud.*;
+import com.cryptoneedle.garden.infrastructure.doris.DorisMetadataRepository;
 import com.cryptoneedle.garden.infrastructure.entity.source.*;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import com.cryptoneedle.garden.spi.DataSourceExecutor;
@@ -42,19 +43,23 @@ public class SourceService {
     public final SaveService save;
     public final DeleteService delete;
     public final PatchService patch;
+    public final DorisMetadataRepository dorisMetadataRepository;
+    
     
     public SourceService(@Lazy SourceService sourceService,
                          AddService addService,
                          SelectService selectService,
                          SaveService saveService,
                          DeleteService deleteService,
-                         PatchService patchService) {
+                         PatchService patchService,
+                         DorisMetadataRepository dorisMetadataRepository) {
         this.service = sourceService;
         this.add = addService;
         this.select = selectService;
         this.save = saveService;
         this.delete = deleteService;
         this.patch = patchService;
+        this.dorisMetadataRepository = dorisMetadataRepository;
     }
     
     public void fillPassword(@Valid SourceCatalogSaveVo vo) {
@@ -126,7 +131,75 @@ public class SourceService {
     }
     
     public boolean testDoris(SourceCatalog catalog, boolean needStore) {
-        return true;
+        boolean connected = false;
+        try {
+            try {
+                dorisMetadataRepository.execDropCatalogIfExists(catalog, true);
+                connected = service.execCreateCatalog(catalog, true);
+                dorisMetadataRepository.execDropCatalog(catalog, true);
+                connected = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            // 持久化
+            if (needStore) {
+                select.source.catalogCheck(catalog.getId());
+                catalog.setDorisConnected(connected);
+                if (connected) {
+                    catalog.setDorisConnectedDt(LocalDateTime.now());
+                }
+                save.source.catalog(catalog);
+            }
+        } catch (Exception e) {
+            log.warn("Test doris failed", e);
+        }
+        return connected;
+    }
+    
+    public boolean execCreateCatalog(SourceCatalog catalog, boolean needTest) {
+        String createCatalog = createCatalogSql(catalog, needTest);
+        return dorisMetadataRepository.execReturnBoolean(createCatalog);
+    }
+    
+    public String createCatalogSql(SourceCatalog catalog, boolean needTest) {
+        String catalogPrefix = needTest ? "doris_test_" : "";
+        String dorisCatalog = catalogPrefix + catalog.getDorisCatalog();
+        
+        return String.format("""
+                        CREATE CATALOG IF NOT EXISTS `%s` COMMENT '%s'
+                        PROPERTIES (
+                            "type"="jdbc",
+                            "driver_url" = "%s",
+                            "driver_class" = "%s",
+                            "jdbc_url" = "%s",
+                            "user"="%s",
+                            "password"="%s",
+                            "lower_case_meta_names" = "false",
+                            "meta_names_mapping" = "",
+                            "only_specified_database" = "false",
+                            "include_database_list" = "",
+                            "exclude_database_list" = "",
+                            "connection_pool_min_size" = "%s",
+                            "connection_pool_max_size" = "%s",
+                            "connection_pool_max_wait_time" = "%s",
+                            "connection_pool_max_life_time" = "%s",
+                            "connection_pool_keep_alive" = "%s",
+                            "enable.auto.analyze" ="false"
+                        );"""
+                , dorisCatalog
+                , catalog.getId().getCatalogName()
+                , select.config.dorisCatalogDriverUrl(catalog.getDatabaseType())
+                , select.config.dorisCatalogDriverClass(catalog.getDatabaseType())
+                , DataSourceSpiLoader.getProvider(catalog.getDatabaseType()).buildJdbcUrl(catalog)
+                , catalog.getUsername()
+                , catalog.getPassword()
+                , select.config.dorisCatalogConnectionPoolMinSize()
+                , select.config.dorisCatalogConnectionPoolMaxSize()
+                , select.config.dorisCatalogConnectionPoolMaxWaitTime()
+                , select.config.dorisCatalogConnectionPoolMaxLifeTime()
+                , select.config.dorisCatalogConnectionPoolKeepAlive()
+        );
     }
     
     public void addVo(SourceCatalogSaveVo vo) {
@@ -171,11 +244,7 @@ public class SourceService {
                                                  .filter(deal -> !originMap.containsKey(deal.getId()))
                                                  .filter(deal -> deal.getTotalNum() > 0)
                                                  .peek(deal -> {
-                                                     deal.setDorisCatalogName(catalog.getDorisCatalogName())
-                                                         .setSystemCode(catalog.getSystemCode())
-                                                         .setCollectFrequency(catalog.getCollectFrequency())
-                                                         .setCollectTimePoint(catalog.getCollectTimePoint())
-                                                         .setStatisticDt(localDateTime);
+                                                     deal.setStatisticDt(localDateTime);
                                                  })
                                                  .toList();
         
@@ -201,6 +270,8 @@ public class SourceService {
         add.source.databases(extraList);
         save.source.databases(existsList);
         delete.source.databases(missList);
+        
+        patch.source.databaseDefault(catalog);
         
         service.syncTable(catalog, database, null);
     }
@@ -228,8 +299,7 @@ public class SourceService {
         // 新增
         List<SourceTable> extraList = dealList.stream()
                                               .filter(deal -> !originMap.containsKey(deal.getId()))
-                                              .peek(deal -> {
-                                              })
+                                              .peek(deal -> {})
                                               .toList();
         
         // 保存
@@ -252,6 +322,8 @@ public class SourceService {
         add.source.tables(extraList);
         save.source.tables(existsList);
         delete.source.tables(missList);
+        
+        patch.source.tableDefault(catalog);
         
         service.syncColumn(catalog, database, table);
         service.syncDimension(catalog, database, table);
@@ -281,7 +353,8 @@ public class SourceService {
         // 新增
         List<SourceColumn> extraList = dealList.stream()
                                                .filter(deal -> !originMap.containsKey(deal.getId()))
-                                               .peek(deal -> {})
+                                               .peek(deal -> {
+                                               })
                                                .toList();
         
         // 保存

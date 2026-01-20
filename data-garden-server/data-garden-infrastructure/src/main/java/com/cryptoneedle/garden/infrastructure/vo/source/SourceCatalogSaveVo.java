@@ -28,16 +28,16 @@ public class SourceCatalogSaveVo {
     
     @NotBlank(message = "Doris目录不能为空")
     @Schema(description = "Doris目录")
-    private String dorisCatalogName;
+    private String dorisCatalog;
     @NotBlank(message = "默认系统编码不能为空")
     @Schema(description = "默认系统编码")
     private String systemCode;
     @NotNull(message = "默认采集频率不能为空")
     @Schema(description = "默认采集频率")
-    private SourceCollectFrequencyType collectFrequency;
+    private SourceCollectFrequencyType collectFrequency = SourceCollectFrequencyType.HOUR;
     @NotNull(message = "采集频率时间点不能为空")
     @Schema(description = "默认采集频率对应的时间点 (每天为具体小时开始，每小时为具体分钟开始，每分钟为具体分开始)")
-    private Integer collectTimePoint;
+    private Integer collectTimePoint = 0;
     
     @NotBlank(message = "主机不能为空")
     @Schema(description = "主机")
@@ -69,7 +69,7 @@ public class SourceCatalogSaveVo {
     public SourceCatalog sourceCatalog() {
         return SourceCatalog.builder()
                             .id(sourceCatalogKey())
-                            .dorisCatalogName(this.dorisCatalogName)
+                            .dorisCatalog(this.dorisCatalog)
                             .systemCode(this.systemCode)
                             .collectFrequency(this.collectFrequency)
                             .collectTimePoint(this.collectTimePoint)
@@ -97,7 +97,7 @@ public class SourceCatalogSaveVo {
     public SourceCatalog sourceCatalog(SourceCatalog sourceCatalog) {
         return SourceCatalog.builder()
                             .id(sourceCatalogKey())
-                            .dorisCatalogName(this.dorisCatalogName)
+                            .dorisCatalog(this.dorisCatalog)
                             .systemCode(this.systemCode)
                             .collectFrequency(this.collectFrequency)
                             .collectTimePoint(this.collectTimePoint)

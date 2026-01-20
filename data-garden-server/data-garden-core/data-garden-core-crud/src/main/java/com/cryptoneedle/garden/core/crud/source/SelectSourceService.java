@@ -55,8 +55,8 @@ public class SelectSourceService {
                                       .orElseThrow(() -> new EntityNotFoundException("SourceCatalog", id.toString()));
     }
     
-    public SourceCatalog catalogByDoris(String dorisCatalogName) {
-        return sourceCatalogRepository.catalogByDoris(dorisCatalogName);
+    public SourceCatalog catalogByDoris(String dorisCatalog) {
+        return sourceCatalogRepository.catalogByDoris(dorisCatalog);
     }
     
     public List<SourceCatalog> catalogs() {

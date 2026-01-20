@@ -34,7 +34,7 @@ public class SourceDatabase extends BaseEntity {
     private SourceDatabaseKey id;
     
     @Comment("Doris目录")
-    private String dorisCatalogName;
+    private String dorisCatalog;
     @Comment("默认系统编码 (会覆盖目录配置)")
     private String systemCode;
     @Enumerated(EnumType.STRING)

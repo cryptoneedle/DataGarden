@@ -7,6 +7,7 @@ import com.cryptoneedle.garden.infrastructure.entity.config.ConfigProperty;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import com.cryptoneedle.garden.infrastructure.repository.config.ConfigPropertyRepository;
 import com.cryptoneedle.garden.infrastructure.repository.config.ConfigSshRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +50,34 @@ public class SelectConfigService {
     
     public List<ConfigProperty> properties() {
         return configPropertyRepository.properties();
+    }
+    
+    public String dorisCatalogDriverUrl(String databaseType) {
+        return property("doris_catalog_driver_url_" + StringUtils.lowerCase(databaseType)).getValue();
+    }
+    
+    public String dorisCatalogDriverClass(String databaseType) {
+        return property("doris_catalog_driver_class_" + StringUtils.lowerCase(databaseType)).getValue();
+    }
+    
+    public String dorisCatalogConnectionPoolMinSize() {
+        return property("doris_catalog_connection_pool_min_size").getValue();
+    }
+    
+    public String dorisCatalogConnectionPoolMaxSize() {
+        return property("doris_catalog_connection_pool_max_size").getValue();
+    }
+    
+    public String dorisCatalogConnectionPoolMaxWaitTime() {
+        return property("doris_catalog_connection_pool_max_wait_time").getValue();
+    }
+    
+    public String dorisCatalogConnectionPoolMaxLifeTime() {
+        return property("doris_catalog_connection_pool_max_life_time").getValue();
+    }
+    
+    public String dorisCatalogConnectionPoolKeepAlive() {
+        return property("doris_catalog_connection_pool_keep_alive").getValue();
     }
     
     /**
