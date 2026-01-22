@@ -42,10 +42,10 @@ public interface SourceColumnRepository extends BaseRepository<SourceColumn, Sou
              FROM SourceColumn
             WHERE id.catalogName = :catalogName
               AND id.databaseName = :databaseName
-              AND id.columnName = :columnName
+              AND id.tableName = :tableName
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, sort
             """)
-    List<SourceColumn> columns(String catalogName, String databaseName, String columnName);
+    List<SourceColumn> columns(String catalogName, String databaseName, String tableName);
     
     @Query("""
               FROM SourceColumn
@@ -75,9 +75,39 @@ public interface SourceColumnRepository extends BaseRepository<SourceColumn, Sou
              FROM SourceColumn
             WHERE id.catalogName = :catalogName
               AND id.databaseName = :databaseName
-              AND id.columnName = :columnName
+              AND id.tableName = :tableName
               AND enabled = TRUE
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, sort
             """)
-    List<SourceColumn> columnsEnabled(String catalogName, String databaseName, String columnName);
+    List<SourceColumn> columnsEnabled(String catalogName, String databaseName, String tableName);
+    
+    @Query("""
+             FROM SourceColumn c
+            WHERE c.id.catalogName = :catalogName
+              AND c.id.databaseName = :databaseName
+              AND c.id.tableName = :tableName
+              AND EXISTS (SELECT 1
+                            FROM SourceDimension d
+                           WHERE c.id.catalogName = d.id.catalogName
+                             AND c.id.databaseName = d.id.databaseName
+                             AND c.id.tableName = d.id.tableName
+                             AND c.id.columnName = d.id.columnName
+                             AND d.enabled = TRUE)
+            ORDER BY c.id.catalogName, c.id.databaseName, c.id.tableName, c.sort, c.id.columnName""")
+    List<SourceColumn> columnsWithDimension(String catalogName, String databaseName, String tableName);
+    
+    @Query("""
+             FROM SourceColumn c
+            WHERE c.id.catalogName = :catalogName
+              AND c.id.databaseName = :databaseName
+              AND c.id.tableName = :tableName
+              AND NOT EXISTS (SELECT 1
+                                FROM SourceDimension d
+                               WHERE c.id.catalogName = d.id.catalogName
+                                 AND c.id.databaseName = d.id.databaseName
+                                 AND c.id.tableName = d.id.tableName
+                                 AND c.id.columnName = d.id.columnName
+                                 AND d.enabled = TRUE)
+            ORDER BY c.id.catalogName, c.id.databaseName, c.id.tableName, c.sort, c.id.columnName""")
+    List<SourceColumn> columnsWithoutDimension(String catalogName, String databaseName, String tableName);
 }

@@ -52,6 +52,14 @@ public class SelectConfigService {
         return configPropertyRepository.properties();
     }
     
+    public String dorisSchemaOds() {
+        return property("doris_schema_ods").getValue();
+    }
+    
+    public String dorisTablePrefixOds() {
+        return property("doris_table_prefix_ods").getValue();
+    }
+    
     public String dorisCatalogDriverUrl(String databaseType) {
         return property("doris_catalog_driver_url_" + StringUtils.lowerCase(databaseType)).getValue();
     }

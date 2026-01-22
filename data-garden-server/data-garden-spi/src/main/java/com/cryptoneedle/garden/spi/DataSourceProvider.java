@@ -1,6 +1,7 @@
 package com.cryptoneedle.garden.spi;
 
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceColumn;
 
 /**
  * <p>description: 数据源-插件规范 </p>
@@ -157,4 +158,11 @@ public interface DataSourceProvider {
      * @return 唯一索引查询SQL
      */
     String uniqueIndexSql(String databaseName, String tableName);
+    
+    /**
+     * 转换列信息
+     *
+     * @param column
+     */
+    void transform(SourceColumn column);
 }

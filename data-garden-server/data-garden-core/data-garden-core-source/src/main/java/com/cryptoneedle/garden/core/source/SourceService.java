@@ -1,19 +1,16 @@
 package com.cryptoneedle.garden.core.source;
 
 import cn.hutool.v7.socket.SocketUtil;
-import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
-import com.cryptoneedle.garden.common.key.source.SourceDatabaseKey;
-import com.cryptoneedle.garden.common.key.source.SourceDimensionColumnKey;
-import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.core.crud.*;
 import com.cryptoneedle.garden.infrastructure.doris.DorisMetadataRepository;
-import com.cryptoneedle.garden.infrastructure.entity.source.*;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceColumn;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import com.cryptoneedle.garden.spi.DataSourceExecutor;
 import com.cryptoneedle.garden.spi.DataSourceManager;
 import com.cryptoneedle.garden.spi.DataSourceProvider;
 import com.cryptoneedle.garden.spi.DataSourceSpiLoader;
-import com.google.common.collect.Maps;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -23,8 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.net.Socket;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>description: 配置-数据源目录-服务 </p>
@@ -44,6 +42,7 @@ public class SourceService {
     public final DeleteService delete;
     public final PatchService patch;
     public final DorisMetadataRepository dorisMetadataRepository;
+    public final SourceSyncService sync;
     
     
     public SourceService(@Lazy SourceService sourceService,
@@ -52,7 +51,8 @@ public class SourceService {
                          SaveService saveService,
                          DeleteService deleteService,
                          PatchService patchService,
-                         DorisMetadataRepository dorisMetadataRepository) {
+                         DorisMetadataRepository dorisMetadataRepository,
+                         SourceSyncService sourceSyncService) {
         this.service = sourceService;
         this.add = addService;
         this.select = selectService;
@@ -60,6 +60,7 @@ public class SourceService {
         this.delete = deleteService;
         this.patch = patchService;
         this.dorisMetadataRepository = dorisMetadataRepository;
+        this.sync = sourceSyncService;
     }
     
     public void fillPassword(@Valid SourceCatalogSaveVo vo) {
@@ -220,217 +221,84 @@ public class SourceService {
         service.testDoris(catalog, true);
     }
     
-    public void syncCatalog(SourceCatalog catalog) {
-        service.syncDatabase(catalog, null);
+    public String createDorisTableScript(SourceTable table) {
+        // "skip_write_index_on_load" = "true",
+        // "enable_unique_key_skip_bitmap_column" = "true",
+        // "disable_storage_row_cache" = "true"
+        
+        String databaseName = select.config.dorisSchemaOds();
+        String tableName = table.getTransTableName();
+        String columnDefinition = columnDefinitions(table);
+        String uniqueKeys = uniqueKeys(table);
+        String bucket = table.getTransBucketNum();
+        String comment = table.getTransComment();
+        
+        return """
+                CREATE TABLE IF NOT EXISTS %s.%s(
+                %s
+                ) UNIQUE KEY(%s)
+                COMMENT '%s'
+                DISTRIBUTED BY HASH(%s) BUCKETS %s
+                PROPERTIES (
+                    "replication_num" = "3",
+                    "is_being_synced" = "false",
+                    "compression" = "LZ4",
+                    "enable_unique_key_merge_on_write" = "true",
+                    "light_schema_change" = "true",
+                    "enable_mow_light_delete" = "false",
+                    "store_row_column" = "true"
+                );""".formatted(databaseName, tableName, columnDefinition, uniqueKeys, comment, uniqueKeys, bucket);
     }
     
-    public void syncDatabase(SourceCatalog catalog, SourceDatabase database) {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        List<SourceDatabase> originList;
-        List<SourceDatabase> dealList = DataSourceExecutor.databases(catalog, database);
-        if (database == null) {
-            originList = select.source.databases(catalog.getId().getCatalogName());
-        } else {
-            originList = List.of(select.source.database(database.getId()));
+    public String uniqueKeys(SourceTable table) {
+        return select.source.columnsWithDimension(table).stream().map(SourceColumn::getTransColumnName).collect(Collectors.joining(","));
+    }
+    
+    public String columnDefinitions(SourceTable table) {
+        // 维度列（需要优先级）
+        List<SourceColumn> dimensions = select.source.columnsWithDimension(table);
+        // 非维度列
+        List<SourceColumn> columns = select.source.columnsWithoutDimension(table);
+        
+        // 列总量
+        int columnCount = dimensions.size() + columns.size();
+        
+        // 构造列表
+        List<String> columnNames = new ArrayList<>(columnCount);
+        List<String> columnTypes = new ArrayList<>(columnCount);
+        List<String> columnComments = new ArrayList<>(columnCount);
+        for (SourceColumn column : dimensions) {
+            columnNames.add(column.getTransColumnName());
+            columnTypes.add(column.getTransDataTypeFormat());
+            columnComments.add(column.getTransComment());
+        }
+        for (SourceColumn column : columns) {
+            columnNames.add(column.getTransColumnName());
+            columnTypes.add(column.getTransDataTypeFormat());
+            columnComments.add(column.getTransComment());
         }
         
-        // 已存在
-        Map<SourceDatabaseKey, SourceDatabase> originMap = Maps.uniqueIndex(originList, SourceDatabase::getId);
-        // 待处理
-        Map<SourceDatabaseKey, SourceDatabase> dealMap = Maps.uniqueIndex(dealList, SourceDatabase::getId);
+        // 构造 gather_time
+        columnNames.add("gather_time");
+        columnTypes.add("DATETIME");
+        columnComments.add("采集时间");
         
-        // 新增
-        List<SourceDatabase> extraList = dealList.stream()
-                                                 .filter(deal -> !originMap.containsKey(deal.getId()))
-                                                 .filter(deal -> deal.getTotalNum() > 0)
-                                                 .peek(deal -> {
-                                                     deal.setStatisticDt(localDateTime);
-                                                 })
-                                                 .toList();
+        // 计算最大长度（用于格式化）
+        int maxColumnName = columnNames.stream().mapToInt(String::length).max().orElse(0);
+        int maxColumnType = columnTypes.stream().mapToInt(String::length).max().orElse(0);
         
-        // 保存
-        List<SourceDatabase> existsList = originList.stream()
-                                                    .filter(origin -> dealMap.containsKey(origin.getId()))
-                                                    .peek(origin -> {
-                                                        SourceDatabase deal = dealMap.get(origin.getId());
-                                                        if (deal != null) {
-                                                            origin.setTotalNum(deal.getTotalNum())
-                                                                  .setTableNum(deal.getTableNum())
-                                                                  .setViewNum(deal.getViewNum())
-                                                                  .setMaterializedViewNum(deal.getMaterializedViewNum())
-                                                                  .setStatisticDt(localDateTime);
-                                                        }
-                                                    }).toList();
-        
-        // 移除
-        List<SourceDatabase> missList = originList.stream()
-                                                  .filter(item -> !dealMap.containsKey(item.getId()))
-                                                  .toList();
-        
-        add.source.databases(extraList);
-        save.source.databases(existsList);
-        delete.source.databases(missList);
-        
-        patch.source.databaseDefault(catalog);
-        
-        service.syncTable(catalog, database, null);
-    }
-    
-    public void syncTable(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
-        String databaseName = database != null ? database.getId().getDatabaseName() : null;
-        String tableName = table != null ? table.getId().getTableName() : null;
-        
-        List<SourceTable> originList;
-        if (database == null) {
-            originList = select.source.tables(catalog.getId().getCatalogName());
-        } else {
-            if (table == null) {
-                originList = select.source.tables(database.getId().getCatalogName(), databaseName);
+        StringBuilder columnDefinition = new StringBuilder();
+        for (int i = 0; i < columnCount; i++) {
+            String columnName = columnNames.get(i);
+            String columnType = columnTypes.get(i);
+            String columnComment = columnComments.get(i);
+            if (i < columnCount - 1) {
+                columnDefinition.append(("    %-" + maxColumnName + "s %-" + maxColumnType + "s COMMENT '%s',\n").formatted(columnName, columnType, columnComment));
             } else {
-                originList = List.of(select.source.table(table.getId()));
+                // gather_time
+                columnDefinition.append(("    %-" + maxColumnName + "s %-" + maxColumnType + "s DEFAULT CURRENT_TIMESTAMP COMMENT '%s'").formatted(columnName, columnType, columnComment));
             }
         }
-        List<SourceTable> dealList = DataSourceExecutor.tables(catalog, databaseName, tableName);
-        // 已存在
-        Map<SourceTableKey, SourceTable> originMap = Maps.uniqueIndex(originList, SourceTable::getId);
-        // 待处理
-        Map<SourceTableKey, SourceTable> dealMap = Maps.uniqueIndex(dealList, SourceTable::getId);
-        
-        // 新增
-        List<SourceTable> extraList = dealList.stream()
-                                              .filter(deal -> !originMap.containsKey(deal.getId()))
-                                              .peek(deal -> {})
-                                              .toList();
-        
-        // 保存
-        List<SourceTable> existsList = originList.stream()
-                                                 .filter(origin -> dealMap.containsKey(origin.getId()))
-                                                 .peek(origin -> {
-                                                     SourceTable deal = dealMap.get(origin.getId());
-                                                     if (deal != null) {
-                                                         origin.setComment(deal.getComment())
-                                                               .setTableType(deal.getTableType())
-                                                               .setRowNum(deal.getRowNum())
-                                                               .setAvgRowBytes(deal.getAvgRowBytes())
-                                                               .setStatisticDt(deal.getStatisticDt());
-                                                     }
-                                                 }).toList();
-        
-        // 移除
-        List<SourceTable> missList = originList.stream().filter(item -> !dealMap.containsKey(item.getId())).toList();
-        
-        add.source.tables(extraList);
-        save.source.tables(existsList);
-        delete.source.tables(missList);
-        
-        patch.source.tableDefault(catalog);
-        
-        service.syncColumn(catalog, database, table);
-        service.syncDimension(catalog, database, table);
-    }
-    
-    public void syncColumn(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
-        String databaseName = database != null ? database.getId().getDatabaseName() : null;
-        String tableName = table != null ? table.getId().getTableName() : null;
-        
-        List<SourceColumn> originList;
-        if (database == null) {
-            originList = select.source.columns(catalog.getId().getCatalogName());
-        } else {
-            if (table == null) {
-                originList = select.source.columns(database.getId().getCatalogName(), databaseName);
-            } else {
-                originList = select.source.columns(database.getId().getCatalogName(), databaseName, tableName);
-            }
-        }
-        List<SourceColumn> dealList = DataSourceExecutor.columns(catalog, databaseName, tableName);
-        
-        // 已存在
-        Map<SourceColumnKey, SourceColumn> originMap = Maps.uniqueIndex(originList, SourceColumn::getId);
-        // 待处理
-        Map<SourceColumnKey, SourceColumn> dealMap = Maps.uniqueIndex(dealList, SourceColumn::getId);
-        
-        // 新增
-        List<SourceColumn> extraList = dealList.stream()
-                                               .filter(deal -> !originMap.containsKey(deal.getId()))
-                                               .peek(deal -> {
-                                               })
-                                               .toList();
-        
-        // 保存
-        List<SourceColumn> existsList = originList.stream()
-                                                  .filter(origin -> dealMap.containsKey(origin.getId()))
-                                                  .peek(origin -> {
-                                                      SourceColumn deal = dealMap.get(origin.getId());
-                                                      if (deal != null) {
-                                                          origin.setComment(deal.getComment())
-                                                                .setSort(deal.getSort())
-                                                                .setDataType(deal.getDataType())
-                                                                .setLength(deal.getLength())
-                                                                .setPrecision(deal.getPrecision())
-                                                                .setScale(deal.getScale())
-                                                                .setNotNull(deal.getNotNull())
-                                                                .setSampleNum(deal.getSampleNum())
-                                                                .setNullNum(deal.getNullNum())
-                                                                .setDistinctNum(deal.getDistinctNum())
-                                                                .setDensity(deal.getDensity())
-                                                                .setMinValue(deal.getMinValue())
-                                                                .setMaxValue(deal.getMaxValue())
-                                                                .setAvgColumnBytes(deal.getAvgColumnBytes())
-                                                                .setStatisticDt(deal.getStatisticDt());
-                                                      }
-                                                  }).toList();
-        
-        // 移除
-        List<SourceColumn> missList = originList.stream().filter(item -> !dealMap.containsKey(item.getId())).toList();
-        
-        add.source.columns(extraList);
-        save.source.columns(existsList);
-        delete.source.columns(missList);
-    }
-    
-    public void syncDimension(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
-        String databaseName = database != null ? database.getId().getDatabaseName() : null;
-        String tableName = table != null ? table.getId().getTableName() : null;
-        
-        List<SourceDimension> originList;
-        if (database == null) {
-            originList = select.source.dimensions(catalog.getId().getCatalogName());
-        } else {
-            if (table == null) {
-                originList = select.source.dimensions(database.getId().getCatalogName(), databaseName);
-            } else {
-                originList = select.source.dimensions(database.getId().getCatalogName(), databaseName, tableName);
-            }
-        }
-        List<SourceDimension> dealList = DataSourceExecutor.dimensions(catalog, databaseName, tableName);
-        
-        // 已存在
-        Map<SourceDimensionColumnKey, SourceDimension> originMap = Maps.uniqueIndex(originList, SourceDimension::getId);
-        // 待处理
-        Map<SourceDimensionColumnKey, SourceDimension> dealMap = Maps.uniqueIndex(dealList, SourceDimension::getId);
-        
-        // 新增
-        List<SourceDimension> extraList = dealList.stream()
-                                                  .filter(deal -> !originMap.containsKey(deal.getId()))
-                                                  .peek(deal -> {})
-                                                  .toList();
-        
-        // 保存
-        List<SourceDimension> existsList = originList.stream()
-                                                     .filter(origin -> dealMap.containsKey(origin.getId()))
-                                                     .peek(origin -> {
-                                                         SourceDimension deal = dealMap.get(origin.getId());
-                                                         if (deal != null) {
-                                                             origin.setSort(deal.getSort());
-                                                         }
-                                                     }).toList();
-        
-        // 移除
-        List<SourceDimension> missList = originList.stream().filter(item -> !dealMap.containsKey(item.getId())).toList();
-        
-        add.source.dimensions(extraList);
-        save.source.dimensions(existsList);
-        delete.source.dimensions(missList);
+        return columnDefinition.toString();
     }
 }

@@ -62,7 +62,7 @@ public class SourceTable extends BaseEntity {
     @Comment("表说明")
     private String transComment;
     @Comment("分桶数量")
-    private Integer transBucketNum;
+    private String transBucketNum;
     
     @Comment("字段数量")
     private Integer columnNum;

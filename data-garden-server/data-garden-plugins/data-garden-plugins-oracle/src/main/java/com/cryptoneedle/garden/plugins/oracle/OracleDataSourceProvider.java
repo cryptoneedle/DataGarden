@@ -1,8 +1,10 @@
 package com.cryptoneedle.garden.plugins.oracle;
 
 import com.cryptoneedle.garden.common.constants.CommonConstant;
+import com.cryptoneedle.garden.common.enums.DorisDataType;
 import com.cryptoneedle.garden.common.enums.SourceConnectType;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceColumn;
 import com.cryptoneedle.garden.spi.DataSourceProvider;
 import com.cryptoneedle.garden.spi.SshUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -263,5 +265,192 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                    %s
                    %s
                 ORDER BY t.table_owner, t.table_name, t.index_name, c.column_position""".formatted(FILTER_SYSTEM_DATABASE_CONDITION, searchDatabaseCondition, searchTableCondition);
+    }
+    
+    @Override
+    public void transform(SourceColumn column) {
+        String dataType = column.getDataType();
+        Long length = column.getLength();
+        Long precision = column.getPrecision();
+        Long scale = column.getScale();
+        
+        DorisDataType dorisDataType = null;
+        Long dorisLength = null;
+        Long dorisPrecision = null;
+        Long dorisScale = null;
+        String warn = null;
+        String error = null;
+        Boolean dorisDataTypeToChar = false;
+        
+        switch (dataType) {
+            case "NUMBER" -> {
+                if (precision == null) {
+                    dorisDataType = DorisDataType.LARGEINT;
+                    warn = "未指定p和s的number(p,s)类型: number(" + precision + "," + scale + "), length=" + length;
+                } else if (scale == null || scale == 0) {
+                    if (precision == 1) {
+                        // 特殊处理number(1)为字符类型，Seatunnel会识别为布尔值，但scale的影响未知。在这里需添加标记，以便在后面的脚本生成过程中使用to_char()转换
+                        dorisDataType = DorisDataType.TINYINT;
+                        dorisDataTypeToChar = true;
+                    } else if (precision < 3) {
+                        dorisDataType = DorisDataType.TINYINT;
+                    } else if (precision < 5) {
+                        dorisDataType = DorisDataType.SMALLINT;
+                    } else if (precision < 10) {
+                        dorisDataType = DorisDataType.INT;
+                    } else if (precision < 19) {
+                        dorisDataType = DorisDataType.BIGINT;
+                    } else {
+                        dorisDataType = DorisDataType.LARGEINT;
+                    }
+                } else if (scale > 0) {
+                    if (precision > scale) {
+                        dorisDataType = DorisDataType.DECIMAL;
+                        dorisPrecision = precision;
+                        dorisScale = scale;
+                    } else {
+                        dorisDataType = DorisDataType.DECIMAL;
+                        dorisPrecision = scale;
+                        dorisScale = scale;
+                    }
+                } else if (scale < 0) {
+                    // s<0 的情况下，Doris 会将 p 设置为 p+|s|，并进行和 number(p) / number(p,0) 一样的映射
+                    precision = precision - scale;
+                    if (precision == 1) {
+                        // 特殊处理number(1)为字符类型，Seatunnel会识别为布尔值，但scale的影响未知
+                        dorisDataType = DorisDataType.TINYINT;
+                        dorisDataTypeToChar = true;
+                    } else if (precision < 3) {
+                        dorisDataType = DorisDataType.TINYINT;
+                    } else if (precision < 5) {
+                        dorisDataType = DorisDataType.SMALLINT;
+                    } else if (precision < 10) {
+                        dorisDataType = DorisDataType.INT;
+                    } else if (precision < 19) {
+                        dorisDataType = DorisDataType.BIGINT;
+                    } else {
+                        dorisDataType = DorisDataType.LARGEINT;
+                    }
+                } else {
+                    error = "不支持的的number(p,s)类型: number(" + precision + "," + scale + ")";
+                }
+            }
+            case "DECIMAL" -> {
+                dorisDataType = DorisDataType.DECIMAL;
+                dorisPrecision = precision;
+                dorisScale = scale;
+            }
+            case "FLOAT" -> {
+                dorisDataType = DorisDataType.DOUBLE;
+                dorisPrecision = precision;
+                dorisScale = scale;
+            }
+            case "REAL" -> {
+                dorisDataType = DorisDataType.DOUBLE;
+                dorisPrecision = precision;
+                dorisScale = scale;
+            }
+            case "DATE" -> {
+                // 不使用官方建议，尝试转换为 DorisDataType.DATE
+                //dorisDataType = DorisDataType.DATETIME;
+                dorisDataType = DorisDataType.DATE;
+                //warn = "尝试性实验：Oracle DATE -> Doris DATE (官方建议为 DATETIME)";
+            }
+            case "TIMESTAMP" -> {
+                dorisDataType = DorisDataType.DATETIME;
+                dorisScale = scale;
+                warn = "未指定精度的TIMESTAMP，scale=" + dorisScale;
+            }
+            case "CHAR" -> {
+                dorisDataType = DorisDataType.CHAR;
+                dorisLength = length;
+            }
+            case "NCHAR" -> {
+                dorisDataType = DorisDataType.CHAR;
+                dorisLength = length * 4;
+            }
+            case "VARCHAR2" -> {
+                dorisDataType = DorisDataType.VARCHAR;
+                dorisLength = length;
+            }
+            case "NVARCHAR2" -> {
+                dorisDataType = DorisDataType.VARCHAR;
+                dorisLength = length * 4;
+            }
+            case "LONG" -> {
+                dorisDataType = DorisDataType.STRING;
+            }
+            case "RAW" -> {
+                dorisDataType = DorisDataType.STRING;
+            }
+            case "LONG RAW" -> {
+                dorisDataType = DorisDataType.STRING;
+            }
+            case "INTERVAL" -> {
+                dorisDataType = DorisDataType.STRING;
+            }
+            // 除官网外增加的额外支持项 todo 待观察采集效果
+            case "CLOB" -> {
+                dorisDataType = DorisDataType.STRING;
+                warn = "CLOB";
+            }
+            case "BLOB" -> {
+                dorisDataType = DorisDataType.STRING;
+                warn = "BLOB";
+            }
+            // 精度到 秒
+            case "TIMESTAMP(0)" -> {
+                dorisDataType = DorisDataType.DATETIME;
+                dorisScale = scale;
+            }
+            // 精度到 毫秒
+            case "TIMESTAMP(3)" -> {
+                dorisDataType = DorisDataType.DATETIME;
+                dorisScale = scale;
+            }
+            // 精度到 微秒
+            case "TIMESTAMP(6)" -> {
+                dorisDataType = DorisDataType.DATETIME;
+                dorisScale = scale;
+            }
+            // 精度到 纳秒，todo 使用DATETIME只支持到微妙，不支持纳秒，会有精度损失，后续可能需要转换为字符串处理
+            //case "TIMESTAMP(9)" -> {
+            //    dorisDataType = DorisDataType.DATETIME;
+            //}
+            // 暂不支持项(源于DataGrip中的默认类型)
+            // BFILE
+            // BINARY_DOUBLE
+            // BINARY_FLOAT
+            // CHARACTER
+            // DEC
+            // INTEGER
+            // NATIONAL
+            // NCLOB
+            // NUMERIC
+            // RAW
+            // ROWID
+            // UROWID
+            // VARCHAR
+            default -> {
+                error = "表:%s -> 列:%s -> 不支持的数据类型 => dataType=%s, length=%s, precision=%s, scale=%s"
+                        .formatted(column.getId().getTableName(), column.getId().getColumnName(), dataType, length, precision, scale);
+            }
+        }
+        
+        column.setTransDataType(dorisDataType);
+        column.setTransLength(dorisLength);
+        column.setTransPrecision(dorisPrecision);
+        column.setTransScale(dorisScale);
+        column.setTransSort(column.getSort());
+        //column.setTransToChar(dorisDataTypeToChar);
+        
+//        if (warn != null) {
+//            column.setTransWarn(warn);
+//            log.warn(warn);
+//        }
+//        if (error != null) {
+//            column.setTransError(error);
+//            log.error(error);
+//        }
     }
 }

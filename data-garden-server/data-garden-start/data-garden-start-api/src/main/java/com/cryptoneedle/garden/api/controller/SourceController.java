@@ -7,6 +7,7 @@ import com.cryptoneedle.garden.common.key.source.SourceDatabaseKey;
 import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.core.crud.source.*;
 import com.cryptoneedle.garden.core.source.SourceService;
+import com.cryptoneedle.garden.core.source.SourceSyncService;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class SourceController {
     
     private final SourceService sourceService;
+    private final SourceSyncService sourceSyncService;
     public final AddSourceService add;
     public final SelectSourceService select;
     public final SaveSourceService save;
@@ -32,12 +34,14 @@ public class SourceController {
     public final PatchSourceService patch;
     
     public SourceController(SourceService sourceService,
+                            SourceSyncService sourceSyncService,
                             AddSourceService add,
                             SelectSourceService select,
                             SaveSourceService save,
                             DeleteSourceService delete,
                             PatchSourceService patch) {
         this.sourceService = sourceService;
+        this.sourceSyncService = sourceSyncService;
         this.add = add;
         this.select = select;
         this.save = save;
@@ -78,27 +82,35 @@ public class SourceController {
     @PostMapping("/catalog/{catalogName}/sync")
     public Result<?> syncCatalog(@PathVariable("catalogName") String catalogName) throws EntityNotFoundException {
         SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
-        sourceService.syncCatalog(catalog);
+        sourceSyncService.syncCatalog(catalog);
         return Result.success();
     }
     
     @PostMapping("/catalog/{catalogName}/database/{databaseName}/sync")
     public Result<?> syncDatabase(@PathVariable("catalogName") String catalogName,
-                                 @PathVariable("databaseName") String databaseName) throws EntityNotFoundException {
+                                  @PathVariable("databaseName") String databaseName) throws EntityNotFoundException {
         SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
         SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
-        sourceService.syncDatabase(catalog, database);
+        sourceSyncService.syncDatabase(catalog, database);
         return Result.success();
     }
     
     @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/sync")
     public Result<?> syncTable(@PathVariable("catalogName") String catalogName,
-                                 @PathVariable("databaseName") String databaseName,
-                                 @PathVariable("tableName") String tableName) throws EntityNotFoundException {
+                               @PathVariable("databaseName") String databaseName,
+                               @PathVariable("tableName") String tableName) throws EntityNotFoundException {
         SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
         SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
         SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
-        sourceService.syncTable(catalog, database, table);
+        sourceSyncService.syncTable(catalog, database, table);
         return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/createDorisTable")
+    public Result<String> createDorisTableScript(@PathVariable("catalogName") String catalogName,
+                                            @PathVariable("databaseName") String databaseName,
+                                            @PathVariable("tableName") String tableName) throws EntityNotFoundException {
+        SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
+        return Result.success(sourceService.createDorisTableScript(table));
     }
 }

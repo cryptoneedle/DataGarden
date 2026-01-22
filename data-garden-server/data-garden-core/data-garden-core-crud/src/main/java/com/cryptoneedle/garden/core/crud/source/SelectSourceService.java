@@ -162,8 +162,8 @@ public class SelectSourceService {
         return sourceColumnRepository.columns(catalogName, databaseName);
     }
     
-    public List<SourceColumn> columns(String catalogName, String databaseName, String columnName) {
-        return sourceColumnRepository.columns(catalogName, databaseName, columnName);
+    public List<SourceColumn> columns(String catalogName, String databaseName, String tableName) {
+        return sourceColumnRepository.columns(catalogName, databaseName, tableName);
     }
     
     public List<SourceColumn> columnsEnabled() {
@@ -178,8 +178,16 @@ public class SelectSourceService {
         return sourceColumnRepository.columnsEnabled(catalogName, databaseName);
     }
     
-    public List<SourceColumn> columnsEnabled(String catalogName, String databaseName, String columnName) {
-        return sourceColumnRepository.columnsEnabled(catalogName, databaseName, columnName);
+    public List<SourceColumn> columnsEnabled(String catalogName, String databaseName, String tableName) {
+        return sourceColumnRepository.columnsEnabled(catalogName, databaseName, tableName);
+    }
+    
+    public List<SourceColumn> columnsWithDimension(SourceTable table) {
+        return sourceColumnRepository.columnsWithDimension(table.getId().getCatalogName(), table.getId().getDatabaseName(), table.getId().getTableName());
+    }
+    
+    public List<SourceColumn> columnsWithoutDimension(SourceTable table) {
+        return sourceColumnRepository.columnsWithoutDimension(table.getId().getCatalogName(), table.getId().getDatabaseName(), table.getId().getTableName());
     }
     
     /**

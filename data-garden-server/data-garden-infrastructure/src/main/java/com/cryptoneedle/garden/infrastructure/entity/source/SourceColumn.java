@@ -1,6 +1,7 @@
 package com.cryptoneedle.garden.infrastructure.entity.source;
 
 import com.bubbles.engine.data.core.entity.BaseEntity;
+import com.cryptoneedle.garden.common.enums.DorisDataType;
 import com.cryptoneedle.garden.common.enums.SourceColumnType;
 import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
 import jakarta.persistence.*;
@@ -56,16 +57,17 @@ public class SourceColumn extends BaseEntity {
     @Comment("排序")
     private Long sort;
     @Comment("排序")
-    private Integer transSort;
+    private Long transSort;
     
     @Comment("数据类型格式化")
-    private Long dataTypeFormat;
+    private String dataTypeFormat;
     @Comment("数据类型格式化")
-    private Long transDataTypeFormat;
+    private String transDataTypeFormat;
     @Comment("数据类型")
     private String dataType;
+    @Enumerated(EnumType.STRING)
     @Comment("数据类型")
-    private String transDataType;
+    private DorisDataType transDataType;
     @Comment("长度")
     private Long length;
     @Comment("长度")
@@ -123,4 +125,20 @@ public class SourceColumn extends BaseEntity {
     
     @Comment("启用")
     private Boolean enabled = false;
+    
+    public String transFullDataType() {
+        String fullDataType = this.transDataType.toString();
+        if (DorisDataType.DECIMAL.equals(this.transDataType)) {
+            fullDataType = fullDataType + "(" + this.precision + ", " + this.scale + ")";
+        } else if (DorisDataType.DATETIME.equals(this.transDataType)) {
+            if (this.scale != null) {
+                fullDataType = fullDataType + "(" + this.scale + ")";
+            }
+        } else if (DorisDataType.CHAR.equals(this.transDataType)) {
+            fullDataType = fullDataType + "(" + this.length + ")";
+        } else if (DorisDataType.VARCHAR.equals(this.transDataType)) {
+            fullDataType = fullDataType + "(" + this.length + ")";
+        }
+        return fullDataType;
+    }
 }
