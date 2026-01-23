@@ -11,6 +11,7 @@ import com.cryptoneedle.garden.core.source.SourceSyncService;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
+import com.cryptoneedle.garden.infrastructure.vo.dimension.SourceDimensionSaveVo;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -79,6 +80,11 @@ public class SourceController {
         return Result.success();
     }
     
+    @PostMapping("/catalog/tree")
+    public Result<?> catalogTree() {
+        return Result.success(select.tree());
+    }
+    
     @PostMapping("/catalog/{catalogName}/sync")
     public Result<?> syncCatalog(@PathVariable("catalogName") String catalogName) throws EntityNotFoundException {
         SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
@@ -106,10 +112,83 @@ public class SourceController {
         return Result.success();
     }
     
+    @PostMapping("/catalog/{catalogName}/database/list")
+    public Result<?> databases(@PathVariable("catalogName") String catalogName,
+                               @RequestParam Boolean onlyEnabled) {
+        if (onlyEnabled) {
+            return Result.success(select.databasesEnabled(catalogName));
+        } else {
+            return Result.success(select.databases(catalogName));
+        }
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/list")
+    public Result<?> tables(@PathVariable("catalogName") String catalogName,
+                            @PathVariable("databaseName") String databaseName,
+                            @RequestParam Boolean onlyEnabled) {
+        if (onlyEnabled) {
+            return Result.success(select.tablesEnabled(catalogName, databaseName));
+        } else {
+            return Result.success(select.tables(catalogName, databaseName));
+        }
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/column/list")
+    public Result<?> columns(@PathVariable("catalogName") String catalogName,
+                             @PathVariable("databaseName") String databaseName,
+                             @PathVariable("tableName") String tableName) {
+        return Result.success(select.columns(catalogName, databaseName, tableName));
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/dimension/list")
+    public Result<?> dimensions(@PathVariable("catalogName") String catalogName,
+                                @PathVariable("databaseName") String databaseName,
+                                @PathVariable("tableName") String tableName) {
+        return Result.success(select.dimensions(catalogName, databaseName, tableName));
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/enabled")
+    public Result<?> databaseEnabled(@PathVariable("catalogName") String catalogName,
+                                     @PathVariable("databaseName") String databaseName,
+                                     @RequestParam Boolean enabled) throws EntityNotFoundException {
+        SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
+        patch.databaseEnabled(database, enabled);
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/enabled")
+    public Result<?> tableEnabled(@PathVariable("catalogName") String catalogName,
+                                  @PathVariable("databaseName") String databaseName,
+                                  @PathVariable("tableName") String tableName,
+                                  @RequestParam Boolean enabled) throws EntityNotFoundException {
+        SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
+        patch.tableEnabled(table, enabled);
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/dimension/{dimensionName}/enabled")
+    public Result<?> dimensions(@PathVariable("catalogName") String catalogName,
+                                @PathVariable("databaseName") String databaseName,
+                                @PathVariable("tableName") String tableName,
+                                @PathVariable("dimensionName") String dimensionName) {
+        patch.dimensions(catalogName, databaseName, tableName, dimensionName);
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/dimension/add")
+    public Result<?> saveDimensions(@PathVariable("catalogName") String catalogName,
+                                    @PathVariable("databaseName") String databaseName,
+                                    @PathVariable("tableName") String tableName,
+                                    @RequestBody SourceDimensionSaveVo vo) throws EntityNotFoundException {
+        SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
+        sourceService.saveDimensions(catalogName, databaseName, tableName, vo);
+        return Result.success();
+    }
+    
     @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/createDorisTable")
     public Result<String> createDorisTableScript(@PathVariable("catalogName") String catalogName,
-                                            @PathVariable("databaseName") String databaseName,
-                                            @PathVariable("tableName") String tableName) throws EntityNotFoundException {
+                                                 @PathVariable("databaseName") String databaseName,
+                                                 @PathVariable("tableName") String tableName) throws EntityNotFoundException {
         SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
         return Result.success(sourceService.createDorisTableScript(table));
     }

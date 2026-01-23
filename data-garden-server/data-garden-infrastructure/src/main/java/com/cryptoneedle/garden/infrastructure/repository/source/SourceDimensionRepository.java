@@ -88,4 +88,15 @@ public interface SourceDimensionRepository extends BaseRepository<SourceDimensio
             ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, id.dimensionType, id.dimensionName, sort
             """)
     List<SourceDimension> dimensionsEnabled(String catalogName, String databaseName, String tableName);
+    
+    @Query("""
+             FROM SourceDimension
+            WHERE id.catalogName = :catalogName
+              AND id.databaseName = :databaseName
+              AND id.tableName = :tableName
+              AND enabled = FALSE
+            ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, id.dimensionType, id.dimensionName, sort
+            """)
+    List<SourceDimension> dimensionsClosed(String catalogName, String databaseName, String tableName);
+    
 }

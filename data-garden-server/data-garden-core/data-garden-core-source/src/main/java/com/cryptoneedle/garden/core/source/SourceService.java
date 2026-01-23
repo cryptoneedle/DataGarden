@@ -1,11 +1,17 @@
 package com.cryptoneedle.garden.core.source;
 
 import cn.hutool.v7.socket.SocketUtil;
+import com.cryptoneedle.garden.common.enums.SourceDimensionType;
+import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
+import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
+import com.cryptoneedle.garden.common.key.source.SourceDimensionColumnKey;
 import com.cryptoneedle.garden.core.crud.*;
 import com.cryptoneedle.garden.infrastructure.doris.DorisMetadataRepository;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceColumn;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceDimension;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
+import com.cryptoneedle.garden.infrastructure.vo.dimension.SourceDimensionSaveVo;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import com.cryptoneedle.garden.spi.DataSourceExecutor;
 import com.cryptoneedle.garden.spi.DataSourceManager;
@@ -300,5 +306,25 @@ public class SourceService {
             }
         }
         return columnDefinition.toString();
+    }
+    
+    public void saveDimensions(String catalogName, String databaseName, String tableName, SourceDimensionSaveVo vo) throws EntityNotFoundException {
+        String dimensionName = vo.getDimensionName();
+        List<SourceDimension> dimensions = select.source.dimensions(catalogName, databaseName, tableName, SourceDimensionType.MANUAL);
+        if (!dimensions.isEmpty()) {
+            delete.source.dimensions(dimensions);
+        }
+        long sort = 0;
+        for (String columnName : vo.getColumnNames()) {
+            select.source.columnCheck(new SourceColumnKey(catalogName, databaseName, tableName, columnName));
+            // 创建新维度
+            SourceDimension dimension = SourceDimension.builder()
+                                                       .id(new SourceDimensionColumnKey(catalogName, databaseName, tableName, SourceDimensionType.MANUAL, dimensionName, columnName))
+                                                       .sort(sort++)
+                                                       .enabled(false)
+                                                       .build();
+            
+            save.source.dimension(dimension);
+        }
     }
 }

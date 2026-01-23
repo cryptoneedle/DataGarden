@@ -1,6 +1,12 @@
 package com.cryptoneedle.garden.core.crud.source;
 
+import cn.hutool.v7.core.tree.MapTree;
+import cn.hutool.v7.core.tree.TreeNode;
+import cn.hutool.v7.core.tree.TreeNodeConfig;
+import cn.hutool.v7.core.tree.TreeUtil;
+import com.cryptoneedle.garden.common.dto.SourceTreeDto;
 import com.cryptoneedle.garden.common.enums.SourceDimensionType;
+import com.cryptoneedle.garden.common.enums.SourceTreeNodeType;
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.source.*;
 import com.cryptoneedle.garden.infrastructure.entity.source.*;
@@ -8,7 +14,10 @@ import com.cryptoneedle.garden.infrastructure.repository.source.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <p>description: 查询数据源数据服务 </p>
@@ -233,5 +242,84 @@ public class SelectSourceService {
     
     public List<SourceDimension> dimensionsEnabled(String catalogName, String databaseName, String tableName) {
         return sourceDimensionRepository.dimensionsEnabled(catalogName, databaseName, tableName);
+    }
+    
+    public List<SourceDimension> dimensionsClosed(String catalogName, String databaseName, String tableName) {
+        return sourceDimensionRepository.dimensionsClosed(catalogName, databaseName, tableName);
+    }
+    
+    /**
+     * Tree
+     */
+    public List<MapTree<Object>> tree() {
+        List<SourceTreeDto> sourceTreeDtos = new ArrayList<>();
+        
+        // SourceCatalog
+        sourceTreeDtos.addAll(catalogs()
+                .stream()
+                .map(catalog -> new SourceTreeDto()
+                        .setId(catalog.getId().getCatalogName())
+                        .setParentId(null)
+                        .setName(catalog.getId().getCatalogName())
+                        .setNodeType(SourceTreeNodeType.CATALOG.name())
+                        .setDatabaseType(catalog.getDatabaseType())
+                        .setEnabled(catalog.getEnabled())
+                        .setActiveDimensionName(null))
+                .toList());
+        
+        // 数据库
+        sourceTreeDtos.addAll(databasesEnabled()
+                .stream()
+                .map(database -> new SourceTreeDto()
+                        .setId(database.getId().getDatabaseName())
+                        .setParentId(database.getId().getCatalogName())
+                        .setName(database.getId().getDatabaseName())
+                        .setNodeType(SourceTreeNodeType.DATABASE.name())
+                        .setDatabaseType(null)
+                        .setEnabled(database.getEnabled())
+                        .setActiveDimensionName(null))
+                .toList());
+        
+        // 表
+        sourceTreeDtos.addAll(tablesEnabled()
+                .stream()
+                .map(table -> new SourceTreeDto()
+                        .setId(table.getId().getTableName())
+                        .setParentId(table.getId().getDatabaseName())
+                        .setName(table.getId().getTableName())
+                        .setNodeType(SourceTreeNodeType.TABLE.name())
+                        .setDatabaseType(null)
+                        .setEnabled(table.getEnabled())
+                        .setActiveDimensionName(table.getDimension()))
+                .toList());
+        
+        AtomicInteger sort = new AtomicInteger();
+        List<TreeNode<String>> treeNodeList = sourceTreeDtos
+                .stream()
+                .map(treeDto -> new TreeNode<String>()
+                        .setId(treeDto.getId())
+                        .setParentId(treeDto.getParentId())
+                        .setName(treeDto.getName())
+                        .setWeight(sort.getAndIncrement())
+                        .setExtra(new HashMap<>() {{
+                            put("nodeType", treeDto.getNodeType());
+                            put("databaseType", treeDto.getDatabaseType());
+                        }}))
+                .toList();
+        
+        TreeNodeConfig treeNodeConfig = new TreeNodeConfig();
+        treeNodeConfig.setNameKey("name");
+        treeNodeConfig.setDeep(4);
+        
+        return TreeUtil.build(treeNodeList, null, treeNodeConfig, (object, treeNode) -> {
+            treeNode.setParentId(object.getParentId());
+            treeNode.setId(object.getId());
+            treeNode.setName(object.getName());
+            treeNode.setWeight(object.getWeight());
+            treeNode.putExtra("nodeType", object.getExtra().get("nodeType"));
+            treeNode.putExtra("databaseType", object.getExtra().get("databaseType"));
+            treeNode.putExtra("enabled", object.getExtra().get("enabled"));
+            treeNode.putExtra("activeDimensionName", object.getExtra().get("activeDimensionName"));
+        });
     }
 }

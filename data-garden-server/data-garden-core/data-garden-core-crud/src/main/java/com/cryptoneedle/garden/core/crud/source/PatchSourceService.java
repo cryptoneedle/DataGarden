@@ -1,10 +1,13 @@
 package com.cryptoneedle.garden.core.crud.source;
 
+import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.core.crud.config.SelectConfigService;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceDimension;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
 import com.cryptoneedle.garden.infrastructure.repository.source.*;
+import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,6 +82,11 @@ public class PatchSourceService {
         }
     }
     
+    public void databaseEnabled(SourceDatabase database, Boolean enabled) {
+        database.setEnabled(enabled);
+        save.database(database);
+    }
+    
     /**
      * SourceTable
      */
@@ -104,6 +112,23 @@ public class PatchSourceService {
                 save.table(table);
             }
             
+        }
+    }
+    
+    public void tableEnabled(SourceTable table, Boolean enabled) {
+        table.setEnabled(enabled);
+        save.table(table);
+    }
+    
+    public void dimensions(String catalogName, String databaseName, String tableName, String dimensionName) {
+        List<SourceDimension> dimensions = select.dimensions(catalogName, databaseName, tableName);
+        dimensions.forEach(dimension -> dimension.setEnabled(Strings.CI.equals(dimension.getId().getDimensionName(), dimensionName)));
+        save.dimensions(dimensions);
+        
+        if (!dimensions.isEmpty()) {
+            SourceTable sourceTable = select.table(new SourceTableKey(catalogName, databaseName, tableName));
+            sourceTable.setDimension(dimensionName);
+            save.table(sourceTable);
         }
     }
     

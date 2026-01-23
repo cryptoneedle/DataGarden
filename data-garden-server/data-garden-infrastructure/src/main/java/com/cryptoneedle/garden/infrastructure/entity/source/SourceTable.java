@@ -80,10 +80,10 @@ public class SourceTable extends BaseEntity {
     private LocalDateTime statisticDt;
     
     @Comment("锁定表")
-    private boolean transTableLocked = false;
+    private Boolean transTableLocked = false;
     @Comment("锁定说明")
-    private boolean transCommentLocked = false;
+    private Boolean transCommentLocked = false;
     
     @Comment("启用")
-    private boolean enabled = false;
+    private Boolean enabled = false;
 }
