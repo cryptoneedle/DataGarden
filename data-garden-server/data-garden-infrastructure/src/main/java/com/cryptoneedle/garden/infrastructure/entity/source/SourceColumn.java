@@ -127,18 +127,21 @@ public class SourceColumn extends BaseEntity {
     private Boolean enabled = false;
     
     public String transFullDataType() {
-        String fullDataType = this.transDataType.toString();
-        if (DorisDataType.DECIMAL.equals(this.transDataType)) {
-            fullDataType = fullDataType + "(" + this.precision + ", " + this.scale + ")";
-        } else if (DorisDataType.DATETIME.equals(this.transDataType)) {
-            if (this.scale != null) {
-                fullDataType = fullDataType + "(" + this.scale + ")";
+        if (this.transDataType != null) {
+            String fullDataType = this.transDataType.toString();
+            if (DorisDataType.DECIMAL.equals(this.transDataType)) {
+                fullDataType = fullDataType + "(" + this.precision + ", " + this.scale + ")";
+            } else if (DorisDataType.DATETIME.equals(this.transDataType)) {
+                if (this.scale != null) {
+                    fullDataType = fullDataType + "(" + this.scale + ")";
+                }
+            } else if (DorisDataType.CHAR.equals(this.transDataType)) {
+                fullDataType = fullDataType + "(" + this.length + ")";
+            } else if (DorisDataType.VARCHAR.equals(this.transDataType)) {
+                fullDataType = fullDataType + "(" + this.length + ")";
             }
-        } else if (DorisDataType.CHAR.equals(this.transDataType)) {
-            fullDataType = fullDataType + "(" + this.length + ")";
-        } else if (DorisDataType.VARCHAR.equals(this.transDataType)) {
-            fullDataType = fullDataType + "(" + this.length + ")";
+            return fullDataType;
         }
-        return fullDataType;
+        return "";
     }
 }

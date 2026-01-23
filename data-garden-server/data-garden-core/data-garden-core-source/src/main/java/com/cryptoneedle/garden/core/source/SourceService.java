@@ -7,11 +7,11 @@ import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
 import com.cryptoneedle.garden.common.key.source.SourceDimensionColumnKey;
 import com.cryptoneedle.garden.core.crud.*;
 import com.cryptoneedle.garden.infrastructure.doris.DorisMetadataRepository;
+import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceColumn;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceDimension;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
-import com.cryptoneedle.garden.infrastructure.vo.dimension.SourceDimensionSaveVo;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import com.cryptoneedle.garden.spi.DataSourceExecutor;
 import com.cryptoneedle.garden.spi.DataSourceManager;
@@ -104,7 +104,6 @@ public class SourceService {
             DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
             if (provider != null) {
                 String url = provider.buildJdbcUrl(catalog);
-                catalog.setUrl(url);
             }
             connected = DataSourceManager.testConnection(catalog);
             // 持久化
@@ -215,7 +214,7 @@ public class SourceService {
         service.testServer(catalog, true);
         service.testJdbc(catalog, true);
         service.testJdbcVersion(catalog, true);
-        service.testDoris(catalog, true);
+        //service.testDoris(catalog, true);
     }
     
     public void saveVo(SourceCatalogSaveVo vo) {
@@ -224,7 +223,7 @@ public class SourceService {
         service.testServer(catalog, true);
         service.testJdbc(catalog, true);
         service.testJdbcVersion(catalog, true);
-        service.testDoris(catalog, true);
+        //service.testDoris(catalog, true);
     }
     
     public String createDorisTableScript(SourceTable table) {
@@ -242,6 +241,7 @@ public class SourceService {
         return """
                 CREATE TABLE IF NOT EXISTS %s.%s(
                 %s
+                    gather_time DEFAULT CURRENT_TIMESTAMP COMMENT ''
                 ) UNIQUE KEY(%s)
                 COMMENT '%s'
                 DISTRIBUTED BY HASH(%s) BUCKETS %s
@@ -284,11 +284,6 @@ public class SourceService {
             columnComments.add(column.getTransComment());
         }
         
-        // 构造 gather_time
-        columnNames.add("gather_time");
-        columnTypes.add("DATETIME");
-        columnComments.add("采集时间");
-        
         // 计算最大长度（用于格式化）
         int maxColumnName = columnNames.stream().mapToInt(String::length).max().orElse(0);
         int maxColumnType = columnTypes.stream().mapToInt(String::length).max().orElse(0);
@@ -301,21 +296,20 @@ public class SourceService {
             if (i < columnCount - 1) {
                 columnDefinition.append(("    %-" + maxColumnName + "s %-" + maxColumnType + "s COMMENT '%s',\n").formatted(columnName, columnType, columnComment));
             } else {
-                // gather_time
-                columnDefinition.append(("    %-" + maxColumnName + "s %-" + maxColumnType + "s DEFAULT CURRENT_TIMESTAMP COMMENT '%s'").formatted(columnName, columnType, columnComment));
+                columnDefinition.append(("    %-" + maxColumnName + "s %-" + maxColumnType + "s COMMENT '%s',").formatted(columnName, columnType, columnComment));
             }
         }
         return columnDefinition.toString();
     }
     
-    public void saveDimensions(String catalogName, String databaseName, String tableName, SourceDimensionSaveVo vo) throws EntityNotFoundException {
-        String dimensionName = vo.getDimensionName();
-        List<SourceDimension> dimensions = select.source.dimensions(catalogName, databaseName, tableName, SourceDimensionType.MANUAL);
+    public void saveDimensions(String catalogName, String databaseName, String tableName, List<String> columnNames) throws EntityNotFoundException {
+        String dimensionName = "CK_" + tableName;
+        List<SourceDimension> dimensions = select.source.dimensions(catalogName, databaseName, tableName, SourceDimensionType.MANUAL, dimensionName);
         if (!dimensions.isEmpty()) {
             delete.source.dimensions(dimensions);
         }
         long sort = 0;
-        for (String columnName : vo.getColumnNames()) {
+        for (String columnName : columnNames) {
             select.source.columnCheck(new SourceColumnKey(catalogName, databaseName, tableName, columnName));
             // 创建新维度
             SourceDimension dimension = SourceDimension.builder()
@@ -325,6 +319,15 @@ public class SourceService {
                                                        .build();
             
             save.source.dimension(dimension);
+        }
+    }
+    
+    public void fillConfigSsh(@Valid SourceCatalogSaveVo vo) {
+        if (!StringUtils.isEmpty(vo.getSshHost())) {
+            ConfigSsh ssh = select.config.ssh(vo.getSshHost());
+            if (ssh != null) {
+                vo.setConfigSsh(ssh);
+            }
         }
     }
 }

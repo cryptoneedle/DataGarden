@@ -1,6 +1,7 @@
 package com.cryptoneedle.garden.api.controller;
 
 import com.bubbles.engine.common.core.result.Result;
+import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
 import com.cryptoneedle.garden.common.key.source.SourceDatabaseKey;
@@ -11,10 +12,11 @@ import com.cryptoneedle.garden.core.source.SourceSyncService;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
-import com.cryptoneedle.garden.infrastructure.vo.dimension.SourceDimensionSaveVo;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>description:  </p>
@@ -58,6 +60,7 @@ public class SourceController {
     @PostMapping("/catalog/test/jdbc")
     public Result<?> testAddCatalogJdbc(@Valid @RequestBody SourceCatalogSaveVo vo) {
         sourceService.fillPassword(vo);
+        sourceService.fillConfigSsh(vo);
         return Result.success(sourceService.testJdbc(vo.sourceCatalog(), vo.isNeedStore()));
     }
     
@@ -88,7 +91,7 @@ public class SourceController {
     @PostMapping("/catalog/{catalogName}/sync")
     public Result<?> syncCatalog(@PathVariable("catalogName") String catalogName) throws EntityNotFoundException {
         SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
-        sourceSyncService.syncCatalog(catalog);
+        sourceSyncService.syncCatalog(catalog, true);
         return Result.success();
     }
     
@@ -97,7 +100,7 @@ public class SourceController {
                                   @PathVariable("databaseName") String databaseName) throws EntityNotFoundException {
         SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
         SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
-        sourceSyncService.syncDatabase(catalog, database);
+        sourceSyncService.syncDatabase(catalog, database, false);
         return Result.success();
     }
     
@@ -166,12 +169,22 @@ public class SourceController {
         return Result.success();
     }
     
-    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/dimension/{dimensionName}/enabled")
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/enabled/batch")
+    public Result<?> tableEnabledBatch(@PathVariable("catalogName") String catalogName,
+                                       @PathVariable("databaseName") String databaseName,
+                                       @RequestBody List<String> tableNames) {
+        patch.tableEnabledBatch(catalogName, databaseName, tableNames);
+        return Result.success();
+    }
+
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/dimension/{dimensionName}/{dimensionType}/enabled")
     public Result<?> dimensions(@PathVariable("catalogName") String catalogName,
                                 @PathVariable("databaseName") String databaseName,
                                 @PathVariable("tableName") String tableName,
-                                @PathVariable("dimensionName") String dimensionName) {
-        patch.dimensions(catalogName, databaseName, tableName, dimensionName);
+                                @PathVariable("dimensionName") String dimensionName,
+                                @PathVariable("dimensionType") String dimensionType,
+                                @RequestParam Boolean enabled) {
+        patch.dimensions(catalogName, databaseName, tableName, dimensionName, SourceDimensionType.valueOf(dimensionType), enabled);
         return Result.success();
     }
     
@@ -179,17 +192,17 @@ public class SourceController {
     public Result<?> saveDimensions(@PathVariable("catalogName") String catalogName,
                                     @PathVariable("databaseName") String databaseName,
                                     @PathVariable("tableName") String tableName,
-                                    @RequestBody SourceDimensionSaveVo vo) throws EntityNotFoundException {
+                                    @RequestBody List<String> columnNames) throws EntityNotFoundException {
         SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
-        sourceService.saveDimensions(catalogName, databaseName, tableName, vo);
+        sourceService.saveDimensions(catalogName, databaseName, tableName, columnNames);
         return Result.success();
     }
     
     @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/createDorisTable")
-    public Result<String> createDorisTableScript(@PathVariable("catalogName") String catalogName,
+    public Result<Object> createDorisTableScript(@PathVariable("catalogName") String catalogName,
                                                  @PathVariable("databaseName") String databaseName,
                                                  @PathVariable("tableName") String tableName) throws EntityNotFoundException {
         SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
-        return Result.success(sourceService.createDorisTableScript(table));
+        return Result.success((Object) sourceService.createDorisTableScript(table));
     }
 }

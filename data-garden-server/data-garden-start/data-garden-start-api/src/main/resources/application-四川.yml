@@ -9,7 +9,7 @@ spring:
       url: jdbc:postgresql://${primary.host}:${primary.port}/data-garden
       username: ${primary.username}
       password: ${primary.password}
-      default_schema: haerbin
+      default_schema: garden
       show-sql: true
       ddl-auto: update
     doris:
@@ -29,13 +29,13 @@ primary:
   password: postgres
 doris:
   enabled: true
-  host: 10.131.50.103
+  host: 10.36.10.87
   port: 9030
   username: root
-  password: YMn@znh#c1@7
+  password: HJD@%hd&di8473jh
 dolphin-scheduler:
   enabled: true
-  host: 10.131.50.117
+  host: 10.36.10.93
   port: 3306
-  username: admin
-  password: dolphinscheduler123
+  username: root
+  password: Seatone@2024#

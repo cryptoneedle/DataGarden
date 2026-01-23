@@ -1,5 +1,6 @@
 package com.cryptoneedle.garden.core.crud.source;
 
+import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.core.crud.config.SelectConfigService;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
@@ -7,11 +8,13 @@ import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceDimension;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
 import com.cryptoneedle.garden.infrastructure.repository.source.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>description: 部分更新数据源数据服务 </p>
@@ -19,6 +22,7 @@ import java.util.List;
  * @author CryptoNeedle
  * @date 2025-11-21
  */
+@Slf4j
 @Service
 @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class PatchSourceService {
@@ -120,16 +124,40 @@ public class PatchSourceService {
         save.table(table);
     }
     
-    public void dimensions(String catalogName, String databaseName, String tableName, String dimensionName) {
+    public void dimensions(String catalogName, String databaseName, String tableName, String dimensionName, SourceDimensionType dimensionType, Boolean enabled) {
         List<SourceDimension> dimensions = select.dimensions(catalogName, databaseName, tableName);
-        dimensions.forEach(dimension -> dimension.setEnabled(Strings.CI.equals(dimension.getId().getDimensionName(), dimensionName)));
+        for (SourceDimension dimension : dimensions) {
+            if (Strings.CI.equals(dimension.getId().getDimensionName(), dimensionName) && dimension.getId().getDimensionType().equals(dimensionType)) {
+                dimension.setEnabled(enabled);
+            } else {
+                if (enabled) {
+                    dimension.setEnabled(!enabled);
+                }
+            }
+        }
         save.dimensions(dimensions);
         
-        if (!dimensions.isEmpty()) {
+        if (enabled && !dimensions.isEmpty()) {
             SourceTable sourceTable = select.table(new SourceTableKey(catalogName, databaseName, tableName));
             sourceTable.setDimension(dimensionName);
             save.table(sourceTable);
         }
+        
+        
+    }
+    
+    public void tableEnabledBatch(String catalogName, String databaseName, List<String> tableNames) {
+        List<String> doList = select.tables(catalogName, databaseName).stream()
+                                    .filter(table -> tableNames.contains(table.getId().getTableName()))
+                                    .peek(table -> {
+                                        table.setEnabled(true);
+                                        save.table(table);
+                                    })
+                                    .map(table -> table.getId().getTableName())
+                                    .toList();
+        log.info("未开启表：{}", tableNames.stream()
+                                          .filter(table -> !doList.contains(table))
+                                          .collect(Collectors.joining()));
     }
     
     /**

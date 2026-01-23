@@ -64,7 +64,7 @@ public class SourceTransformService {
         String ods = select.config.dorisTablePrefixOds();
         for (SourceTable sourceTable : tables) {
             if (!sourceTable.getTransTableLocked()) {
-                sourceTable.setTransTableName(StringUtils.lowerCase("%s_%s_%s".formatted(ods, sourceTable.getSystemCode(), sourceTable.getId().getTableName())));
+                sourceTable.setTransTableName(StringUtils.lowerCase("%s_%s_%s_e".formatted(ods, sourceTable.getSystemCode(), sourceTable.getId().getTableName())));
             }
             if (!sourceTable.getTransCommentLocked()) {
                 sourceTable.setTransComment(sourceTable.getComment());

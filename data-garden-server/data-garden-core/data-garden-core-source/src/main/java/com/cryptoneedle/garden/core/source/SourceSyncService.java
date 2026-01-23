@@ -1,5 +1,6 @@
 package com.cryptoneedle.garden.core.source;
 
+import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
 import com.cryptoneedle.garden.common.key.source.SourceDatabaseKey;
 import com.cryptoneedle.garden.common.key.source.SourceDimensionColumnKey;
@@ -10,7 +11,9 @@ import com.cryptoneedle.garden.spi.DataSourceExecutor;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -55,11 +58,25 @@ public class SourceSyncService {
         this.transform = sourceTransformService;
     }
     
-    public void syncCatalog(SourceCatalog catalog) {
-        service.syncDatabase(catalog, null);
+    @Async("asyncExecutor")
+    @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager", propagation = Propagation.REQUIRES_NEW)
+    public void syncCatalog(SourceCatalog catalog, boolean onlyDatabase) {
+        log.info("[sync] Catalog 开始: {}", catalog.getId().getCatalogName());
+        try {
+            service.syncDatabase(catalog, null, onlyDatabase);
+            log.info("[sync] Catalog 完成: {}", catalog.getId().getCatalogName());
+        } catch (Exception e) {
+            log.error("[sync] Catalog 失败: {}", catalog.getId().getCatalogName(), e);
+            throw e;
+        }
     }
     
-    public void syncDatabase(SourceCatalog catalog, SourceDatabase database) {
+    @Async("asyncExecutor")
+    @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager", propagation = Propagation.REQUIRES_NEW)
+    public void syncDatabase(SourceCatalog catalog, SourceDatabase database, boolean onlyDatabase) {
+        log.info("[sync] Database 开始: catalog={}, database={}", 
+                catalog.getId().getCatalogName(), 
+                database != null ? database.getId().getDatabaseName() : "all");
         LocalDateTime localDateTime = LocalDateTime.now();
         List<SourceDatabase> originList;
         List<SourceDatabase> dealList = DataSourceExecutor.databases(catalog, database);
@@ -108,10 +125,22 @@ public class SourceSyncService {
         
         patch.source.databaseDefault(catalog);
         
-        service.syncTable(catalog, database, null);
+        if (!onlyDatabase) {
+            service.syncTable(catalog, database, null);
+        }
+        
+        log.info("[sync] Database 完成: catalog={}, database={}", 
+                catalog.getId().getCatalogName(), 
+                database != null ? database.getId().getDatabaseName() : "all");
     }
     
+    @Async("asyncExecutor")
+    @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager", propagation = Propagation.REQUIRES_NEW)
     public void syncTable(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
+        log.info("[sync] Table 开始: catalog={}, database={}, table={}", 
+                catalog.getId().getCatalogName(),
+                database != null ? database.getId().getDatabaseName() : "all",
+                table != null ? table.getId().getTableName() : "all");
         String databaseName = database != null ? database.getId().getDatabaseName() : null;
         String tableName = table != null ? table.getId().getTableName() : null;
         
@@ -164,9 +193,15 @@ public class SourceSyncService {
         service.syncDimension(catalog, database, table);
         
         transform.transTable(catalog, database, table);
+        
+        log.info("[sync] Table 完成: catalog={}, database={}, table={}", 
+                catalog.getId().getCatalogName(),
+                database != null ? database.getId().getDatabaseName() : "all",
+                table != null ? table.getId().getTableName() : "all");
     }
     
     public void syncColumn(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
+        log.info("[sync] Column");
         String databaseName = database != null ? database.getId().getDatabaseName() : null;
         String tableName = table != null ? table.getId().getTableName() : null;
         
@@ -227,6 +262,7 @@ public class SourceSyncService {
     }
     
     public void syncDimension(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
+        log.info("[sync] Dimension");
         String databaseName = database != null ? database.getId().getDatabaseName() : null;
         String tableName = table != null ? table.getId().getTableName() : null;
         
@@ -240,6 +276,8 @@ public class SourceSyncService {
                 originList = select.source.dimensions(database.getId().getCatalogName(), databaseName, tableName);
             }
         }
+        originList = originList.stream().filter(origin -> !origin.getId().getDimensionType().equals(SourceDimensionType.MANUAL)).toList();
+        
         List<SourceDimension> dealList = DataSourceExecutor.dimensions(catalog, databaseName, tableName);
         
         // 已存在

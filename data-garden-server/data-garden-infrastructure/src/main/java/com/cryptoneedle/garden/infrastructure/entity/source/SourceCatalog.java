@@ -80,20 +80,31 @@ public class SourceCatalog extends BaseEntity {
     @Comment("启用")
     private Boolean enabled = false;
     
+    @Comment("SSH主机")
+    private String sshHost;
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sshHost", referencedColumnName = "host", insertable = false, updatable = false)
     @Comment("SSH配置关联")
     private ConfigSsh configSsh;
     
     public boolean equalsJdbc(SourceCatalog other) {
-        return Strings.CI.equals(this.host, other.getHost())
+        boolean basicEquals = Strings.CI.equals(this.host, other.getHost())
                 && this.port.equals(other.getPort())
                 && Strings.CI.equals(this.databaseType, other.getConnectType())
                 && Strings.CI.equals(this.connectType, other.getConnectType())
                 && Strings.CI.equals(this.route, other.getRoute())
                 && Strings.CI.equals(this.username, other.getUsername())
-                && Strings.CI.equals(this.password, other.getPassword())
-                && this.configSsh.equalsConnect(other.getConfigSsh());
+                && Strings.CI.equals(this.password, other.getPassword());
+        
+        // 检查SSH配置是否相同
+        if (this.configSsh == null && other.getConfigSsh() == null) {
+            return basicEquals;
+        }
+        if (this.configSsh == null || other.getConfigSsh() == null) {
+            return false;
+        }
+        return basicEquals && this.configSsh.equalsConnect(other.getConfigSsh());
     }
     
     public String address() {

@@ -52,8 +52,11 @@ public class AddSourceService {
         entity.setUrl(DataSourceSpiLoader.getProvider(entity.getDatabaseType()).buildJdbcUrl(entity));
         if (StringUtils.isNotBlank(vo.getSshHost())) {
             ConfigSsh configSsh = selectConfigService.ssh(vo.getSshHost());
+            entity.setSshHost(vo.getSshHost());
             entity.setConfigSsh(configSsh);
         }
+        entity.setDorisCatalog(StringUtils.lowerCase(entity.getDorisCatalog()));
+        entity.setSystemCode(StringUtils.lowerCase(entity.getSystemCode()));
         
         save.catalog(entity);
         

@@ -3,8 +3,10 @@ package com.cryptoneedle.garden.infrastructure.vo.source;
 import com.cryptoneedle.garden.common.enums.SourceCollectFrequencyType;
 import com.cryptoneedle.garden.common.enums.ValidType;
 import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
+import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -62,6 +64,9 @@ public class SourceCatalogSaveVo {
     @Schema(description = "SSH主机")
     private String sshHost;
     
+    @Transient
+    private ConfigSsh configSsh;
+    
     public SourceCatalogKey sourceCatalogKey() {
         return SourceCatalogKey.builder().catalogName(this.catalogName).build();
     }
@@ -90,7 +95,7 @@ public class SourceCatalogSaveVo {
                             .jdbcConnectedDt(null)
                             .dorisConnectedDt(null)
                             .enabled(false)
-                            .configSsh(null)
+                            .configSsh(this.configSsh)
                             .build();
     }
     
@@ -118,7 +123,7 @@ public class SourceCatalogSaveVo {
                             .jdbcConnectedDt(sourceCatalog.getJdbcConnectedDt())
                             .dorisConnectedDt(sourceCatalog.getDorisConnectedDt())
                             .enabled(sourceCatalog.getEnabled())
-                            .configSsh(null)
+                            .configSsh(this.configSsh)
                             .build();
     }
 }

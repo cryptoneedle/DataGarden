@@ -258,7 +258,7 @@ public class SelectSourceService {
         sourceTreeDtos.addAll(catalogs()
                 .stream()
                 .map(catalog -> new SourceTreeDto()
-                        .setId(catalog.getId().getCatalogName())
+                        .setId("catalog-" + catalog.getId().getCatalogName())
                         .setParentId(null)
                         .setName(catalog.getId().getCatalogName())
                         .setNodeType(SourceTreeNodeType.CATALOG.name())
@@ -271,8 +271,8 @@ public class SelectSourceService {
         sourceTreeDtos.addAll(databasesEnabled()
                 .stream()
                 .map(database -> new SourceTreeDto()
-                        .setId(database.getId().getDatabaseName())
-                        .setParentId(database.getId().getCatalogName())
+                        .setId("database-" + database.getId().getDatabaseName())
+                        .setParentId("catalog-" + database.getId().getCatalogName())
                         .setName(database.getId().getDatabaseName())
                         .setNodeType(SourceTreeNodeType.DATABASE.name())
                         .setDatabaseType(null)
@@ -284,8 +284,8 @@ public class SelectSourceService {
         sourceTreeDtos.addAll(tablesEnabled()
                 .stream()
                 .map(table -> new SourceTreeDto()
-                        .setId(table.getId().getTableName())
-                        .setParentId(table.getId().getDatabaseName())
+                        .setId("table-" + table.getId().getTableName())
+                        .setParentId("database-" + table.getId().getDatabaseName())
                         .setName(table.getId().getTableName())
                         .setNodeType(SourceTreeNodeType.TABLE.name())
                         .setDatabaseType(null)
@@ -304,6 +304,8 @@ public class SelectSourceService {
                         .setExtra(new HashMap<>() {{
                             put("nodeType", treeDto.getNodeType());
                             put("databaseType", treeDto.getDatabaseType());
+                            put("enabled", treeDto.getEnabled());
+                            put("activeDimensionName", treeDto.getActiveDimensionName());
                         }}))
                 .toList();
         
