@@ -237,23 +237,33 @@ public class SourceService {
         String uniqueKeys = uniqueKeys(table);
         String bucket = table.getTransBucketNum();
         String comment = table.getTransComment();
+        String replicationNum = select.config.dorisConfigReplicationNum();
         
         return """
                 CREATE TABLE IF NOT EXISTS %s.%s(
                 %s
-                    gather_time DEFAULT CURRENT_TIMESTAMP COMMENT ''
+                    `gather_time` DEFAULT CURRENT_TIMESTAMP COMMENT '入库时间'
                 ) UNIQUE KEY(%s)
                 COMMENT '%s'
                 DISTRIBUTED BY HASH(%s) BUCKETS %s
                 PROPERTIES (
-                    "replication_num" = "3",
+                    "replication_num" = "%s",
                     "is_being_synced" = "false",
                     "compression" = "LZ4",
                     "enable_unique_key_merge_on_write" = "true",
                     "light_schema_change" = "true",
                     "enable_mow_light_delete" = "false",
                     "store_row_column" = "true"
-                );""".formatted(databaseName, tableName, columnDefinition, uniqueKeys, comment, uniqueKeys, bucket);
+                );""".formatted(databaseName, tableName, columnDefinition, uniqueKeys, comment, uniqueKeys, bucket, replicationNum);
+    }
+    
+    public Object createDorisTableScriptBatch(String catalogName, String databaseName) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (SourceTable table : select.source.tablesEnabled(catalogName, databaseName)) {
+            stringBuilder.append(service.createDorisTableScript(table));
+            stringBuilder.append("\n\n");
+        }
+        return stringBuilder;
     }
     
     public String uniqueKeys(SourceTable table) {
@@ -274,12 +284,12 @@ public class SourceService {
         List<String> columnTypes = new ArrayList<>(columnCount);
         List<String> columnComments = new ArrayList<>(columnCount);
         for (SourceColumn column : dimensions) {
-            columnNames.add(column.getTransColumnName());
+            columnNames.add("`" + column.getTransColumnName() + "`");
             columnTypes.add(column.getTransDataTypeFormat());
             columnComments.add(column.getTransComment());
         }
         for (SourceColumn column : columns) {
-            columnNames.add(column.getTransColumnName());
+            columnNames.add("`" + column.getTransColumnName() + "`");
             columnTypes.add(column.getTransDataTypeFormat());
             columnComments.add(column.getTransComment());
         }

@@ -1,19 +1,20 @@
 package com.cryptoneedle.garden.core.crud.source;
 
 import com.cryptoneedle.garden.common.enums.SourceDimensionType;
+import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
 import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.core.crud.config.SelectConfigService;
-import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
-import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
-import com.cryptoneedle.garden.infrastructure.entity.source.SourceDimension;
-import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
+import com.cryptoneedle.garden.infrastructure.entity.source.*;
 import com.cryptoneedle.garden.infrastructure.repository.source.*;
+import com.cryptoneedle.garden.infrastructure.vo.source.SourceColumnAlterCommentVo;
+import com.cryptoneedle.garden.infrastructure.vo.source.SourceTableAlterCommentVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -144,6 +145,36 @@ public class PatchSourceService {
         }
         
         
+    }
+    
+    public void tableCommentBatch(String catalogName, String databaseName, List<SourceTableAlterCommentVo> vos) {
+        List<SourceTable> tables = vos.stream()
+                                      .map(vo -> {
+                                          SourceTable table = select.table(new SourceTableKey(catalogName, databaseName, vo.getTableName()));
+                                          if (table != null) {
+                                              table.setTransComment(vo.getComment());
+                                              table.setTransCommentLocked(true);
+                                          }
+                                          return table;
+                                      })
+                                      .filter(Objects::nonNull)
+                                      .toList();
+        save.tables(tables);
+    }
+    
+    public void columnCommentBatch(String catalogName, String databaseName, List<SourceColumnAlterCommentVo> vos) {
+        List<SourceColumn> columns = vos.stream()
+                                       .map(vo -> {
+                                          SourceColumn column = select.column(new SourceColumnKey(catalogName, databaseName, vo.getTableName(), vo.getColumnName()));
+                                          if (column != null) {
+                                              column.setTransComment(vo.getComment());
+                                              column.setTransCommentLocked(true);
+                                          }
+                                          return column;
+                                      })
+                                       .filter(Objects::nonNull)
+                                       .toList();
+        save.columns(columns);
     }
     
     public void tableEnabledBatch(String catalogName, String databaseName, List<String> tableNames) {

@@ -88,6 +88,10 @@ public class SelectConfigService {
         return property("doris_catalog_connection_pool_keep_alive").getValue();
     }
     
+    public String dorisConfigReplicationNum() {
+        return property("doris_config_replication_num").getValue();
+    }
+    
     /**
      * ConfigSsh
      */

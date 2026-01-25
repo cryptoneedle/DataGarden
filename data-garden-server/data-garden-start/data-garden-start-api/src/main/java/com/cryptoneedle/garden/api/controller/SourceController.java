@@ -13,6 +13,8 @@ import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
+import com.cryptoneedle.garden.infrastructure.vo.source.SourceColumnAlterCommentVo;
+import com.cryptoneedle.garden.infrastructure.vo.source.SourceTableAlterCommentVo;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
@@ -169,6 +171,22 @@ public class SourceController {
         return Result.success();
     }
     
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/transComment/batch")
+    public Result<?> tableCommentBatch(@PathVariable("catalogName") String catalogName,
+                                       @PathVariable("databaseName") String databaseName,
+                                       @RequestBody List<SourceTableAlterCommentVo> vos) {
+        patch.tableCommentBatch(catalogName, databaseName, vos);
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/column/transComment/batch")
+    public Result<?> columnCommentBatch(@PathVariable("catalogName") String catalogName,
+                                       @PathVariable("databaseName") String databaseName,
+                                       @RequestBody List<SourceColumnAlterCommentVo> vos) {
+        patch.columnCommentBatch(catalogName, databaseName, vos);
+        return Result.success();
+    }
+    
     @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/enabled/batch")
     public Result<?> tableEnabledBatch(@PathVariable("catalogName") String catalogName,
                                        @PathVariable("databaseName") String databaseName,
@@ -204,5 +222,12 @@ public class SourceController {
                                                  @PathVariable("tableName") String tableName) throws EntityNotFoundException {
         SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
         return Result.success((Object) sourceService.createDorisTableScript(table));
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/createDorisTable")
+    public Result<Object> createDorisTableScriptBatch(@PathVariable("catalogName") String catalogName,
+                                                      @PathVariable("databaseName") String databaseName) throws EntityNotFoundException {
+        SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
+        return Result.success((Object) sourceService.createDorisTableScriptBatch(catalogName, databaseName));
     }
 }
