@@ -92,12 +92,16 @@ public class SelectConfigService {
         return property("doris_config_replication_num").getValue();
     }
     
-    public String dorisDatasourceHost() {
-        return property("doris_datasource_host").getValue();
+    public String dorisDatasourceFeHost() {
+        return property("doris_datasource_fe_host").getValue();
     }
     
-    public String dorisDatasourcePort() {
-        return property("doris_datasource_port").getValue();
+    public String dorisDatasourceFePort() {
+        return property("doris_datasource_fe_port").getValue();
+    }
+    
+    public String dorisDatasourceFeStreamLoadPort() {
+        return property("doris_datasource_fe_stream_load_port").getValue();
     }
     
     public String dorisDatasourceUsername() {

@@ -165,4 +165,6 @@ public interface DataSourceProvider {
      * @param column
      */
     void transform(SourceColumn column);
+    
+    String identifierDelimiter();
 }

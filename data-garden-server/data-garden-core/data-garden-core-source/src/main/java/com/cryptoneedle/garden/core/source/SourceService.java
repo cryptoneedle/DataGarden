@@ -239,7 +239,7 @@ public class SourceService {
         return """
                 CREATE TABLE IF NOT EXISTS %s.%s(
                 %s
-                    `gather_time` DEFAULT CURRENT_TIMESTAMP COMMENT '入库时间'
+                    `gather_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '入库时间'
                 ) UNIQUE KEY(%s)
                 COMMENT '%s'
                 DISTRIBUTED BY HASH(%s) BUCKETS %s
@@ -264,7 +264,7 @@ public class SourceService {
     }
     
     public String uniqueKeys(SourceTable table) {
-        return select.source.columnsWithDimension(table).stream().map(SourceColumn::getTransColumnName).collect(Collectors.joining(","));
+        return select.source.columnsWithDimension(table).stream().map(column -> "`" + column.getTransColumnName() + "`").collect(Collectors.joining(", "));
     }
     
     public String columnDefinitions(SourceTable table) {
@@ -345,7 +345,7 @@ public class SourceService {
         script.append("""
                 env {
                   job.mode = "BATCH"
-                  shade.identifier = "base64"
+                  #shade.identifier = "base64"
                 }
                 
                 """);
@@ -361,7 +361,7 @@ public class SourceService {
                     password = "%s"
                     connection_check_timeout_sec = 100000
                     fetch_size = 5000
-                    query = "SELECT * FROM %s.%s"
+                    query = \"""SELECT %s FROM %s.%s\"""
                     #where_condition = "WHERE 1 = 1"
                   }
                 }
@@ -370,32 +370,15 @@ public class SourceService {
                 select.config.dorisCatalogDriverClass(catalog.getDatabaseType()),
                 catalog.getUsername(),
                 catalog.getPassword(),
+                service.selectConvertColumnAs(catalog, database, table),
                 table.getId().getDatabaseName(),
                 table.getId().getTableName()));
-        
-        // Transform
-        script.append("""
-                transform {
-                  FieldRename {
-                    plugin_input = "source_data"
-                    convert_case = "LOWER"
-                    plugin_output = "lower_field_transform_data"
-                  }
-                  SQL {
-                    source_table_name = "lower_field_transform_data"
-                    result_table_name = "out_data"
-                    query = "SELECT * FROM lower_field_transform_data"
-                    plugin_output = "transform_data"
-                  }
-                }
-                
-                """);
         
         // Sink
         script.append("""
                 sink {
                    Doris {
-                    source_table_name = "transform_data"
+                    source_table_name = "source_data"
                     fenodes = "%s:%s"
                     username = "%s"
                     password = "%s"
@@ -411,8 +394,8 @@ public class SourceService {
                     }
                   }
                 }
-                """.formatted(select.config.dorisDatasourceHost(),
-                select.config.dorisDatasourcePort(),
+                """.formatted(select.config.dorisDatasourceFeHost(),
+                select.config.dorisDatasourceFeStreamLoadPort(),
                 select.config.dorisDatasourceUsername(),
                 select.config.dorisDatasourcePassword(),
                 select.config.dorisSchemaOds(),
@@ -420,5 +403,15 @@ public class SourceService {
                 table.getTransTableName()));
         
         return script.toString();
+    }
+    
+    public String selectConvertColumnAs(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
+        DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
+        String identifierDelimiter = provider.identifierDelimiter();
+        List<SourceColumn> columns = select.source.columns(table.getId().getCatalogName(), table.getId().getDatabaseName(), table.getId().getTableName());
+        return columns.stream()
+                      .map(column -> identifierDelimiter + column.getId()
+                                                                 .getColumnName() + identifierDelimiter + " AS " + identifierDelimiter + column.getTransColumnName() + identifierDelimiter)
+                      .collect(Collectors.joining(","));
     }
 }

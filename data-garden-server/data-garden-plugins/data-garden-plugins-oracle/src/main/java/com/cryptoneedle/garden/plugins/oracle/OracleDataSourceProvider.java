@@ -453,4 +453,9 @@ public class OracleDataSourceProvider implements DataSourceProvider {
 //            log.error(error);
 //        }
     }
+    
+    @Override
+    public String identifierDelimiter() {
+        return "\"";
+    }
 }
