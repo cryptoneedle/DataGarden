@@ -407,11 +407,12 @@ public class SourceService {
     
     public String selectConvertColumnAs(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
         DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
-        String identifierDelimiter = provider.identifierDelimiter();
+        String delimiter = provider.identifierDelimiter();
         List<SourceColumn> columns = select.source.columns(table.getId().getCatalogName(), table.getId().getDatabaseName(), table.getId().getTableName());
         return columns.stream()
-                      .map(column -> identifierDelimiter + column.getId()
-                                                                 .getColumnName() + identifierDelimiter + " AS " + identifierDelimiter + column.getTransColumnName() + identifierDelimiter)
+                      // eg. NAME -> name => (Oracle) "NAME" AS "name"
+                      .map(column -> delimiter + column.getId()
+                                                       .getColumnName() + delimiter + " AS " + delimiter + column.getTransColumnName() + delimiter)
                       .collect(Collectors.joining(","));
     }
 }
