@@ -8,10 +8,7 @@ import com.cryptoneedle.garden.common.key.source.SourceDimensionColumnKey;
 import com.cryptoneedle.garden.core.crud.*;
 import com.cryptoneedle.garden.infrastructure.doris.DorisMetadataRepository;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
-import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
-import com.cryptoneedle.garden.infrastructure.entity.source.SourceColumn;
-import com.cryptoneedle.garden.infrastructure.entity.source.SourceDimension;
-import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
+import com.cryptoneedle.garden.infrastructure.entity.source.*;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import com.cryptoneedle.garden.spi.DataSourceExecutor;
 import com.cryptoneedle.garden.spi.DataSourceManager;
@@ -339,5 +336,89 @@ public class SourceService {
                 vo.setConfigSsh(ssh);
             }
         }
+    }
+    
+    public String createSeatunnelScript(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
+        StringBuilder script = new StringBuilder();
+        
+        // env
+        script.append("""
+                env {
+                  job.mode = "BATCH"
+                  shade.identifier = "base64"
+                }
+                
+                """);
+        
+        // Source
+        script.append("""
+                source {
+                  Jdbc {
+                    result_table_name = "source_data"
+                    url = "%s"
+                    driver = %s
+                    user = "%s"
+                    password = "%s"
+                    connection_check_timeout_sec = 100000
+                    fetch_size = 5000
+                    query = "SELECT * FROM %s.%s"
+                    #where_condition = "WHERE 1 = 1"
+                  }
+                }
+                
+                """.formatted(catalog.getUrl(),
+                select.config.dorisCatalogDriverClass(catalog.getDatabaseType()),
+                catalog.getUsername(),
+                catalog.getPassword(),
+                table.getId().getDatabaseName(),
+                table.getId().getTableName()));
+        
+        // Transform
+        script.append("""
+                transform {
+                  FieldRename {
+                    plugin_input = "source_data"
+                    convert_case = "LOWER"
+                    plugin_output = "lower_field_transform_data"
+                  }
+                  SQL {
+                    source_table_name = "lower_field_transform_data"
+                    result_table_name = "out_data"
+                    query = "SELECT * FROM lower_field_transform_data"
+                    plugin_output = "transform_data"
+                  }
+                }
+                
+                """);
+        
+        // Sink
+        script.append("""
+                sink {
+                   Doris {
+                    source_table_name = "transform_data"
+                    fenodes = "%s:%s"
+                    username = "%s"
+                    password = "%s"
+                    database = %s
+                    doris.batch.size = 20000
+                    data_save_mode = "APPEND_DATA"
+                    table = "%s"
+                    sink.label-prefix = "%s"
+                    sink.enable-2pc = "false"
+                    doris.config {
+                      format = "json"
+                      read_json_by_line = "true"
+                    }
+                  }
+                }
+                """.formatted(select.config.dorisDatasourceHost(),
+                select.config.dorisDatasourcePort(),
+                select.config.dorisDatasourceUsername(),
+                select.config.dorisDatasourcePassword(),
+                select.config.dorisSchemaOds(),
+                table.getTransTableName(),
+                table.getTransTableName()));
+        
+        return script.toString();
     }
 }

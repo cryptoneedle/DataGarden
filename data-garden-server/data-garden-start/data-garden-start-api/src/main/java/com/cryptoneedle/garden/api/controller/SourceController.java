@@ -181,8 +181,8 @@ public class SourceController {
     
     @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/column/transComment/batch")
     public Result<?> columnCommentBatch(@PathVariable("catalogName") String catalogName,
-                                       @PathVariable("databaseName") String databaseName,
-                                       @RequestBody List<SourceColumnAlterCommentVo> vos) {
+                                        @PathVariable("databaseName") String databaseName,
+                                        @RequestBody List<SourceColumnAlterCommentVo> vos) {
         patch.columnCommentBatch(catalogName, databaseName, vos);
         return Result.success();
     }
@@ -194,7 +194,7 @@ public class SourceController {
         patch.tableEnabledBatch(catalogName, databaseName, tableNames);
         return Result.success();
     }
-
+    
     @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/dimension/{dimensionName}/{dimensionType}/enabled")
     public Result<?> dimensions(@PathVariable("catalogName") String catalogName,
                                 @PathVariable("databaseName") String databaseName,
@@ -229,5 +229,15 @@ public class SourceController {
                                                       @PathVariable("databaseName") String databaseName) throws EntityNotFoundException {
         SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
         return Result.success((Object) sourceService.createDorisTableScriptBatch(catalogName, databaseName));
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/createSeatunnelScript")
+    public Result<Object> createSeatunnelScript(@PathVariable("catalogName") String catalogName,
+                                                @PathVariable("databaseName") String databaseName,
+                                                @PathVariable("tableName") String tableName) throws EntityNotFoundException {
+        SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
+        SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
+        SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
+        return Result.success((Object) sourceService.createSeatunnelScript(catalog, database, table));
     }
 }

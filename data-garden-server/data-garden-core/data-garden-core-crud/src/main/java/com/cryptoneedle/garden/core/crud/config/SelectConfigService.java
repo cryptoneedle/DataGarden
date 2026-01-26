@@ -92,6 +92,22 @@ public class SelectConfigService {
         return property("doris_config_replication_num").getValue();
     }
     
+    public String dorisDatasourceHost() {
+        return property("doris_datasource_host").getValue();
+    }
+    
+    public String dorisDatasourcePort() {
+        return property("doris_datasource_port").getValue();
+    }
+    
+    public String dorisDatasourceUsername() {
+        return property("doris_datasource_username").getValue();
+    }
+    
+    public String dorisDatasourcePassword() {
+        return property("doris_datasource_password").getValue();
+    }
+    
     /**
      * ConfigSsh
      */
@@ -111,4 +127,5 @@ public class SelectConfigService {
     public List<ConfigSsh> sshs() {
         return configSshRepository.sshs();
     }
+    
 }
