@@ -86,4 +86,7 @@ public class SourceTable extends BaseEntity {
     
     @Comment("启用")
     private Boolean enabled = false;
+    
+    @Comment("DS全量工作流")
+    private Long dsFullWorkFlow;
 }

@@ -43,7 +43,7 @@ public class DorisMetadataRepository {
         boolean result = false;
         try {
             dorisJdbcTemplate.execute(sql);
-            result  = true;
+            result = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -296,5 +296,13 @@ public class DorisMetadataRepository {
         }
         
         return list;
+    }
+    
+    public void execute(String sql) {
+        try (Connection connection = dorisJdbcTemplate.getDataSource().getConnection()) {
+            connection.prepareStatement(sql).execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

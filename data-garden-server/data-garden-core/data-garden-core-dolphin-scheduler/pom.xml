@@ -14,6 +14,14 @@
     <artifactId>data-garden-core-dolphin-scheduler</artifactId>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.cryptoneedle.garden</groupId>
+            <artifactId>data-garden-core-ads</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dolphinscheduler</groupId>
+            <artifactId>dolphinscheduler-api-client</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 </project>

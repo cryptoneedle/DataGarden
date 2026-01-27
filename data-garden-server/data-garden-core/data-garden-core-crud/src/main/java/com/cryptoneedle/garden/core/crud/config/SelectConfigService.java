@@ -132,4 +132,31 @@ public class SelectConfigService {
         return configSshRepository.sshs();
     }
     
+    public String dolphinSchedulerHost() {
+        return property("dolphin_scheduler_host").getValue();
+    }
+    
+    public Integer dolphinSchedulerPort() {
+        return Integer.valueOf(property("dolphin_scheduler_port").getValue());
+    }
+    
+    public String dolphinSchedulerUsername() {
+        return property("dolphin_scheduler_username").getValue();
+    }
+    
+    public String dolphinSchedulerPassword() {
+        return property("dolphin_scheduler_password").getValue();
+    }
+    
+    public Long dolphinSchedulerProjectFull() {
+        return Long.valueOf(property("dolphin_scheduler_project_full").getValue());
+    }
+    
+    public String dolphinSchedulerToken() {
+        return property("dolphin_scheduler_token").getValue();
+    }
+    
+    public String dolphinSchedulerTenantCode() {
+        return property("dolphin_scheduler_tenant_code").getValue();
+    }
 }

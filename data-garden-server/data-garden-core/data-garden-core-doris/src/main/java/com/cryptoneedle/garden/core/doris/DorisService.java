@@ -2,6 +2,7 @@ package com.cryptoneedle.garden.core.doris;
 
 import com.cryptoneedle.garden.common.constants.CommonConstant;
 import com.cryptoneedle.garden.common.enums.DorisTableModelType;
+import com.cryptoneedle.garden.common.enums.DorisTableType;
 import com.cryptoneedle.garden.common.key.doris.DorisCatalogKey;
 import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
 import com.cryptoneedle.garden.common.key.doris.DorisDatabaseKey;
@@ -41,7 +42,6 @@ public class DorisService {
     public final DeleteService delete;
     public final PatchService patch;
     public final DorisMetadataRepository dorisMetadataRepository;
-    
     
     public DorisService(@Lazy DorisService dorisService,
                         AddService addService,
@@ -143,7 +143,9 @@ public class DorisService {
         save.doris.databases(saveList);
         delete.doris.databases(removeList);
         
-        service.syncTable(database, table);
+        for (DorisDatabase dorisDatabase : select.doris.databases()) {
+            service.syncTable(dorisDatabase, table);
+        }
     }
     
     public void syncTable(DorisDatabase database, DorisTable table) {
@@ -224,6 +226,9 @@ public class DorisService {
     }
     
     public void syncTableWithCreateTableField(DorisTable dorisTable) {
+        if (!DorisTableType.BASE_TABLE.equals(dorisTable.getTableType())) {
+            return;
+        }
         DorisShowCreateTable dorisShowCreateTable = dorisMetadataRepository.execShowCreateTable(CommonConstant.DORIS_CATALOG, dorisTable.getId()
                                                                                                                                         .getDatabaseName(), dorisTable.getId()
                                                                                                                                                                       .getTableName());
@@ -303,5 +308,104 @@ public class DorisService {
         add.doris.columns(addList);
         save.doris.columns(saveList);
         delete.doris.columns(removeList);
+    }
+    
+    public void fixCreateTable() {
+        // todo 从配置中提取
+        String[] databases = new String[]{"seatone_ads", "seatone_dim", "seatone_dwd", "seatone_dwd_standard", "seatone_dws", "seatone_mapping", "seatone_mapping_standard", "seatone_ods", "seatone_pre"};
+        List<DorisTable> dorisTables = select.doris.tables()
+                                             .stream()
+                                             .filter(table -> Strings.CI.containsAny(table.getId().getDatabaseName(), databases))
+                                             .toList();
+        int tableMaxLength = dorisTables.stream()
+                                        .map(table -> table.getId().getDatabaseName() + "." + table.getId().getTableName())
+                                        .mapToInt(String::length)
+                                        .max()
+                                        .orElse(0);
+        
+        int tableNum = dorisTables.size();
+        for (int i = 0; i < tableNum; i++) {
+            DorisTable dorisTable = dorisTables.get(i);
+            String tableName = dorisTable.getId().getTableName();
+            String databaseName = dorisTable.getId().getDatabaseName();
+            String bucketNum = dorisTable.getBucketNum();
+            Integer estimateBucket = dorisTable.getEstimateBucketNum();
+            DorisTableModelType tableModel = dorisTable.getTableModelType();
+            
+            String createTableSql = dorisTable.getCreateTableScript();
+            
+            String comment = ("-- [%-4s/%-4s] %-" + tableMaxLength + "s | Storage(include 3 copies): %-9s Mb | ReplicaCount: %-3s | Bucket: %-4s | EstimateBucket: %-2s")
+                    .formatted(i + 1, tableNum, databaseName + "." + tableName, dorisTable.getStorageSpaceFormat(), dorisTable.getReplicaCount(), bucketNum, estimateBucket);
+            log.info(comment);
+            
+            // 不进行处理的情况
+            if (!DorisTableType.BASE_TABLE.equals(dorisTable.getTableType())) {
+                log.warn("Skip Without Table: {}", dorisTable.getTableType());
+                continue;
+            }
+            if (DorisTableModelType.AGGREGATE_KEY.equals(tableModel)) {
+                log.warn("Skip AGGREGATE KEY Table: {}", tableName);
+                continue;
+            }
+            if (DorisTableModelType.DUPLICATE_KEY.equals(tableModel)) {
+                log.warn("Skip DUPLICATE KEY Table: {}", tableName);
+                continue;
+            }
+            if (dorisTable.getPartitioned()) {
+                log.warn("Skip PARTITION BY Table: {}", tableName);
+                continue;
+            }
+            if (estimateBucket == null) {
+                log.warn("Skip EstimateBucket NULL Table: {}", tableName);
+                continue;
+            }
+            
+            String bucket = estimateBucket.toString();
+            if (Strings.CI.equals(bucketNum, bucket)) {
+                //log.warn("Skip Equal EstimateBucket Table: {}", tableName);
+                continue;
+            }
+            
+            // 临时表名 fix_xxx
+            String newTableName = "fix_" + tableName;
+            String newCreateTableSql = Strings.CS.replace(createTableSql, "CREATE TABLE", "CREATE TABLE IF NOT EXISTS");
+            newCreateTableSql = Strings.CS.replace(newCreateTableSql, "`%s`".formatted(tableName), "`%s`.`%s`".formatted(databaseName, newTableName));
+            newCreateTableSql = StringUtils.substringBefore(newCreateTableSql, "BUCKETS");
+            newCreateTableSql = newCreateTableSql
+                    + "BUCKETS " + estimateBucket
+                    + """
+                     \nPROPERTIES (
+                        "replication_num" = "2",
+                        "is_being_synced" = "false",
+                        "compression" = "LZ4",
+                        "enable_unique_key_merge_on_write" = "true",
+                        "light_schema_change" = "true",
+                        "enable_mow_light_delete" = "false",
+                        "store_row_column" = "true"
+                    );
+                    """;
+            
+            String replaceTableData = "INSERT INTO `%s`.`%s` SELECT * FROM `%s`.`%s`;".formatted(databaseName, newTableName, databaseName, tableName);
+            String dropTable = "DROP TABLE IF EXISTS `%s`.`%s`;".formatted(databaseName, tableName);
+            String renameTable = "ALTER TABLE `%s`.`%s` RENAME %s;".formatted(databaseName, newTableName, tableName);
+            
+            if (false) {
+                // todo 保存记录
+                log.info(createTableSql);
+                log.info(newCreateTableSql);
+                log.info(replaceTableData);
+                log.info(dropTable);
+                log.info(renameTable);
+            }
+            
+            // 新建表语句
+            dorisMetadataRepository.execute(newCreateTableSql);
+            // 数据替换
+            dorisMetadataRepository.execute(replaceTableData);
+            // 删除旧表
+            dorisMetadataRepository.execute(dropTable);
+            // 重命名新表
+            dorisMetadataRepository.execute(renameTable);
+        }
     }
 }

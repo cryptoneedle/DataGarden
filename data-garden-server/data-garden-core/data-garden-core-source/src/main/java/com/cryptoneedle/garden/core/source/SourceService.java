@@ -47,7 +47,6 @@ public class SourceService {
     public final DorisMetadataRepository dorisMetadataRepository;
     public final SourceSyncService sync;
     
-    
     public SourceService(@Lazy SourceService sourceService,
                          AddService addService,
                          SelectService selectService,

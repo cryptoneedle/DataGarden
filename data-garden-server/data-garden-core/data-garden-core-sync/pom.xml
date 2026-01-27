@@ -18,9 +18,5 @@
             <groupId>com.cryptoneedle.garden</groupId>
             <artifactId>data-garden-core-source</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-core-dolphin-scheduler</artifactId>
-        </dependency>
     </dependencies>
 </project>

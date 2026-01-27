@@ -363,7 +363,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
             }
             case "CHAR" -> {
                 dorisDataType = DorisDataType.CHAR;
-                dorisLength = length;
+                dorisLength = length * 4;
             }
             case "NCHAR" -> {
                 dorisDataType = DorisDataType.CHAR;
@@ -371,7 +371,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
             }
             case "VARCHAR2" -> {
                 dorisDataType = DorisDataType.VARCHAR;
-                dorisLength = length;
+                dorisLength = length * 4;
             }
             case "NVARCHAR2" -> {
                 dorisDataType = DorisDataType.VARCHAR;

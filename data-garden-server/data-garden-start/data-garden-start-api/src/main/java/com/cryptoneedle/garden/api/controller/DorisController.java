@@ -65,4 +65,10 @@ public class DorisController {
         dorisService.syncTable(database, table);
         return Result.success();
     }
+    
+    @PostMapping("/catalog/fixCreateTable")
+    public Result<?> fixCreateTable() {
+        dorisService.fixCreateTable();
+        return Result.success();
+    }
 }
