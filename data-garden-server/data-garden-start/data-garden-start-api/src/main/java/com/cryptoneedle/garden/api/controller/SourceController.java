@@ -4,12 +4,14 @@ import com.bubbles.engine.common.core.result.Result;
 import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
+import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
 import com.cryptoneedle.garden.common.key.source.SourceDatabaseKey;
 import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.core.crud.source.*;
 import com.cryptoneedle.garden.core.source.SourceService;
 import com.cryptoneedle.garden.core.source.SourceSyncService;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
+import com.cryptoneedle.garden.infrastructure.entity.source.SourceColumn;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
@@ -192,6 +194,20 @@ public class SourceController {
                                        @PathVariable("databaseName") String databaseName,
                                        @RequestBody List<String> tableNames) {
         patch.tableEnabledBatch(catalogName, databaseName, tableNames);
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/column/{columnName}/incremented")
+    public Result<?> columnIncremented(@PathVariable("catalogName") String catalogName,
+                                       @PathVariable("databaseName") String databaseName,
+                                       @PathVariable("tableName") String tableName,
+                                       @PathVariable("columnName") String columnName,
+                                       @RequestParam Boolean incremented) throws EntityNotFoundException {
+        SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
+        SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
+        SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
+        SourceColumn column = select.columnCheck(new SourceColumnKey(catalogName, databaseName, tableName, columnName));
+        patch.columnIncremented(catalog, database, table, column, incremented);
         return Result.success();
     }
     

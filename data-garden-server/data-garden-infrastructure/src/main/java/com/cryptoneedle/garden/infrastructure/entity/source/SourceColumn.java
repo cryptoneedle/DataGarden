@@ -126,6 +126,9 @@ public class SourceColumn extends BaseEntity {
     @Comment("启用")
     private Boolean enabled = false;
     
+    @Comment("增量")
+    private Boolean incremented = false;
+    
     public String transFullDataType() {
         if (this.transDataType != null) {
             String fullDataType = this.transDataType.toString();

@@ -13,6 +13,7 @@ import org.apache.dolphinscheduler.client.model.request.WorkflowCreateRequest;
 import org.apache.dolphinscheduler.client.model.response.WorkflowResponse;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,25 +25,29 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager")
 public class DolphinSchedulerService {
     
+    public final DolphinSchedulerService service;
     public final SelectService select;
     public final DolphinSchedulerClient dolphinSchedulerClient;
     public final SourceService sourceService;
     
     
-    public DolphinSchedulerService(SelectService select,
+    public DolphinSchedulerService(@Lazy DolphinSchedulerService dolphinSchedulerService,
+                                   SelectService select,
                                    DolphinSchedulerClient dolphinSchedulerClient,
-                                   @Lazy SourceService sourceService) {
+                                   SourceService sourceService) {
+        this.service = dolphinSchedulerService;
         this.select = select;
         this.dolphinSchedulerClient = dolphinSchedulerClient;
         this.sourceService = sourceService;
     }
     
     public void dealFullTask(SourceCatalog catalog, SourceDatabase database) {
-        List<SourceTable> tables = select.source.tables(catalog.getId().getCatalogName(), database.getId().getDatabaseName());
+        List<SourceTable> tables = select.source.tablesEnabled(catalog.getId().getCatalogName(), database.getId().getDatabaseName());
         for (SourceTable table : tables) {
-            dealFullTask(catalog, database, table);
+            service.dealFullTask(catalog, database, table);
         }
     }
     
@@ -69,19 +74,21 @@ public class DolphinSchedulerService {
         if (workFlowCode == null) {
             // 新增
             response = dolphinSchedulerClient.workflow().createWorkflow(projectCode, request);
-            table.setDsFullWorkFlow(response.getCode());
         } else {
             try {
                 dolphinSchedulerClient.workflow().queryWorkflow(projectCode, workFlowCode);
+                dolphinSchedulerClient.workflow().releaseWorkflow(projectCode, workFlowCode, "OFFLINE");
                 // 更新
                 response = dolphinSchedulerClient.workflow().updateWorkflow(projectCode, workFlowCode, request);
-                table.setDsFullWorkFlow(response.getCode());
             } catch (Exception e) {
                 // 新增
                 response = dolphinSchedulerClient.workflow().createWorkflow(projectCode, request);
-                table.setDsFullWorkFlow(response.getCode());
             }
         }
+        
+        workFlowCode = response.getCode();
+        table.setDsFullWorkFlow(workFlowCode);
+        dolphinSchedulerClient.workflow().releaseWorkflow(projectCode, workFlowCode, "ONLINE");
     }
     
     private String genWorkFlowName(SourceTable table) {

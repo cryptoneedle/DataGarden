@@ -458,4 +458,23 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     public String identifierDelimiter() {
         return "\"";
     }
+    
+    @Override
+    public String validStrToDate(SourceColumn column) {
+        String databaseName = column.getId().getDatabaseName();
+        String tableName = column.getId().getTableName();
+        String columnName = identifierDelimiter() + column.getId().getColumnName() + identifierDelimiter();
+        return """
+                SELECT CASE
+                         WHEN EXISTS(
+                           SELECT 1 FROM %s.%s
+                            WHERE NOT (
+                              LENGTH(%s) = 8 AND REGEXP_LIKE(%s, '^[0-9]{4}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$')
+                              OR LENGTH(%s) = 10 AND REGEXP_LIKE(%s, '^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$')
+                              OR LENGTH(%s) = 19 AND REGEXP_LIKE(%s, '^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) ([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$')
+                            )
+                         ) THEN 'false' ELSE 'true'
+                       END AS is_date
+                FROM DUAL""".formatted(databaseName, tableName, columnName, columnName, columnName, columnName, columnName, columnName);
+    }
 }

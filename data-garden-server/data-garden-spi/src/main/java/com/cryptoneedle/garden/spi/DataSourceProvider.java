@@ -162,9 +162,23 @@ public interface DataSourceProvider {
     /**
      * 转换列信息
      *
-     * @param column
+     * @param column 列信息
      */
     void transform(SourceColumn column);
     
+    /**
+     * 关键词字段包裹标记
+     *
+     * @return 关键词字段包裹标记
+     */
     String identifierDelimiter();
+    
+    /**
+     * 验证列是否为日期类型的SQL（SQL逻辑应返回boolean值）
+     *
+     * @param column 列信息
+     * @return SQL
+     */
+    String validStrToDate(SourceColumn column);
+    
 }

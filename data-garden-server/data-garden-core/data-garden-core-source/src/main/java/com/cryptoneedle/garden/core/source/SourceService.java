@@ -361,7 +361,7 @@ public class SourceService {
                     connection_check_timeout_sec = 100000
                     fetch_size = 5000
                     query = \"""SELECT %s FROM %s.%s\"""
-                    #where_condition = "WHERE 1 = 1"
+                    #where_condition = "WHERE TRUE"
                   }
                 }
                 
