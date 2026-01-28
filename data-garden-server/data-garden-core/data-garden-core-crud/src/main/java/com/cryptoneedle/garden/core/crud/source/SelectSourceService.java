@@ -204,6 +204,10 @@ public class SelectSourceService {
         return sourceColumnRepository.columnsWithoutDimension(table.getId().getCatalogName(), table.getId().getDatabaseName(), table.getId().getTableName());
     }
     
+    public List<SourceColumn> columnsIncremented(String catalogName, String databaseName, String tableName) {
+        return sourceColumnRepository.columnsIncremented(catalogName, databaseName, tableName);
+    }
+    
     /**
      * SourceDimension
      */

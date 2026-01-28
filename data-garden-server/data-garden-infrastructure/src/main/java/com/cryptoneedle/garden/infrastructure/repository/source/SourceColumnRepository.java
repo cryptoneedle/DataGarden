@@ -110,4 +110,14 @@ public interface SourceColumnRepository extends BaseRepository<SourceColumn, Sou
                                  AND d.enabled = TRUE)
             ORDER BY c.id.catalogName, c.id.databaseName, c.id.tableName, c.sort, c.id.columnName""")
     List<SourceColumn> columnsWithoutDimension(String catalogName, String databaseName, String tableName);
+    
+    @Query("""
+             FROM SourceColumn
+            WHERE id.catalogName = :catalogName
+              AND id.databaseName = :databaseName
+              AND id.tableName = :tableName
+              AND incremented = TRUE
+            ORDER BY id.catalogName, id.databaseName, id.tableName, enabled DESC, sort
+            """)
+    List<SourceColumn> columnsIncremented(String catalogName, String databaseName, String tableName);
 }

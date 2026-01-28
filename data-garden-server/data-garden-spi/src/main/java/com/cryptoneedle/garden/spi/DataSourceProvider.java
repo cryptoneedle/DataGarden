@@ -1,7 +1,10 @@
 package com.cryptoneedle.garden.spi;
 
+import com.cryptoneedle.garden.common.enums.SourceTimeType;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceColumn;
+
+import java.util.List;
 
 /**
  * <p>description: 数据源-插件规范 </p>
@@ -180,5 +183,7 @@ public interface DataSourceProvider {
      * @return SQL
      */
     String validStrToDate(SourceColumn column);
+    String timeTypeFormat(SourceTimeType incrementType);
     
+    String incrementCondition(List<SourceColumn> columns, String offsetBeforeDay);
 }

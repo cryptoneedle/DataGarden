@@ -338,13 +338,19 @@ public class SourceService {
     }
     
     public String createSeatunnelScript(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
+        String delimiter = DataSourceSpiLoader.getProvider(catalog.getDatabaseType()).identifierDelimiter();
+        String whereCondition = "";
+        List<SourceColumn> columns = select.source.columnsIncremented(table.getId().getCatalogName(), table.getId().getDatabaseName(), table.getId().getTableName());
+        if (!columns.isEmpty()) {
+            whereCondition = DataSourceSpiLoader.getProvider(catalog.getDatabaseType()).incrementCondition(columns, "${collectOffsetBeforeDay}");
+        }
+        
         StringBuilder script = new StringBuilder();
         
         // env
         script.append("""
                 env {
                   job.mode = "BATCH"
-                  #shade.identifier = "base64"
                 }
                 
                 """);
@@ -360,8 +366,7 @@ public class SourceService {
                     password = "%s"
                     connection_check_timeout_sec = 100000
                     fetch_size = 5000
-                    query = \"""SELECT %s FROM %s.%s\"""
-                    #where_condition = "WHERE TRUE"
+                    query = \"""SELECT %s FROM %s.%s%s\"""
                   }
                 }
                 
@@ -370,8 +375,9 @@ public class SourceService {
                 catalog.getUsername(),
                 catalog.getPassword(),
                 service.selectConvertColumnAs(catalog, database, table),
-                table.getId().getDatabaseName(),
-                table.getId().getTableName()));
+                delimiter + table.getId().getDatabaseName() + delimiter,
+                delimiter + table.getId().getTableName() + delimiter,
+                whereCondition));
         
         // Sink
         script.append("""

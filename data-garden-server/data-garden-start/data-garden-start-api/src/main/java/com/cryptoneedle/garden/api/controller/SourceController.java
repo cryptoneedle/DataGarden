@@ -202,12 +202,13 @@ public class SourceController {
                                        @PathVariable("databaseName") String databaseName,
                                        @PathVariable("tableName") String tableName,
                                        @PathVariable("columnName") String columnName,
-                                       @RequestParam Boolean incremented) throws EntityNotFoundException {
+                                       @RequestParam Boolean incremented,
+                                       @RequestParam String timeType) throws EntityNotFoundException {
         SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
         SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
         SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
         SourceColumn column = select.columnCheck(new SourceColumnKey(catalogName, databaseName, tableName, columnName));
-        patch.columnIncremented(catalog, database, table, column, incremented);
+        patch.columnIncremented(catalog, database, table, column, incremented, timeType);
         return Result.success();
     }
     

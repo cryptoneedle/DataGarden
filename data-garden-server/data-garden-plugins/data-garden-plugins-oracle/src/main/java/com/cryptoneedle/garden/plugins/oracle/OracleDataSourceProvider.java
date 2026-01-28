@@ -3,11 +3,15 @@ package com.cryptoneedle.garden.plugins.oracle;
 import com.cryptoneedle.garden.common.constants.CommonConstant;
 import com.cryptoneedle.garden.common.enums.DorisDataType;
 import com.cryptoneedle.garden.common.enums.SourceConnectType;
+import com.cryptoneedle.garden.common.enums.SourceTimeType;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceColumn;
 import com.cryptoneedle.garden.spi.DataSourceProvider;
 import com.cryptoneedle.garden.spi.SshUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
+
+import java.util.List;
 
 /**
  * <p>description: Oracle数据源元数据提供者实现 </p>
@@ -444,14 +448,14 @@ public class OracleDataSourceProvider implements DataSourceProvider {
         column.setTransSort(column.getSort());
         //column.setTransToChar(dorisDataTypeToChar);
         
-//        if (warn != null) {
-//            column.setTransWarn(warn);
-//            log.warn(warn);
-//        }
-//        if (error != null) {
-//            column.setTransError(error);
-//            log.error(error);
-//        }
+        //        if (warn != null) {
+        //            column.setTransWarn(warn);
+        //            log.warn(warn);
+        //        }
+        //        if (error != null) {
+        //            column.setTransError(error);
+        //            log.error(error);
+        //        }
     }
     
     @Override
@@ -476,5 +480,46 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                          ) THEN 'false' ELSE 'true'
                        END AS is_date
                 FROM DUAL""".formatted(databaseName, tableName, columnName, columnName, columnName, columnName, columnName, columnName);
+    }
+    
+    @Override
+    public String timeTypeFormat(SourceTimeType incrementType) {
+        if (SourceTimeType.YYYYMMDD.equals(incrementType)) {
+            return "YYYYMMDD";
+        } else if (SourceTimeType.YYYY_MM_DD.equals(incrementType)) {
+            return "YYYY-MM-DD";
+        } else if (SourceTimeType.YYYYMMDDHHMMSS.equals(incrementType)) {
+            return "YYYYMMDDHH24MISS";
+        } else if (SourceTimeType.YYYY_MM_DD_HH_MM_SS.equals(incrementType)) {
+            return "YYYY-MM-DD HH24:MI:SS";
+        }
+        throw new RuntimeException("未配置时间格式");
+    }
+    
+    @Override
+    public String incrementCondition(List<SourceColumn> columns, String offsetBeforeDay) {
+        String delimiter = identifierDelimiter();
+        String dataType;
+        String timeType;
+        StringBuilder sb = new StringBuilder();
+        
+        for (int i = 0; i < columns.size(); i++) {
+            if (i == 0) {
+                sb.append(" ${collectAll} WHERE ");
+            } else {
+                sb.append(" OR ");
+            }
+            SourceColumn column = columns.get(i);
+            dataType = column.getDataType();
+            if (Strings.CI.equalsAny(dataType, "DATE", "TIMESTAMP", "TIMESTAMP(0)", "TIMESTAMP(3)", "TIMESTAMP(6)")) {
+                sb.append("%s >= TRUNC(SYSDATE) - %s".formatted(delimiter + column.getId().getColumnName() + delimiter, offsetBeforeDay));
+            } else if (Strings.CI.equalsAny(dataType, "CHAR", "NCHAR", "VARCHAR2", "NVARCHAR2")) {
+                timeType = timeTypeFormat(column.getTimeType());
+                sb.append("%s >= TO_CHAR((TRUNC(SYSDATE) - %s), %s)".formatted(column.getId().getColumnName(), offsetBeforeDay, timeType));
+            } else {
+                throw new RuntimeException("Oracle增量字段不支持数据类型:" + dataType);
+            }
+        }
+        return sb.toString();
     }
 }

@@ -2,6 +2,7 @@ package com.cryptoneedle.garden.core.crud.source;
 
 import com.cryptoneedle.garden.common.enums.DorisDataType;
 import com.cryptoneedle.garden.common.enums.SourceDimensionType;
+import com.cryptoneedle.garden.common.enums.SourceTimeType;
 import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
 import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.core.crud.config.SelectConfigService;
@@ -9,7 +10,6 @@ import com.cryptoneedle.garden.infrastructure.entity.source.*;
 import com.cryptoneedle.garden.infrastructure.repository.source.*;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceColumnAlterCommentVo;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceTableAlterCommentVo;
-import com.cryptoneedle.garden.spi.DataSourceExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Service;
@@ -169,16 +169,16 @@ public class PatchSourceService {
     
     public void columnCommentBatch(String catalogName, String databaseName, List<SourceColumnAlterCommentVo> vos) {
         List<SourceColumn> columns = vos.stream()
-                                       .map(vo -> {
-                                          SourceColumn column = select.column(new SourceColumnKey(catalogName, databaseName, vo.getTableName(), vo.getColumnName()));
-                                          if (column != null) {
-                                              column.setTransComment(vo.getComment());
-                                              column.setTransCommentLocked(true);
-                                          }
-                                          return column;
-                                      })
-                                       .filter(Objects::nonNull)
-                                       .toList();
+                                        .map(vo -> {
+                                            SourceColumn column = select.column(new SourceColumnKey(catalogName, databaseName, vo.getTableName(), vo.getColumnName()));
+                                            if (column != null) {
+                                                column.setTransComment(vo.getComment());
+                                                column.setTransCommentLocked(true);
+                                            }
+                                            return column;
+                                        })
+                                        .filter(Objects::nonNull)
+                                        .toList();
         save.columns(columns);
     }
     
@@ -196,18 +196,31 @@ public class PatchSourceService {
                                           .collect(Collectors.joining()));
     }
     
-    public void columnIncremented(SourceCatalog catalog, SourceDatabase database, SourceTable table, SourceColumn column, Boolean incremented) {
-        DorisDataType transDataType = column.getTransDataType();
-        if (column.getNullNum() != null && column.getNullNum() > 0) {
-            throw new RuntimeException("增量字段不允许存在NULL");
-        }
-        if (DorisDataType.CHAR.equals(transDataType) || DorisDataType.VARCHAR.equals(transDataType)) {
-            if (!DataSourceExecutor.validStrToDateSql(catalog, column)) {
-                throw new RuntimeException("不支持的转换");
+    public void columnIncremented(SourceCatalog catalog, SourceDatabase database, SourceTable table, SourceColumn column, Boolean incremented, String timeType) {
+        if (incremented) {
+            SourceTimeType sourceTimeType = SourceTimeType.valueOf(timeType);
+            DorisDataType transDataType = column.getTransDataType();
+            if (column.getNullNum() != null && column.getNullNum() > 0) {
+                throw new RuntimeException("增量字段不允许存在NULL");
             }
-        } else if (!DorisDataType.DATE.equals(transDataType) && !DorisDataType.DATETIME.equals(transDataType)) {
-            // TODO
-            throw new RuntimeException("不支持的数据类型");
+            if (!DorisDataType.CHAR.equals(transDataType)
+                    && !DorisDataType.VARCHAR.equals(transDataType)
+                    && !DorisDataType.DATE.equals(transDataType)
+                    && !DorisDataType.DATETIME.equals(transDataType)) {
+                throw new RuntimeException("不支持的数据类型");
+            } else {
+                //                if (DorisDataType.CHAR.equals(transDataType) || DorisDataType.VARCHAR.equals(transDataType)) {
+                //                    if (!DataSourceExecutor.validStrToDateSql(catalog, column)) {
+                //                        throw new RuntimeException("不支持的转换");
+                //                    }
+                //                } else if (!DorisDataType.DATE.equals(transDataType) && !DorisDataType.DATETIME.equals(transDataType)) {
+                //                    // TODO
+                //                    throw new RuntimeException("不支持的数据类型");
+                //                }
+            }
+            column.setTimeType(sourceTimeType);
+        } else {
+            column.setTimeType(null);
         }
         column.setIncremented(incremented);
         save.column(column);

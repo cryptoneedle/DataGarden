@@ -3,6 +3,7 @@ package com.cryptoneedle.garden.infrastructure.entity.source;
 import com.bubbles.engine.data.core.entity.BaseEntity;
 import com.cryptoneedle.garden.common.enums.DorisDataType;
 import com.cryptoneedle.garden.common.enums.SourceColumnType;
+import com.cryptoneedle.garden.common.enums.SourceTimeType;
 import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
 import jakarta.persistence.*;
 import lombok.*;
@@ -128,6 +129,9 @@ public class SourceColumn extends BaseEntity {
     
     @Comment("增量")
     private Boolean incremented = false;
+    @Enumerated(EnumType.STRING)
+    @Comment("增量格式")
+    private SourceTimeType timeType;
     
     public String transFullDataType() {
         if (this.transDataType != null) {
