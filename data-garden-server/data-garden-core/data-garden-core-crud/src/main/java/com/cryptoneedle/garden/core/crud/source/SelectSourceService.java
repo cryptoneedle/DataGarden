@@ -5,6 +5,7 @@ import cn.hutool.v7.core.tree.TreeNode;
 import cn.hutool.v7.core.tree.TreeNodeConfig;
 import cn.hutool.v7.core.tree.TreeUtil;
 import com.cryptoneedle.garden.common.dto.SourceTreeDto;
+import com.cryptoneedle.garden.common.enums.SourceCollectFrequencyType;
 import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import com.cryptoneedle.garden.common.enums.SourceTreeNodeType;
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
@@ -144,6 +145,10 @@ public class SelectSourceService {
     
     public List<SourceTable> tablesEnabled(String catalogName, String databaseName) {
         return sourceTableRepository.tablesEnabled(catalogName, databaseName);
+    }
+    
+    public List<SourceTable> tablesByCollect(String catalogName, String databaseName, SourceCollectFrequencyType collectFrequency, Integer collectTimePoint, Integer collectGroupNum) {
+        return sourceTableRepository.tablesByCollect(catalogName, databaseName, collectFrequency, collectTimePoint, collectGroupNum);
     }
     
     /**

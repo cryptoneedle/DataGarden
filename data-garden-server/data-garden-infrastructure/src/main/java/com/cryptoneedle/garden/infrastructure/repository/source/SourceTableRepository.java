@@ -1,6 +1,7 @@
 package com.cryptoneedle.garden.infrastructure.repository.source;
 
 import com.bubbles.engine.data.core.repository.BaseRepository;
+import com.cryptoneedle.garden.common.enums.SourceCollectFrequencyType;
 import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
 import org.springframework.data.jpa.repository.Query;
@@ -61,4 +62,16 @@ public interface SourceTableRepository extends BaseRepository<SourceTable, Sourc
             ORDER BY id.catalogName, id.databaseName, enabled DESC, id.tableName
             """)
     List<SourceTable> tablesEnabled(String catalogName, String databaseName);
+    
+    @Query("""
+             FROM SourceTable
+            WHERE id.catalogName = :catalogName
+              AND id.databaseName = :databaseName
+              AND enabled = TRUE
+              AND collectFrequency = :collectFrequency
+              AND collectTimePoint = :collectTimePoint
+              AND collectGroupNum = :collectGroupNum
+            ORDER BY id.catalogName, id.databaseName, enabled DESC, id.tableName
+            """)
+    List<SourceTable> tablesByCollect(String catalogName, String databaseName, SourceCollectFrequencyType collectFrequency, Integer collectTimePoint, Integer collectGroupNum);
 }

@@ -54,7 +54,7 @@ public class SourceTable extends BaseEntity {
     @Comment("采集频率对应的时间点 (会覆盖目录、数据库配置) (每天为具体小时开始，每小时为具体分钟开始，每分钟为具体分开始)")
     private Integer collectTimePoint;
     @Comment("采集任务分组序号")
-    private Integer collectGroupNum;
+    private Integer collectGroupNum = 0;
     
     @Comment("表")
     private String transTableName;
@@ -89,4 +89,7 @@ public class SourceTable extends BaseEntity {
     
     @Comment("DS全量工作流")
     private Long dsFullWorkFlow;
+    
+    @Comment("DS增量工作流")
+    private Long dsIncrementWorkFlow;
 }

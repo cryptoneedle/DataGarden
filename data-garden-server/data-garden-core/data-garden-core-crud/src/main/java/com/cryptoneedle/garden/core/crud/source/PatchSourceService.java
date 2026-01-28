@@ -116,6 +116,9 @@ public class PatchSourceService {
                 if (table.getCollectTimePoint() == null) {
                     table.setCollectTimePoint(catalog.getCollectTimePoint());
                 }
+                if (table.getCollectGroupNum() == null) {
+                    table.setCollectGroupNum(0);
+                }
                 save.table(table);
             }
             

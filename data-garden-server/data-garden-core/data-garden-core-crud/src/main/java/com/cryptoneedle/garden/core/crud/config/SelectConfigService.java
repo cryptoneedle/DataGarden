@@ -152,6 +152,10 @@ public class SelectConfigService {
         return Long.valueOf(property("dolphin_scheduler_project_full").getValue());
     }
     
+    public Long dolphinSchedulerProjectIncrement() {
+        return Long.valueOf(property("dolphin_scheduler_project_increment").getValue());
+    }
+    
     public String dolphinSchedulerToken() {
         return property("dolphin_scheduler_token").getValue();
     }

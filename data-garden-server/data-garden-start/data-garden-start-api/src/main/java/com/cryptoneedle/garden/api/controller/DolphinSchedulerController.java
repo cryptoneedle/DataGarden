@@ -1,6 +1,7 @@
 package com.cryptoneedle.garden.api.controller;
 
 import com.bubbles.engine.common.core.result.Result;
+import com.cryptoneedle.garden.common.enums.SourceCollectFrequencyType;
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
 import com.cryptoneedle.garden.common.key.source.SourceDatabaseKey;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * <p>description:  </p>
@@ -52,6 +55,7 @@ public class DolphinSchedulerController {
         SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
         SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
         dolphinSchedulerService.dealFullTask(catalog, database);
+        dolphinSchedulerService.dealIncrementTask(catalog, database);
         return Result.success();
     }
     
@@ -63,6 +67,13 @@ public class DolphinSchedulerController {
         SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
         SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
         dolphinSchedulerService.dealFullTask(catalog, database, table);
+        
+        SourceCollectFrequencyType collectFrequency = table.getCollectFrequency();
+        Integer collectTimePoint = table.getCollectTimePoint();
+        Integer collectGroupNum = table.getCollectGroupNum();
+        // 查询出同一组的表
+        List<SourceTable> tables = select.tablesByCollect(table.getId().getCatalogName(), table.getId().getDatabaseName(), collectFrequency, collectTimePoint, collectGroupNum);
+        dolphinSchedulerService.dealIncrementTask(catalog, database, collectFrequency, collectTimePoint, collectGroupNum, tables);
         return Result.success();
     }
 }
