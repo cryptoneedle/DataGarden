@@ -140,14 +140,6 @@ public class SelectConfigService {
         return Integer.valueOf(property("dolphin_scheduler_port").getValue());
     }
     
-    public String dolphinSchedulerUsername() {
-        return property("dolphin_scheduler_username").getValue();
-    }
-    
-    public String dolphinSchedulerPassword() {
-        return property("dolphin_scheduler_password").getValue();
-    }
-    
     public Long dolphinSchedulerProjectFull() {
         return Long.valueOf(property("dolphin_scheduler_project_full").getValue());
     }
@@ -162,5 +154,9 @@ public class SelectConfigService {
     
     public String dolphinSchedulerTenantCode() {
         return property("dolphin_scheduler_tenant_code").getValue();
+    }
+    
+    public Integer dolphinSchedulerWorkflowTaskNum() {
+        return Integer.valueOf(property("dolphin_scheduler_workflow_task_num").getValue());
     }
 }

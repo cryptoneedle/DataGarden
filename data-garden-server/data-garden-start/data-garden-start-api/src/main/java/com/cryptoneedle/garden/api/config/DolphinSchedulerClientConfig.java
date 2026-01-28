@@ -18,15 +18,13 @@ public class DolphinSchedulerClientConfig {
     public DolphinSchedulerClient dolphinSchedulerClient(SelectConfigService selectConfigService) {
         String host = selectConfigService.dolphinSchedulerHost();
         Integer port = selectConfigService.dolphinSchedulerPort();
-        String username = selectConfigService.dolphinSchedulerUsername();
-        String password = selectConfigService.dolphinSchedulerPassword();
         String token = selectConfigService.dolphinSchedulerToken();
         return DolphinSchedulerClient.builder()
                                      .host(host)
                                      .port(port)
-                                     .username(username)
+                                     //.username(username)
+                                     //.password(password)
                                      .token(token)
-                                     .password(password)
                                      .useHttps(true)
                                      .trustAllCertificates(true)
                                      .enableLogging(true)
