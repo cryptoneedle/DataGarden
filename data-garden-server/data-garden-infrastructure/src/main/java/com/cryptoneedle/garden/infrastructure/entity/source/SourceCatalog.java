@@ -93,7 +93,7 @@ public class SourceCatalog extends BaseEntity {
     public boolean equalsJdbc(SourceCatalog other) {
         boolean basicEquals = Strings.CI.equals(this.host, other.getHost())
                 && this.port.equals(other.getPort())
-                && Strings.CI.equals(this.databaseType, other.getConnectType())
+                && Strings.CI.equals(this.databaseType, other.getDatabaseType())
                 && Strings.CI.equals(this.connectType, other.getConnectType())
                 && Strings.CI.equals(this.route, other.getRoute())
                 && Strings.CI.equals(this.username, other.getUsername())
