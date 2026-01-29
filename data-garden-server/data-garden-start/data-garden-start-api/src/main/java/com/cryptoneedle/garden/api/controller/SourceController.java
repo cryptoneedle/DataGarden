@@ -1,6 +1,7 @@
 package com.cryptoneedle.garden.api.controller;
 
 import com.bubbles.engine.common.core.result.Result;
+import com.cryptoneedle.garden.common.enums.SourceCollectFrequencyType;
 import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
@@ -119,6 +120,24 @@ public class SourceController {
         return Result.success();
     }
     
+    @PostMapping("/catalog/{catalogName}")
+    public Result<SourceCatalog> catalog(@PathVariable("catalogName") String catalogName) {
+        return Result.success(select.catalog(catalogName));
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}")
+    public Result<SourceDatabase> database(@PathVariable("catalogName") String catalogName,
+                                          @PathVariable("databaseName") String databaseName) {
+        return Result.success(select.database(new SourceDatabaseKey(catalogName, databaseName)));
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}")
+    public Result<SourceTable> table(@PathVariable("catalogName") String catalogName,
+                                       @PathVariable("databaseName") String databaseName,
+                                       @PathVariable("tableName") String tableName) {
+        return Result.success(select.table(new SourceTableKey(catalogName, databaseName, tableName)));
+    }
+    
     @PostMapping("/catalog/{catalogName}/database/list")
     public Result<?> databases(@PathVariable("catalogName") String catalogName,
                                @RequestParam Boolean onlyEnabled) {
@@ -154,6 +173,14 @@ public class SourceController {
         return Result.success(select.dimensions(catalogName, databaseName, tableName));
     }
     
+    @PostMapping("/catalog/{catalogName}/enabled")
+    public Result<?> catalogEnabled(@PathVariable("catalogName") String catalogName,
+                                    @RequestParam Boolean enabled) throws EntityNotFoundException {
+        SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
+        patch.catalogEnabled(catalog, enabled);
+        return Result.success();
+    }
+    
     @PostMapping("/catalog/{catalogName}/database/{databaseName}/enabled")
     public Result<?> databaseEnabled(@PathVariable("catalogName") String catalogName,
                                      @PathVariable("databaseName") String databaseName,
@@ -170,6 +197,60 @@ public class SourceController {
                                   @RequestParam Boolean enabled) throws EntityNotFoundException {
         SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
         patch.tableEnabled(table, enabled);
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/collectFrequency")
+    public Result<?> catalogCollectFrequency(@PathVariable("catalogName") String catalogName,
+                                             @RequestParam String collectFrequency) throws EntityNotFoundException {
+        SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
+        patch.catalogCollectFrequency(catalog, SourceCollectFrequencyType.valueOf(collectFrequency));
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/collectFrequency")
+    public Result<?> databaseCollectFrequency(@PathVariable("catalogName") String catalogName,
+                                              @PathVariable("databaseName") String databaseName,
+                                              @RequestParam String collectFrequency) throws EntityNotFoundException {
+        SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
+        patch.databaseCollectFrequency(database, SourceCollectFrequencyType.valueOf(collectFrequency));
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/collectFrequency")
+    public Result<?> tableCollectFrequency(@PathVariable("catalogName") String catalogName,
+                                           @PathVariable("databaseName") String databaseName,
+                                           @PathVariable("tableName") String tableName,
+                                           @RequestParam String collectFrequency) throws EntityNotFoundException {
+        SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
+        patch.tableCollectFrequency(table, SourceCollectFrequencyType.valueOf(collectFrequency));
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/collectTimePoint")
+    public Result<?> catalogCollectTimePoint(@PathVariable("catalogName") String catalogName,
+                                             @RequestParam Integer collectTimePoint) throws EntityNotFoundException {
+        SourceCatalog catalog = select.catalogCheck(new SourceCatalogKey(catalogName));
+        patch.catalogCollectTimePoint(catalog, collectTimePoint);
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/collectTimePoint")
+    public Result<?> databaseCollectTimePoint(@PathVariable("catalogName") String catalogName,
+                                              @PathVariable("databaseName") String databaseName,
+                                              @RequestParam Integer collectTimePoint) throws EntityNotFoundException {
+        SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
+        patch.databaseCollectTimePoint(database, collectTimePoint);
+        return Result.success();
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/table/{tableName}/collectTimePoint")
+    public Result<?> tableCollectTimePoint(@PathVariable("catalogName") String catalogName,
+                                           @PathVariable("databaseName") String databaseName,
+                                           @PathVariable("tableName") String tableName,
+                                           @RequestParam Integer collectTimePoint) throws EntityNotFoundException {
+        SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
+        patch.tableCollectTimePoint(table, collectTimePoint);
         return Result.success();
     }
     

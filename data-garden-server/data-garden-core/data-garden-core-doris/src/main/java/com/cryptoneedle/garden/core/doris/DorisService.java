@@ -222,7 +222,7 @@ public class DorisService {
         save.doris.tables(saveList);
         delete.doris.tables(removeList);
         
-        service.syncColiumn(database, table);
+        service.syncColumn(database, table);
     }
     
     public void syncTableWithCreateTableField(DorisTable dorisTable) {
@@ -260,7 +260,7 @@ public class DorisService {
         }
     }
     
-    public void syncColiumn(DorisDatabase database, DorisTable table) {
+    public void syncColumn(DorisDatabase database, DorisTable table) {
         String databaseName = database.getId().getDatabaseName();
         String tableName = table != null ? table.getId().getTableName() : null;
         

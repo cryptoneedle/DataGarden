@@ -263,7 +263,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                      , c.column_name     AS "columnName"    -- 字段
                      , c.column_position AS "sort"          -- 排序
                   FROM all_indexes t
-                         INNER JOIN all_ind_columns c ON t.index_name = c.index_name AND t.table_owner = c.index_owner AND t.table_owner = c.table_owner
+                         INNER JOIN all_ind_columns c ON t.index_name = c.index_name AND t.table_owner = c.index_owner AND t.table_owner = c.table_owner AND t.uniqueness = 'UNIQUE'
                  WHERE 1 = 1
                    %s
                    %s

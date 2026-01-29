@@ -1,6 +1,7 @@
 package com.cryptoneedle.garden.core.crud.source;
 
 import com.cryptoneedle.garden.common.enums.DorisDataType;
+import com.cryptoneedle.garden.common.enums.SourceCollectFrequencyType;
 import com.cryptoneedle.garden.common.enums.SourceDimensionType;
 import com.cryptoneedle.garden.common.enums.SourceTimeType;
 import com.cryptoneedle.garden.common.key.source.SourceColumnKey;
@@ -60,6 +61,11 @@ public class PatchSourceService {
     /**
      * SourceCatalog
      */
+    
+    public void catalogEnabled(SourceCatalog catalog, Boolean enabled) {
+        catalog.setEnabled(enabled);
+        save.catalog(catalog);
+    }
     
     /**
      * SourceDatabase
@@ -225,6 +231,37 @@ public class PatchSourceService {
         column.setIncremented(incremented);
         save.column(column);
     }
+    
+    public void catalogCollectFrequency(SourceCatalog catalog, SourceCollectFrequencyType sourceCollectFrequencyType) {
+        catalog.setCollectFrequency(sourceCollectFrequencyType);
+        save.catalog(catalog);
+    }
+    
+    public void databaseCollectFrequency(SourceDatabase database, SourceCollectFrequencyType sourceCollectFrequencyType) {
+        database.setCollectFrequency(sourceCollectFrequencyType);
+        save.database(database);
+    }
+    
+    public void tableCollectFrequency(SourceTable table, SourceCollectFrequencyType sourceCollectFrequencyType) {
+        table.setCollectFrequency(sourceCollectFrequencyType);
+        save.table(table);
+    }
+    
+    public void catalogCollectTimePoint(SourceCatalog catalog, Integer collectTimePoint) {
+        catalog.setCollectTimePoint(collectTimePoint);
+        save.catalog(catalog);
+    }
+    
+    public void databaseCollectTimePoint(SourceDatabase database, Integer collectTimePoint) {
+        database.setCollectTimePoint(collectTimePoint);
+        save.database(database);
+    }
+    
+    public void tableCollectTimePoint(SourceTable table, Integer collectTimePoint) {
+        table.setCollectTimePoint(collectTimePoint);
+        save.table(table);
+    }
+    
     
     /**
      * SourceColumn

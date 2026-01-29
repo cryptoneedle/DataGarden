@@ -86,4 +86,8 @@ public class SourceDimensionColumnKey implements Serializable {
                               .columnName(this.columnName)
                               .build();
     }
+    
+    public String commonDimensionNameTable() {
+        return this.catalogName + "_" + this.databaseName + "_" + this.tableName + "_" + this.dimensionName;
+    }
 }

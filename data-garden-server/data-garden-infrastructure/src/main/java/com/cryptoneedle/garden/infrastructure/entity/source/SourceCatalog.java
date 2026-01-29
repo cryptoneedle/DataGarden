@@ -4,6 +4,7 @@ import com.bubbles.engine.data.core.entity.BaseEntity;
 import com.cryptoneedle.garden.common.enums.SourceCollectFrequencyType;
 import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -83,6 +84,7 @@ public class SourceCatalog extends BaseEntity {
     @Comment("SSH主机")
     private String sshHost;
     
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sshHost", referencedColumnName = "host", insertable = false, updatable = false)
     @Comment("SSH配置关联")

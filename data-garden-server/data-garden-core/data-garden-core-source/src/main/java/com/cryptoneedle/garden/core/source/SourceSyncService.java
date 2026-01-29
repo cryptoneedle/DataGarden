@@ -137,10 +137,6 @@ public class SourceSyncService {
     @Async("asyncExecutor")
     @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager", propagation = Propagation.REQUIRES_NEW)
     public void syncTable(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
-        log.info("[sync] Table 开始: catalog={}, database={}, table={}", 
-                catalog.getId().getCatalogName(),
-                database != null ? database.getId().getDatabaseName() : "all",
-                table != null ? table.getId().getTableName() : "all");
         String databaseName = database != null ? database.getId().getDatabaseName() : null;
         String tableName = table != null ? table.getId().getTableName() : null;
         
@@ -193,11 +189,6 @@ public class SourceSyncService {
         service.syncDimension(catalog, database, table);
         
         transform.transTable(catalog, database, table);
-        
-        log.info("[sync] Table 完成: catalog={}, database={}, table={}", 
-                catalog.getId().getCatalogName(),
-                database != null ? database.getId().getDatabaseName() : "all",
-                table != null ? table.getId().getTableName() : "all");
     }
     
     public void syncColumn(SourceCatalog catalog, SourceDatabase database, SourceTable table) {

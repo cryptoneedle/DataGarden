@@ -95,10 +95,13 @@ public class DataSourceExecutor {
         List<SourceDimension> uniqueConstraints = dimensions(jdbcTemplate, provider.uniqueConstraintSql(databaseName, tableName), catalog, SourceDimensionType.UNIQUE_CONSTRAINT);
         List<SourceDimension> uniqueIndexs = dimensions(jdbcTemplate, provider.uniqueIndexSql(databaseName, tableName), catalog, SourceDimensionType.UNIQUE_INDEX);
         
+        List<String> primaryDimensionNames = primaryConstraints.stream().map(dimension -> dimension.getId().commonDimensionNameTable()).distinct().toList();
+        
         List<SourceDimension> result = Lists.newArrayListWithCapacity(primaryConstraints.size() + uniqueConstraints.size() + uniqueIndexs.size());
         result.addAll(primaryConstraints);
         result.addAll(uniqueConstraints);
-        result.addAll(uniqueIndexs);
+        // 发现在Oracle中存在 PRIMARY_CONSTRAINT 与 UNIQUE_INDEX 的内容可能存在重复
+        result.addAll(uniqueIndexs.stream().filter(idx -> !primaryDimensionNames.contains(idx.getId().commonDimensionNameTable())).toList());
         return result;
     }
     
