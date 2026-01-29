@@ -78,7 +78,7 @@ public class SourceTable extends BaseEntity {
     private BigDecimal avgRowBytes;
     @Comment("统计时间")
     private LocalDateTime statisticDt;
-    
+
     @Comment("锁定表")
     private Boolean transTableLocked = false;
     @Comment("锁定说明")

@@ -11,6 +11,7 @@ import com.cryptoneedle.garden.infrastructure.entity.source.*;
 import com.cryptoneedle.garden.infrastructure.repository.source.*;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceColumnAlterCommentVo;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceTableAlterCommentVo;
+import com.cryptoneedle.garden.spi.DataSourceExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Service;
@@ -104,12 +105,14 @@ public class PatchSourceService {
      * SourceTable
      */
     public void tableDefault(SourceCatalog catalog) {
-        List<SourceTable> tables = select.tables();
+        List<SourceTable> tables = select.tables(catalog.getId().getCatalogName());
         for (SourceTable table : tables) {
             if (table.getDorisCatalog() == null
                     || table.getSystemCode() == null
                     || table.getCollectFrequency() == null
-                    || table.getCollectTimePoint() == null) {
+                    || table.getCollectTimePoint() == null
+                    || table.getCollectGroupNum() == null
+                    || table.getRowNum() == null) {
                 if (table.getDorisCatalog() == null) {
                     table.setDorisCatalog(catalog.getDorisCatalog());
                 }
@@ -124,6 +127,10 @@ public class PatchSourceService {
                 }
                 if (table.getCollectGroupNum() == null) {
                     table.setCollectGroupNum(0);
+                }
+                if (table.getRowNum() == null) {
+                    Long rowNum = DataSourceExecutor.selectRowNum(catalog, table);
+                    table.setRowNum(rowNum);
                 }
                 save.table(table);
             }

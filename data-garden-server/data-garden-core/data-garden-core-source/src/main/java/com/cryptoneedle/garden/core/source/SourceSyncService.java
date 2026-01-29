@@ -168,9 +168,11 @@ public class SourceSyncService {
                                                  .peek(origin -> {
                                                      SourceTable deal = dealMap.get(origin.getId());
                                                      if (deal != null) {
+                                                         if (deal.getRowNum() != null) {
+                                                             origin.setRowNum(deal.getRowNum());
+                                                         }
                                                          origin.setComment(deal.getComment())
                                                                .setTableType(deal.getTableType())
-                                                               .setRowNum(deal.getRowNum())
                                                                .setAvgRowBytes(deal.getAvgRowBytes())
                                                                .setStatisticDt(deal.getStatisticDt());
                                                      }

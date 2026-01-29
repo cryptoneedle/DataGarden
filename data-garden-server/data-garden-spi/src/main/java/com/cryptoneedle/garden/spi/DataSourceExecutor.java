@@ -125,4 +125,10 @@ public class DataSourceExecutor {
         };
         return valid;
     }
+    
+    public static Long selectRowNum(SourceCatalog catalog, SourceTable table) {
+        String sql = "SELECT COUNT(*) FROM %s.%s".formatted(table.getId().getDatabaseName(), table.getId().getTableName());
+        String result = DataSourceManager.getJdbcTemplate(catalog).queryForObject(sql, String.class);
+        return Long.valueOf(result);
+    }
 }
