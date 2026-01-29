@@ -10,7 +10,7 @@ spring:
       username: ${primary.username}
       password: ${primary.password}
       default_schema: haerbin
-      show-sql: true
+      show-sql: false
       ddl-auto: update
     doris:
       url: jdbc:mysql://${doris.host}:${doris.port}

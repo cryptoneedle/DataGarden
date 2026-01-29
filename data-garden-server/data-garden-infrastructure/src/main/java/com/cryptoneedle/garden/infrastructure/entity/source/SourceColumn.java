@@ -143,9 +143,9 @@ public class SourceColumn extends BaseEntity {
                     fullDataType = fullDataType + "(" + this.scale + ")";
                 }
             } else if (DorisDataType.CHAR.equals(this.transDataType)) {
-                fullDataType = fullDataType + "(" + this.length + ")";
+                fullDataType = fullDataType + "(" + this.transLength + ")";
             } else if (DorisDataType.VARCHAR.equals(this.transDataType)) {
-                fullDataType = fullDataType + "(" + this.length + ")";
+                fullDataType = fullDataType + "(" + this.transLength + ")";
             }
             return fullDataType;
         }

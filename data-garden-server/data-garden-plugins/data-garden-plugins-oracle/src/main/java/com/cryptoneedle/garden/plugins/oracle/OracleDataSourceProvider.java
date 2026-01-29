@@ -367,7 +367,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
             }
             case "CHAR" -> {
                 dorisDataType = DorisDataType.CHAR;
-                dorisLength = length * 4;
+                dorisLength = length;
             }
             case "NCHAR" -> {
                 dorisDataType = DorisDataType.CHAR;
@@ -375,7 +375,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
             }
             case "VARCHAR2" -> {
                 dorisDataType = DorisDataType.VARCHAR;
-                dorisLength = length * 4;
+                dorisLength = length;
             }
             case "NVARCHAR2" -> {
                 dorisDataType = DorisDataType.VARCHAR;
@@ -515,7 +515,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                 sb.append("%s >= TRUNC(SYSDATE) - %s".formatted(delimiter + column.getId().getColumnName() + delimiter, offsetBeforeDay));
             } else if (Strings.CI.equalsAny(dataType, "CHAR", "NCHAR", "VARCHAR2", "NVARCHAR2")) {
                 timeType = timeTypeFormat(column.getTimeType());
-                sb.append("%s >= TO_CHAR((TRUNC(SYSDATE) - %s), %s)".formatted(column.getId().getColumnName(), offsetBeforeDay, timeType));
+                sb.append("%s >= TO_CHAR((TRUNC(SYSDATE) - %s), '%s')".formatted(column.getId().getColumnName(), offsetBeforeDay, timeType));
             } else {
                 throw new RuntimeException("Oracle增量字段不支持数据类型:" + dataType);
             }
