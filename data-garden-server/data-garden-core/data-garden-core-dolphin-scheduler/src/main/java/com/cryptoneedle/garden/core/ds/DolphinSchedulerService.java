@@ -215,9 +215,9 @@ public class DolphinSchedulerService {
         if (SourceCollectFrequencyType.DAY.equals(collectFrequency)) {
             return "0 0 %s ? * SUN *".formatted(collectTimePoint);
         } else if (SourceCollectFrequencyType.HOUR.equals(collectFrequency)) {
-            return "0 %s * ? * SUN *".formatted(collectTimePoint);
+            return "0 %s 0 ? * SUN *".formatted(collectTimePoint);
         } else if (SourceCollectFrequencyType.FIVE_MINUTE.equals(collectFrequency)) {
-            return "0 %s/5 * ? * SUN *".formatted(collectTimePoint % 5);
+            return "0 %s/5 0 ? * SUN *".formatted(collectTimePoint % 5);
         }
         throw new RuntimeException("未知采集频率配置: collectFrequency:" + collectFrequency + ",collectTimePoint:" + collectTimePoint);
     }
