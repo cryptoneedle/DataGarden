@@ -305,4 +305,13 @@ public class DorisMetadataRepository {
             throw new RuntimeException(e);
         }
     }
+    
+    public Long execSelectCount(DorisTable table) {
+        try {
+            String sql = "SELECT count(*) AS rowNum FROM `%s`.`%s`".formatted(table.getId().getDatabaseName(), table.getId().getTableName());
+            return dorisJdbcTemplate.queryForObject(sql, Long.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

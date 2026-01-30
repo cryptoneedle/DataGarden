@@ -1,13 +1,7 @@
 package com.cryptoneedle.garden.core.crud.doris;
 
-import com.cryptoneedle.garden.infrastructure.entity.doris.DorisCatalog;
-import com.cryptoneedle.garden.infrastructure.entity.doris.DorisColumn;
-import com.cryptoneedle.garden.infrastructure.entity.doris.DorisDatabase;
-import com.cryptoneedle.garden.infrastructure.entity.doris.DorisTable;
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisCatalogRepository;
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisColumnRepository;
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisDatabaseRepository;
-import com.cryptoneedle.garden.infrastructure.repository.doris.DorisTableRepository;
+import com.cryptoneedle.garden.infrastructure.entity.doris.*;
+import com.cryptoneedle.garden.infrastructure.repository.doris.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,15 +21,18 @@ public class SaveDorisService {
     private final DorisDatabaseRepository dorisDatabaseRepository;
     private final DorisTableRepository dorisTableRepository;
     private final DorisColumnRepository dorisColumnRepository;
+    private final DorisTableRowNumRepository dorisTableRowNumRepository;
     
     public SaveDorisService(DorisCatalogRepository dorisCatalogRepository,
                             DorisDatabaseRepository dorisDatabaseRepository,
                             DorisTableRepository dorisTableRepository,
-                            DorisColumnRepository dorisColumnRepository) {
+                            DorisColumnRepository dorisColumnRepository,
+                            DorisTableRowNumRepository dorisTableRowNumRepository) {
         this.dorisCatalogRepository = dorisCatalogRepository;
         this.dorisDatabaseRepository = dorisDatabaseRepository;
         this.dorisTableRepository = dorisTableRepository;
         this.dorisColumnRepository = dorisColumnRepository;
+        this.dorisTableRowNumRepository = dorisTableRowNumRepository;
     }
     
     /**
@@ -80,5 +77,16 @@ public class SaveDorisService {
     
     public void columns(List<DorisColumn> list) {
         dorisColumnRepository.saveAll(list);
+    }
+    
+    /**
+     * DorisTableRowNum
+     */
+    public void rowNum(DorisTableRowNum entity) {
+        dorisTableRowNumRepository.save(entity);
+    }
+    
+    public void rowNum(List<DorisTableRowNum> list) {
+        dorisTableRowNumRepository.saveAll(list);
     }
 }

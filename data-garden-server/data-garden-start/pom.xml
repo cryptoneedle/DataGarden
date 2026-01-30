@@ -16,7 +16,6 @@
 
     <modules>
         <module>data-garden-start-config</module>
-        <module>data-garden-start-task</module>
         <module>data-garden-start-api</module>
     </modules>
 

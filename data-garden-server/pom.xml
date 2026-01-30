@@ -143,11 +143,6 @@
             </dependency>
             <dependency>
                 <groupId>com.cryptoneedle.garden</groupId>
-                <artifactId>data-garden-start-task</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.cryptoneedle.garden</groupId>
                 <artifactId>data-garden-start-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -195,6 +190,11 @@
                 <groupId>com.hierynomus</groupId>
                 <artifactId>sshj</artifactId>
                 <version>0.40.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>1.82</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

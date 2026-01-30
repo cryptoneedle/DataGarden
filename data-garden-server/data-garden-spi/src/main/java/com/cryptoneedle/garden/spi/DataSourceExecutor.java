@@ -127,8 +127,13 @@ public class DataSourceExecutor {
     }
     
     public static Long selectRowNum(SourceCatalog catalog, SourceTable table) {
-        String sql = "SELECT COUNT(*) FROM %s.%s".formatted(table.getId().getDatabaseName(), table.getId().getTableName());
-        String result = DataSourceManager.getJdbcTemplate(catalog).queryForObject(sql, String.class);
-        return Long.valueOf(result);
+        try {
+            String sql = "SELECT COUNT(*) FROM %s.%s".formatted(table.getId().getDatabaseName(), table.getId().getTableName());
+            String result = DataSourceManager.getJdbcTemplate(catalog).queryForObject(sql, String.class);
+            return Long.valueOf(result);
+        } catch (Exception e) {
+            log.info("获取数据量失败", e);
+        }
+        return null;
     }
 }

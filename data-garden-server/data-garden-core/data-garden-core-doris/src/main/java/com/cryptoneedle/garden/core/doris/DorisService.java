@@ -3,10 +3,7 @@ package com.cryptoneedle.garden.core.doris;
 import com.cryptoneedle.garden.common.constants.CommonConstant;
 import com.cryptoneedle.garden.common.enums.DorisTableModelType;
 import com.cryptoneedle.garden.common.enums.DorisTableType;
-import com.cryptoneedle.garden.common.key.doris.DorisCatalogKey;
-import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
-import com.cryptoneedle.garden.common.key.doris.DorisDatabaseKey;
-import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
+import com.cryptoneedle.garden.common.key.doris.*;
 import com.cryptoneedle.garden.common.util.DorisBucketUtil;
 import com.cryptoneedle.garden.core.crud.*;
 import com.cryptoneedle.garden.infrastructure.doris.DorisMetadataRepository;
@@ -19,6 +16,7 @@ import org.apache.commons.lang3.Strings;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -406,6 +404,23 @@ public class DorisService {
             dorisMetadataRepository.execute(dropTable);
             // 重命名新表
             dorisMetadataRepository.execute(renameTable);
+        }
+    }
+    
+    public void dorisTableDayIncrement() {
+        List<DorisTable> tables = select.doris.tables();
+        for (DorisTable table : tables) {
+            log.info("[SYNC] Doris Table Statistic -> " + table.getId().getTableName());
+            LocalDateTime localDateTime = LocalDateTime.now();
+            Long rowNum = dorisMetadataRepository.execSelectCount(table);
+            if (rowNum == null) {
+                continue;
+            }
+            DorisTableRowNum dorisTableRowNum = DorisTableRowNum.builder()
+                                                                .id(new DorisTableStatisticKey(table.getId().getDatabaseName(), table.getId().getTableName(), localDateTime))
+                                                                .rowNum(rowNum)
+                                                                .build();
+            save.doris.rowNum(dorisTableRowNum);
         }
     }
 }
