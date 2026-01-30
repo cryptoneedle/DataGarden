@@ -143,6 +143,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
                      , NULL         AS "avgRowBytes"  -- 行平均占用空间(单位：Byte)
                      , NULL         AS "statisticDt"  -- 统计时间
                   FROM all_views t
+                        INNER JOIN all_objects o ON t.owner = o.owner AND t.view_name = o.object_name AND status <> 'INVALID'
                          LEFT JOIN all_tab_comments c ON t.owner = c.owner AND t.view_name = c.table_name AND c.table_type = 'VIEW'
                  WHERE 1 = 1
                    %s
