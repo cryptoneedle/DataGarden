@@ -10,7 +10,6 @@ import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.source.*;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.Strings;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.Connection;
@@ -114,20 +113,9 @@ public class DataSourceExecutor {
                                                          .setDimensionType(sourceDimensionType)));
     }
     
-    public static boolean validStrToDateSql(SourceCatalog catalog, SourceColumn column) {
-        boolean valid = false;
-        DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
-        String validStrToDate = provider.validStrToDate(column);
-        try {
-            String result = DataSourceManager.getJdbcTemplate(catalog).queryForObject(validStrToDate, String.class);
-            valid = Strings.CI.equals(result, "true");
-        } catch (Exception e) {
-        };
-        return valid;
-    }
-    
     public static Long selectRowNum(SourceCatalog catalog, SourceTable table) {
         try {
+            log.info("获取数据量:" + table.getId().getTableName());
             String sql = "SELECT COUNT(*) FROM %s.%s".formatted(table.getId().getDatabaseName(), table.getId().getTableName());
             String result = DataSourceManager.getJdbcTemplate(catalog).queryForObject(sql, String.class);
             return Long.valueOf(result);

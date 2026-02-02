@@ -176,13 +176,6 @@ public interface DataSourceProvider {
      */
     String identifierDelimiter();
     
-    /**
-     * 验证列是否为日期类型的SQL（SQL逻辑应返回boolean值）
-     *
-     * @param column 列信息
-     * @return SQL
-     */
-    String validStrToDate(SourceColumn column);
     String timeTypeFormat(SourceTimeType incrementType);
     
     String incrementCondition(List<SourceColumn> columns, String offsetBeforeDay);

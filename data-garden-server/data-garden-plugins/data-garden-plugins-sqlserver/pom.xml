@@ -6,23 +6,17 @@
 
     <parent>
         <groupId>com.cryptoneedle.garden</groupId>
-        <artifactId>data-garden-server</artifactId>
+        <artifactId>data-garden-plugins</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>data-garden-plugins</artifactId>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>data-garden-plugins-oracle</module>
-        <module>data-garden-plugins-sqlserver</module>
-    </modules>
+    <artifactId>data-garden-plugins-sqlserver</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-spi</artifactId>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
         </dependency>
     </dependencies>
 </project>

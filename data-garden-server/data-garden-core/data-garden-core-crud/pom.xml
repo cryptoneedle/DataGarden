@@ -21,5 +21,9 @@
             <groupId>com.cryptoneedle.garden</groupId>
             <artifactId>data-garden-plugins-oracle</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.cryptoneedle.garden</groupId>
+            <artifactId>data-garden-plugins-sqlserver</artifactId>
+        </dependency>
     </dependencies>
 </project>

@@ -368,7 +368,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
             }
             case "CHAR" -> {
                 dorisDataType = DorisDataType.CHAR;
-                dorisLength = length;
+                dorisLength = length * 4;
             }
             case "NCHAR" -> {
                 dorisDataType = DorisDataType.CHAR;
@@ -376,7 +376,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
             }
             case "VARCHAR2" -> {
                 dorisDataType = DorisDataType.VARCHAR;
-                dorisLength = length;
+                dorisLength = length * 4;
             }
             case "NVARCHAR2" -> {
                 dorisDataType = DorisDataType.VARCHAR;
@@ -465,25 +465,6 @@ public class OracleDataSourceProvider implements DataSourceProvider {
     }
     
     @Override
-    public String validStrToDate(SourceColumn column) {
-        String databaseName = column.getId().getDatabaseName();
-        String tableName = column.getId().getTableName();
-        String columnName = identifierDelimiter() + column.getId().getColumnName() + identifierDelimiter();
-        return """
-                SELECT CASE
-                         WHEN EXISTS(
-                           SELECT 1 FROM %s.%s
-                            WHERE NOT (
-                              LENGTH(%s) = 8 AND REGEXP_LIKE(%s, '^[0-9]{4}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$')
-                              OR LENGTH(%s) = 10 AND REGEXP_LIKE(%s, '^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$')
-                              OR LENGTH(%s) = 19 AND REGEXP_LIKE(%s, '^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) ([0-1][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$')
-                            )
-                         ) THEN 'false' ELSE 'true'
-                       END AS is_date
-                FROM DUAL""".formatted(databaseName, tableName, columnName, columnName, columnName, columnName, columnName, columnName);
-    }
-    
-    @Override
     public String timeTypeFormat(SourceTimeType incrementType) {
         if (SourceTimeType.YYYYMMDD.equals(incrementType)) {
             return "YYYYMMDD";
@@ -493,6 +474,18 @@ public class OracleDataSourceProvider implements DataSourceProvider {
             return "YYYYMMDDHH24MISS";
         } else if (SourceTimeType.YYYY_MM_DD_HH_MM_SS.equals(incrementType)) {
             return "YYYY-MM-DD HH24:MI:SS";
+        } else if (SourceTimeType.YYYY_MM_DD_HH_MM_SS_S1.equals(incrementType)) {
+            return "YYYY-MM-DD HH24:MI:SS.FF1";
+        } else if (SourceTimeType.YYYY_MM_DD_HH_MM_SS_S2.equals(incrementType)) {
+            return "YYYY-MM-DD HH24:MI:SS.FF2";
+        } else if (SourceTimeType.YYYY_MM_DD_HH_MM_SS_S3.equals(incrementType)) {
+            return "YYYY-MM-DD HH24:MI:SS.FF3";
+        } else if (SourceTimeType.YYYY_MM_DD_HH_MM_SS_S4.equals(incrementType)) {
+            return "YYYY-MM-DD HH24:MI:SS.FF4";
+        } else if (SourceTimeType.YYYY_MM_DD_HH_MM_SS_S5.equals(incrementType)) {
+            return "YYYY-MM-DD HH24:MI:SS.FF5";
+        } else if (SourceTimeType.YYYY_MM_DD_HH_MM_SS_S6.equals(incrementType)) {
+            return "YYYY-MM-DD HH24:MI:SS.FF6";
         }
         throw new RuntimeException("未配置时间格式");
     }

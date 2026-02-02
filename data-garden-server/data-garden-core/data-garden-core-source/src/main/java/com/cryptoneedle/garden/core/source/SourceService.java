@@ -405,7 +405,7 @@ public class SourceService {
                 select.config.dorisDatasourcePassword(),
                 select.config.dorisSchemaOds(),
                 table.getTransTableName(),
-                table.getTransTableName()));
+                table.getDorisCatalog()));
         
         return script.toString();
     }

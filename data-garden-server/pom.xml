@@ -164,6 +164,11 @@
                 <artifactId>data-garden-plugins-oracle</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.cryptoneedle.garden</groupId>
+                <artifactId>data-garden-plugins-sqlserver</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- Other -->
             <dependency>
@@ -180,6 +185,11 @@
                 <groupId>com.mysql</groupId>
                 <artifactId>mysql-connector-j</artifactId>
                 <version>9.5.0</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sourceforge.jtds</groupId>
+                <artifactId>jtds</artifactId>
+                <version>1.3.1</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate.common</groupId>
