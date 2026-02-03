@@ -6,6 +6,7 @@ import com.cryptoneedle.garden.core.crud.dim.PatchDimService;
 import com.cryptoneedle.garden.core.crud.doris.PatchDorisService;
 import com.cryptoneedle.garden.core.crud.dwd.PatchDwdService;
 import com.cryptoneedle.garden.core.crud.dws.PatchDwsService;
+import com.cryptoneedle.garden.core.crud.mapping.PatchMappingService;
 import com.cryptoneedle.garden.core.crud.ods.PatchOdsService;
 import com.cryptoneedle.garden.core.crud.source.PatchSourceService;
 import com.cryptoneedle.garden.core.crud.standard.PatchStandardService;
@@ -28,6 +29,7 @@ public class PatchService {
     public final PatchDimService dim;
     public final PatchStandardService standard;
     public final PatchOdsService ods;
+    public final PatchMappingService mapping;
     public final PatchDwdService dwd;
     public final PatchDwsService dws;
     public final PatchAdsService ads;
@@ -38,6 +40,7 @@ public class PatchService {
                         PatchDimService dim,
                         PatchStandardService standard,
                         PatchOdsService ods,
+                        PatchMappingService mapping,
                         PatchDwdService dwd,
                         PatchDwsService dws,
                         PatchAdsService ads) {
@@ -47,6 +50,7 @@ public class PatchService {
         this.dim = dim;
         this.standard = standard;
         this.ods = ods;
+        this.mapping = mapping;
         this.dwd = dwd;
         this.dws = dws;
         this.ads = ads;

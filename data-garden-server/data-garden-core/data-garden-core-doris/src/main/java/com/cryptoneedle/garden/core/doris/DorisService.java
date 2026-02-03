@@ -40,6 +40,12 @@ public class DorisService {
     public final DeleteService delete;
     public final PatchService patch;
     public final DorisMetadataRepository dorisMetadataRepository;
+    public final SyncStandardService syncStandardService;
+    public final SyncOdsService syncOdsService;
+    public final SyncMappingService syncMappingService;
+    public final SyncDwdService syncDwdService;
+    public final SyncDwsService syncDwsService;
+    public final SyncAdsService syncAdsService;
     
     public DorisService(@Lazy DorisService dorisService,
                         AddService addService,
@@ -47,7 +53,13 @@ public class DorisService {
                         SaveService saveService,
                         DeleteService deleteService,
                         PatchService patchService,
-                        DorisMetadataRepository dorisMetadataRepository) {
+                        DorisMetadataRepository dorisMetadataRepository,
+                        SyncStandardService syncStandardService,
+                        SyncOdsService syncOdsService,
+                        SyncMappingService syncMappingService,
+                        SyncDwdService syncDwdService,
+                        SyncDwsService syncDwsService,
+                        SyncAdsService syncAdsService) {
         this.service = dorisService;
         this.add = addService;
         this.select = selectService;
@@ -55,6 +67,12 @@ public class DorisService {
         this.delete = deleteService;
         this.patch = patchService;
         this.dorisMetadataRepository = dorisMetadataRepository;
+        this.syncStandardService = syncStandardService;
+        this.syncOdsService = syncOdsService;
+        this.syncMappingService = syncMappingService;
+        this.syncDwdService = syncDwdService;
+        this.syncDwsService = syncDwsService;
+        this.syncAdsService = syncAdsService;
     }
     
     public void syncCatalog() {
@@ -144,6 +162,13 @@ public class DorisService {
         for (DorisDatabase dorisDatabase : select.doris.databases()) {
             service.syncTable(dorisDatabase, table);
         }
+        
+        syncStandardService.syncTable();
+        syncOdsService.syncTable();
+        syncMappingService.syncTable();
+        syncDwdService.syncTable();
+        syncDwsService.syncTable();
+        syncAdsService.syncTable();
     }
     
     public void syncTable(DorisDatabase database, DorisTable table) {
@@ -312,9 +337,9 @@ public class DorisService {
         // todo 从配置中提取
         String[] databases = new String[]{"seatone_ads", "seatone_dim", "seatone_dwd", "seatone_dwd_standard", "seatone_dws", "seatone_mapping", "seatone_mapping_standard", "seatone_ods", "seatone_pre"};
         List<DorisTable> dorisTables = select.doris.tables()
-                                             .stream()
-                                             .filter(table -> Strings.CI.containsAny(table.getId().getDatabaseName(), databases))
-                                             .toList();
+                                                   .stream()
+                                                   .filter(table -> Strings.CI.containsAny(table.getId().getDatabaseName(), databases))
+                                                   .toList();
         int tableMaxLength = dorisTables.stream()
                                         .map(table -> table.getId().getDatabaseName() + "." + table.getId().getTableName())
                                         .mapToInt(String::length)

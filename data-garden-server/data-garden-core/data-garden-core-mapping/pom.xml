@@ -11,12 +11,12 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>data-garden-core-dwd</artifactId>
+    <artifactId>data-garden-core-mapping</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-core-mapping</artifactId>
+            <artifactId>data-garden-core-ods</artifactId>
         </dependency>
     </dependencies>
 </project>

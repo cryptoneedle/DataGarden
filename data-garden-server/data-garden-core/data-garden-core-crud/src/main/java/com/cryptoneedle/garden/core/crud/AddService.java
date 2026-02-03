@@ -6,6 +6,7 @@ import com.cryptoneedle.garden.core.crud.dim.AddDimService;
 import com.cryptoneedle.garden.core.crud.doris.AddDorisService;
 import com.cryptoneedle.garden.core.crud.dwd.AddDwdService;
 import com.cryptoneedle.garden.core.crud.dws.AddDwsService;
+import com.cryptoneedle.garden.core.crud.mapping.AddMappingService;
 import com.cryptoneedle.garden.core.crud.ods.AddOdsService;
 import com.cryptoneedle.garden.core.crud.source.AddSourceService;
 import com.cryptoneedle.garden.core.crud.standard.AddStandardService;
@@ -28,6 +29,7 @@ public class AddService {
     public final AddDimService dim;
     public final AddStandardService standard;
     public final AddOdsService ods;
+    public final AddMappingService mapping;
     public final AddDwdService dwd;
     public final AddDwsService dws;
     public final AddAdsService ads;
@@ -38,6 +40,7 @@ public class AddService {
                       AddDimService dim,
                       AddStandardService standard,
                       AddOdsService ods,
+                      AddMappingService mapping,
                       AddDwdService dwd,
                       AddDwsService dws,
                       AddAdsService ads) {
@@ -47,6 +50,7 @@ public class AddService {
         this.dim = dim;
         this.standard = standard;
         this.ods = ods;
+        this.mapping = mapping;
         this.dwd = dwd;
         this.dws = dws;
         this.ads = ads;

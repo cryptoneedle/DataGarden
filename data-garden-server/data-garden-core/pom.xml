@@ -24,6 +24,7 @@
         <module>data-garden-core-dim</module>
         <module>data-garden-core-standard</module>
         <module>data-garden-core-ods</module>
+        <module>data-garden-core-mapping</module>
         <module>data-garden-core-dwd</module>
         <module>data-garden-core-dws</module>
         <module>data-garden-core-ads</module>

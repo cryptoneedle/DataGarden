@@ -56,6 +56,26 @@ public class SelectConfigService {
         return property("doris_schema_ods").getValue();
     }
     
+    public String dorisSchemaDwd() {
+        return property("doris_schema_dwd").getValue();
+    }
+    
+    public String dorisSchemaDws() {
+        return property("doris_schema_dws").getValue();
+    }
+    
+    public String dorisSchemaAds() {
+        return property("doris_schema_ads").getValue();
+    }
+    
+    public String dorisSchemaStandard() {
+        return property("doris_schema_standard").getValue();
+    }
+    
+    public String dorisSchemaMapping() {
+        return property("doris_schema_mapping").getValue();
+    }
+    
     public String dorisTablePrefixOds() {
         return property("doris_table_prefix_ods").getValue();
     }

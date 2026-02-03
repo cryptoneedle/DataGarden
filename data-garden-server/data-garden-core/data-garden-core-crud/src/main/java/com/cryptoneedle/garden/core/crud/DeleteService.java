@@ -6,6 +6,7 @@ import com.cryptoneedle.garden.core.crud.dim.DeleteDimService;
 import com.cryptoneedle.garden.core.crud.doris.DeleteDorisService;
 import com.cryptoneedle.garden.core.crud.dwd.DeleteDwdService;
 import com.cryptoneedle.garden.core.crud.dws.DeleteDwsService;
+import com.cryptoneedle.garden.core.crud.mapping.DeleteMappingService;
 import com.cryptoneedle.garden.core.crud.ods.DeleteOdsService;
 import com.cryptoneedle.garden.core.crud.source.DeleteSourceService;
 import com.cryptoneedle.garden.core.crud.standard.DeleteStandardService;
@@ -28,6 +29,7 @@ public class DeleteService {
     public final DeleteDimService dim;
     public final DeleteStandardService standard;
     public final DeleteOdsService ods;
+    public final DeleteMappingService mapping;
     public final DeleteDwdService dwd;
     public final DeleteDwsService dws;
     public final DeleteAdsService ads;
@@ -38,6 +40,7 @@ public class DeleteService {
                          DeleteDimService dim,
                          DeleteStandardService standard,
                          DeleteOdsService ods,
+                         DeleteMappingService mapping,
                          DeleteDwdService dwd,
                          DeleteDwsService dws,
                          DeleteAdsService ads) {
@@ -47,6 +50,7 @@ public class DeleteService {
         this.dim = dim;
         this.standard = standard;
         this.ods = ods;
+        this.mapping = mapping;
         this.dwd = dwd;
         this.dws = dws;
         this.ads = ads;
