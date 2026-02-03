@@ -80,6 +80,26 @@ public class SelectConfigService {
         return property("doris_table_prefix_ods").getValue();
     }
     
+    public String dorisTablePrefixDwd() {
+        return property("doris_table_prefix_dwd").getValue();
+    }
+    
+    public String dorisTablePrefixDws() {
+        return property("doris_table_prefix_dws").getValue();
+    }
+    
+    public String dorisTablePrefixAds() {
+        return property("doris_table_prefix_ads").getValue();
+    }
+    
+    public String dorisTablePrefixStandard() {
+        return property("doris_table_prefix_standard").getValue();
+    }
+    
+    public String dorisTablePrefixMapping() {
+        return property("doris_table_prefix_mapping").getValue();
+    }
+    
     public String dorisCatalogDriverUrl(String databaseType) {
         return property("doris_catalog_driver_url_" + StringUtils.lowerCase(databaseType)).getValue();
     }

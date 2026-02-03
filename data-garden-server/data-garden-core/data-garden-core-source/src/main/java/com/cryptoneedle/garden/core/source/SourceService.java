@@ -236,7 +236,7 @@ public class SourceService {
         String replicationNum = select.config.dorisConfigReplicationNum();
         
         return """
-                CREATE TABLE IF NOT EXISTS %s.%s(
+                CREATE TABLE IF NOT EXISTS `%s`.`%s`(
                 %s
                     `gather_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '入库时间'
                 ) UNIQUE KEY(%s)
