@@ -34,6 +34,6 @@ public class StandardSaveVo {
         private String comment;
         
         @Schema(description = "排序")
-        private Integer sort;
+        private Long sort;
     }
 }
