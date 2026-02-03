@@ -95,7 +95,7 @@ public class StandardService {
             dorisMetadataRepository.execute(sql);
         } else {
             List<StandardColumn> standardColumns = select.standard.columns(tableName);
-            if (Strings.CI.equals(standardColumns.getFirst().getId().getColumnName(), firstColumn.getName())) {
+            if (!Strings.CI.equals(standardColumns.getFirst().getId().getColumnName(), firstColumn.getName())) {
                 // 目的是手动确认是否需要变更
                 throw new RuntimeException("数据库主键发生变化，需手动删除表后重新创建");
             }
