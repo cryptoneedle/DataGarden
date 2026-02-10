@@ -211,6 +211,11 @@
                 <artifactId>bcprov-jdk18on</artifactId>
                 <version>1.82</version>
             </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>easyexcel</artifactId>
+                <version>4.0.3</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
