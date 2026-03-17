@@ -25,7 +25,7 @@ public class DolphinSchedulerClientConfig {
                                      //.username(username)
                                      //.password(password)
                                      .token(token)
-                                     .useHttps(true)
+                                     .useHttps(false)
                                      .trustAllCertificates(true)
                                      .enableLogging(true)
                                      .build();

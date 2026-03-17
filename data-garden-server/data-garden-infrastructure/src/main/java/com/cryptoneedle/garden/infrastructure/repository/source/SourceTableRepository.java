@@ -74,4 +74,19 @@ public interface SourceTableRepository extends BaseRepository<SourceTable, Sourc
             ORDER BY id.catalogName, id.databaseName, enabled DESC, id.tableName
             """)
     List<SourceTable> tablesByCollect(String catalogName, String databaseName, SourceCollectFrequencyType collectFrequency, Integer collectTimePoint, Integer collectGroupNum);
+    
+    @Query("""
+             FROM SourceTable t
+            WHERE t.id.catalogName = :catalogName
+              AND t.id.databaseName = :databaseName
+              AND t.enabled = TRUE
+              AND EXISTS (SELECT 1
+                            FROM SourceColumn c
+                           WHERE t.id.catalogName = c.id.catalogName
+                             AND t.id.databaseName = c.id.databaseName
+                             AND t.id.tableName = c.id.tableName
+                             AND c.incremented = TRUE)
+            ORDER BY t.id.catalogName, t.id.databaseName, t.enabled DESC, t.id.tableName
+            """)
+    List<SourceTable> tablesByFullCollect(String catalogName, String databaseName);
 }

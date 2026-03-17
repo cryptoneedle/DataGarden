@@ -23,10 +23,10 @@ spring:
 
 ---
 primary:
-  host: localhost
+  host: 1.14.125.152
   port: 5432
   username: cryptoneedle
-  password: postgres
+  password: PG*1994W04f29.
 doris:
   enabled: true
   host: 10.131.50.103

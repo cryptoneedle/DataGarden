@@ -1,5 +1,7 @@
 package com.cryptoneedle.garden.core.source;
 
+import cn.hutool.v7.extra.pinyin.PinyinUtil;
+import com.cryptoneedle.garden.common.PinYinUtil;
 import com.cryptoneedle.garden.core.crud.*;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceColumn;
@@ -7,6 +9,7 @@ import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
 import com.cryptoneedle.garden.spi.DataSourceProvider;
 import com.cryptoneedle.garden.spi.DataSourceSpiLoader;
+import com.hankcs.hanlp.HanLP;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
@@ -15,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>description:  </p>
@@ -55,7 +60,9 @@ public class SourceTransformService {
             tables = select.source.tables(catalog.getId().getCatalogName());
         } else {
             if (table == null) {
-                tables = select.source.tables(database.getId().getCatalogName(), database != null ? database.getId().getDatabaseName() : null);
+                tables = select.source.tables(database.getId().getCatalogName(), database != null ?
+                                                                                 database.getId().getDatabaseName() :
+                                                                                 null);
             } else {
                 tables = List.of(select.source.table(table.getId()));
             }
@@ -64,7 +71,10 @@ public class SourceTransformService {
         String ods = select.config.dorisTablePrefixOds();
         for (SourceTable sourceTable : tables) {
             if (!sourceTable.getTransTableLocked()) {
-                sourceTable.setTransTableName(StringUtils.lowerCase("%s_%s_%s_e".formatted(ods, sourceTable.getSystemCode(), sourceTable.getId().getTableName())));
+                String transTableName = StringUtils.lowerCase("%s_%s_%s_e".formatted(ods, sourceTable.getSystemCode(), sourceTable.getId()
+                                                                                                                                  .getTableName()));
+                transTableName = PinYinUtil.convertChinese(transTableName);
+                sourceTable.setTransTableName(transTableName);
             }
             if (!sourceTable.getTransCommentLocked()) {
                 sourceTable.setTransComment(sourceTable.getComment());
@@ -80,7 +90,9 @@ public class SourceTransformService {
     }
     
     public void transColumns(SourceTable sourceTable, DataSourceProvider provider) {
-        List<SourceColumn> columns = select.source.columns(sourceTable.getId().getCatalogName(), sourceTable.getId().getDatabaseName(), sourceTable.getId().getTableName());
+        List<SourceColumn> columns = select.source.columns(sourceTable.getId().getCatalogName(), sourceTable.getId()
+                                                                                                            .getDatabaseName(), sourceTable.getId()
+                                                                                                                                           .getTableName());
         for (SourceColumn column : columns) {
             column.setDorisCatalog(sourceTable.getDorisCatalog());
             column.setSystemCode(sourceTable.getSystemCode());
@@ -102,6 +114,8 @@ public class SourceTransformService {
                 transformColumnName = transformColumnName.replaceAll("_{2,}", "_");
                 // 小写
                 transformColumnName = StringUtils.lowerCase(transformColumnName);
+                // 中文转换
+                transformColumnName = PinYinUtil.convertChinese(transformColumnName);
                 column.setTransColumnName(transformColumnName);
             }
             

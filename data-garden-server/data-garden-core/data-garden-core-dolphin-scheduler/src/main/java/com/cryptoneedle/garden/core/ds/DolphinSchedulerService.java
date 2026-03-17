@@ -1,6 +1,7 @@
 package com.cryptoneedle.garden.core.ds;
 
 import cn.hutool.v7.core.date.DateUtil;
+import cn.hutool.v7.core.math.MathUtil;
 import com.cryptoneedle.garden.common.enums.SourceCollectFrequencyType;
 import com.cryptoneedle.garden.core.crud.SelectService;
 import com.cryptoneedle.garden.core.source.SourceService;
@@ -16,6 +17,7 @@ import org.apache.dolphinscheduler.client.model.request.ScheduleCreateRequest;
 import org.apache.dolphinscheduler.client.model.request.WorkflowCreateRequest;
 import org.apache.dolphinscheduler.client.model.response.ScheduleResponse;
 import org.apache.dolphinscheduler.client.model.response.WorkflowResponse;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,7 +56,7 @@ public class DolphinSchedulerService {
     }
     
     public void dealFullTask(SourceCatalog catalog, SourceDatabase database) {
-        List<SourceTable> tables = select.source.tablesEnabled(catalog.getId().getCatalogName(), database.getId().getDatabaseName());
+        List<SourceTable> tables = select.source.tablesByFullCollect(catalog.getId().getCatalogName(), database.getId().getDatabaseName());
         for (SourceTable table : tables) {
             service.dealFullTask(catalog, database, table);
         }
@@ -109,71 +111,43 @@ public class DolphinSchedulerService {
     public void dealIncrementTask(SourceCatalog catalog, SourceDatabase database) {
         List<SourceTable> tables = select.source.tablesEnabled(catalog.getId().getCatalogName(), database.getId().getDatabaseName());
         
-        // CollectGroupNum 为分组采集队列，默认为0
-        // 在分配过程中以参数 dolphin_scheduler_workflow_task_num 个为一组进行分配
         Integer maxNum = select.config.dolphinSchedulerWorkflowTaskNum();
-        // 对于以下情况需要重新计算 CollectGroupNum
-        // 1.CollectGroupNum 所在队列总量超出 maxNum
-        // 2.CollectGroupNum = 0，表示未进行分配
-        
-        // 1.按照同一采集时间分组
+
         Map<String, List<SourceTable>> baseGroupMap = tables.stream()
                                                             .collect(Collectors.groupingBy(t ->
                                                                     t.getCollectFrequency() + "_" + t.getCollectTimePoint()
                                                             ));
         
         baseGroupMap.forEach((key, groupTables) -> {
-            // 2. 统计每个队列的各个 collectGroupNum 的占用情况
-            // Map<GroupNum, List<Tables>>
             Map<Integer, List<SourceTable>> subGroupMap = new HashMap<>();
-            List<SourceTable> unassignedTables = new ArrayList<>();
-            for (SourceTable table : groupTables) {
-                Integer gNum = table.getCollectGroupNum();
-                if (gNum != null && gNum > 0) {
-                    subGroupMap.computeIfAbsent(gNum, k -> new ArrayList<>()).add(table);
-                } else {
-                    unassignedTables.add(table);
+            int totalSize = groupTables.size();
+            // 计算需要分几组（向上取整）
+            int groupCount = (int) Math.ceil((double) totalSize / maxNum);
+            
+            // 计算每组应该分配的平均数量
+            int avgSize = (int) Math.ceil((double) totalSize / groupCount);
+            
+            int currentIndex = 0;
+            for (int groupIndex = 0; groupIndex < groupCount; groupIndex++) {
+                List<SourceTable> subList = new ArrayList<>();
+                
+                // 计算当前组应该取的元素数量
+                int endIndex = Math.min(currentIndex + avgSize, totalSize);
+                
+                // 添加元素到当前组
+                for (int i = currentIndex; i < endIndex; i++) {
+                    subList.add(groupTables.get(i));
                 }
+                
+                subGroupMap.put(groupIndex, subList);
+                currentIndex = endIndex;
             }
             
-            // 3. CollectGroupNum 所在队列总量超出 maxNum，多出的移入 unassignedTables
-            for (Map.Entry<Integer, List<SourceTable>> entry : subGroupMap.entrySet()) {
-                List<SourceTable> currentSubGroup = entry.getValue();
-                if (currentSubGroup.size() > maxNum) {
-                    // 保留前 maxNum 个，剩余的加入待分配队列
-                    List<SourceTable> overflow = new ArrayList<>(currentSubGroup.subList(maxNum, currentSubGroup.size()));
-                    unassignedTables.addAll(overflow);
-                    
-                    // 截断原列表
-                    currentSubGroup.subList(maxNum, currentSubGroup.size()).clear();
-                }
-            }
-            // 4. 分配待处理的表（unassignedTables）
-            if (!unassignedTables.isEmpty()) {
-                int currentGroupNum = 1;
-                int unassignedIdx = 0;
-                while (unassignedIdx < unassignedTables.size()) {
-                    List<SourceTable> currentTargetGroup = subGroupMap.computeIfAbsent(currentGroupNum, k -> new ArrayList<>());
-                    
-                    // 如果当前组还没满，就往里塞
-                    while (currentTargetGroup.size() < maxNum && unassignedIdx < unassignedTables.size()) {
-                        SourceTable table = unassignedTables.get(unassignedIdx++);
-                        table.setCollectGroupNum(currentGroupNum);
-                        currentTargetGroup.add(table);
-                    }
-                    // 尝试下一个编号
-                    currentGroupNum++;
-                }
-            }
-            
-            // subGroupMap
             subGroupMap.forEach((collectGroupNum, subGroup) -> {
-                if (collectGroupNum > 0) {
-                    SourceTable table = subGroup.getFirst();
-                    SourceCollectFrequencyType collectFrequency = table.getCollectFrequency();
-                    Integer collectTimePoint = table.getCollectTimePoint();
-                    service.dealIncrementTask(catalog, database, collectFrequency, collectTimePoint, collectGroupNum, subGroup);
-                }
+                SourceTable table = subGroup.getFirst();
+                SourceCollectFrequencyType collectFrequency = table.getCollectFrequency();
+                Integer collectTimePoint = table.getCollectTimePoint();
+                service.dealIncrementTask(catalog, database, collectFrequency, collectTimePoint, collectGroupNum, subGroup);
             });
         });
     }

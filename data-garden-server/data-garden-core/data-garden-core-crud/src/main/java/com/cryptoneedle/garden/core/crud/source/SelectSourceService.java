@@ -151,6 +151,10 @@ public class SelectSourceService {
         return sourceTableRepository.tablesByCollect(catalogName, databaseName, collectFrequency, collectTimePoint, collectGroupNum);
     }
     
+    public List<SourceTable> tablesByFullCollect(String catalogName, String databaseName) {
+        return sourceTableRepository.tablesByFullCollect(catalogName, databaseName);
+    }
+    
     /**
      * SourceColumn
      */

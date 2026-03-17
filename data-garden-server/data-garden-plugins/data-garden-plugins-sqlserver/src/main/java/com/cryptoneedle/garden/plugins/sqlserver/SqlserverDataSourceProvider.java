@@ -354,7 +354,7 @@ public class SqlserverDataSourceProvider implements DataSourceProvider {
                 if (length == -1) {
                     dorisLength = 65533L;
                 } else {
-                    dorisLength = length;
+                    dorisLength = length * 4;
                 }
             }
             case "varchar" -> {
@@ -362,19 +362,19 @@ public class SqlserverDataSourceProvider implements DataSourceProvider {
                 if (length == -1) {
                     dorisLength = 65533L;
                 } else {
-                    dorisLength = length;
+                    dorisLength = length * 4;
                 }
             }
             case "text" -> {
                 dorisDataType = DorisDataType.STRING;
-                dorisLength = length;
+                dorisLength = length * 4;
             }
             case "nchar" -> {
                 dorisDataType = DorisDataType.VARCHAR;
                 if (length == -1) {
                     dorisLength = 65533L;
                 } else {
-                    dorisLength = length;
+                    dorisLength = length * 4;
                 }
             }
             case "nvarchar" -> {
@@ -382,7 +382,7 @@ public class SqlserverDataSourceProvider implements DataSourceProvider {
                 if (length == -1) {
                     dorisLength = 65533L;
                 } else {
-                    dorisLength = length;
+                    dorisLength = length * 4;
                 }
             }
             case "ntext" -> {
@@ -537,7 +537,7 @@ public class SqlserverDataSourceProvider implements DataSourceProvider {
             String newColumnName = delimiter + column.getId().getColumnName() + delimiter;
             if (Strings.CI.equalsAny(dataType, "DATE", "TIMESTAMP", "TIMESTAMP(0)", "TIMESTAMP(3)", "TIMESTAMP(6)")) {
                 sb.append("%s >= DATEADD(DAY, -%s, CAST(GETDATE() AS DATE))".formatted(newColumnName, offsetBeforeDay));
-            } else if (Strings.CI.equalsAny(dataType, "CHAR", "NCHAR", "VARCHAR2", "NVARCHAR2")) {
+            } else if (Strings.CI.equalsAny(dataType, "CHAR", "NCHAR", "VARCHAR", "NVARCHAR", "VARCHAR2", "NVARCHAR2")) {
                 timeType = column.getTimeType();
                 if (SourceTimeType.YYYYMMDD.equals(timeType)) {
                     sb.append("%s >= CONVERT(VARCHAR(8), DATEADD(DAY, -%s, CAST(GETDATE() AS DATE)), 112)".formatted(newColumnName, offsetBeforeDay));
@@ -561,7 +561,7 @@ public class SqlserverDataSourceProvider implements DataSourceProvider {
                     sb.append("%s >= CONVERT(VARCHAR(26), DATEADD(DAY, -%s, CAST(SYSDATETIME() AS DATE)), 121)".formatted(newColumnName, offsetBeforeDay));
                 }
             } else {
-                throw new RuntimeException("Oracle增量字段不支持数据类型:" + dataType);
+                throw new RuntimeException("SqlServer增量字段不支持数据类型:" + dataType);
             }
         }
         return sb.toString();
