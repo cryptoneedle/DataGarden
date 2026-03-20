@@ -516,4 +516,20 @@ public class OracleDataSourceProvider implements DataSourceProvider {
         }
         return sb.toString();
     }
+    
+    public String seatunnelProperties() {
+        return """
+                    properties {
+                      maxPoolSize = 5
+                      minPoolSize = 1
+                      initialPoolSize = 1
+                      maxIdleTime = 60
+                      oracle.net.READ_TIMEOUT = 60000
+                      oracle.jdbc.ReadTimeout = 60000
+                      oracle.net.CONNECT_TIMEOUT = 60000
+                      oracle.jdbc.defaultRowPrefetch = 20
+                      oracle.jdbc.useFetchSizeWithLongColumn = true
+                    }
+                """;
+    }
 }

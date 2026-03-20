@@ -338,11 +338,16 @@ public class SourceService {
     }
     
     public String createSeatunnelScript(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
-        String delimiter = DataSourceSpiLoader.getProvider(catalog.getDatabaseType()).identifierDelimiter();
+        DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
+        String delimiter = provider.identifierDelimiter();
         String whereCondition = "";
         List<SourceColumn> columns = select.source.columnsIncremented(table.getId().getCatalogName(), table.getId().getDatabaseName(), table.getId().getTableName());
         if (!columns.isEmpty()) {
-            whereCondition = DataSourceSpiLoader.getProvider(catalog.getDatabaseType()).incrementCondition(columns, "${collectOffsetBeforeDay}");
+            whereCondition = provider.incrementCondition(columns, "${collectOffsetBeforeDay}");
+        }
+        String seatunnelProperties = provider.seatunnelProperties();
+        if (StringUtils.isNoneBlank(seatunnelProperties)) {
+            seatunnelProperties = "\n" + seatunnelProperties;
         }
         
         StringBuilder script = new StringBuilder();
@@ -366,7 +371,7 @@ public class SourceService {
                     password = "%s"
                     connection_check_timeout_sec = 100000
                     fetch_size = 5000
-                    query = \"""SELECT %s FROM %s.%s%s\"""
+                    query = \"""SELECT %s FROM %s.%s%s\"""%s
                   }
                 }
                 
@@ -377,7 +382,8 @@ public class SourceService {
                 service.selectConvertColumnAs(catalog, database, table),
                 delimiter + table.getId().getDatabaseName() + delimiter,
                 delimiter + table.getId().getTableName() + delimiter,
-                whereCondition));
+                whereCondition,
+                seatunnelProperties));
         
         // Sink
         script.append("""

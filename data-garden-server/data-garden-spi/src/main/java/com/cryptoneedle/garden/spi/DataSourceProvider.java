@@ -179,4 +179,8 @@ public interface DataSourceProvider {
     String timeTypeFormat(SourceTimeType incrementType);
     
     String incrementCondition(List<SourceColumn> columns, String offsetBeforeDay);
+    
+    default String seatunnelProperties() {
+        return "";
+    }
 }

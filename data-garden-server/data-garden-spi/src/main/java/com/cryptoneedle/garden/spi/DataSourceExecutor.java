@@ -57,12 +57,13 @@ public class DataSourceExecutor {
         
         List<SourceTable> tables = tables(jdbcTemplate, provider.tableSql(databaseName, tableName), catalog, SourceTableType.TABLE);
         List<SourceTable> views = tables(jdbcTemplate, provider.viewSql(databaseName, tableName), catalog, SourceTableType.VIEW);
-        List<SourceTable> materializedView = tables(jdbcTemplate, provider.materializedViewSql(databaseName, tableName), catalog, SourceTableType.MATERIALIZED_VIEW);
+        // todo
+        //List<SourceTable> materializedView = tables(jdbcTemplate, provider.materializedViewSql(databaseName, tableName), catalog, SourceTableType.MATERIALIZED_VIEW);
         
-        List<SourceTable> result = Lists.newArrayListWithCapacity(tables.size() + views.size() + materializedView.size());
+        List<SourceTable> result = Lists.newArrayListWithCapacity(tables.size() + views.size() /*+ materializedView.size()*/);
         result.addAll(tables);
         result.addAll(views);
-        result.addAll(materializedView);
+        //result.addAll(materializedView);
         return result;
     }
     
