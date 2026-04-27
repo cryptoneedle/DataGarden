@@ -237,7 +237,7 @@ public class SourceService {
         
         return """
                 CREATE TABLE IF NOT EXISTS `%s`.`%s`(
-                %s
+                    %s
                     `gather_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '入库时间'
                 ) UNIQUE KEY(%s)
                 COMMENT '%s'

@@ -106,6 +106,9 @@ public class PatchSourceService {
      */
     public void tableDefault(SourceCatalog catalog) {
         List<SourceTable> tables = select.tables(catalog.getId().getCatalogName());
+        tables = tables.stream()
+                       .filter(SourceTable::getEnabled)
+                       .toList();
         for (SourceTable table : tables) {
             if (table.getDorisCatalog() == null
                     || table.getSystemCode() == null

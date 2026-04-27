@@ -55,6 +55,7 @@ public class SourceTransformService {
     }
     
     public void transTable(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
+        log.info("[sync] TransTable");
         List<SourceTable> tables;
         if (database == null) {
             tables = select.source.tables(catalog.getId().getCatalogName());
@@ -87,9 +88,51 @@ public class SourceTransformService {
             DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
             service.transColumns(sourceTable, provider);
         }
+        log.info("[sync] TransTable Finish");
+    }
+    
+    public void transColumns(SourceDatabase sourceDatabase, DataSourceProvider provider) {
+        List<SourceColumn> columns = select.source.columns(sourceDatabase.getId().getCatalogName(), sourceDatabase.getId()
+                                                                                                            .getDatabaseName());
+        for (SourceColumn column : columns) {
+            column.setDorisCatalog(sourceDatabase.getDorisCatalog());
+            column.setSystemCode(sourceDatabase.getSystemCode());
+            
+            if (provider != null) {
+                provider.transform(column);
+            }
+            
+            column.setTransDataTypeFormat(column.transFullDataType());
+            
+            if (!column.getTransColumnLocked()) {
+                String columnName = column.getId().getColumnName();
+                // 去除开头_
+                String transformColumnName = Strings.CI.removeStart(columnName, "_");
+                // 去除结尾_
+                transformColumnName = Strings.CI.removeEnd(transformColumnName, "_");
+                // 去除连续_
+                transformColumnName = transformColumnName.replaceAll("_{2,}", "_");
+                // 小写
+                transformColumnName = StringUtils.lowerCase(transformColumnName);
+                // 中文转换
+                transformColumnName = PinYinUtil.convertChinese(transformColumnName);
+                column.setTransColumnName(transformColumnName);
+            }
+            
+            if (!column.getTransCommentLocked()) {
+                column.setTransComment(column.getComment());
+            }
+            if (column.getTransComment() == null) {
+                column.setTransComment("");
+            }
+        }
+        log.info("[sync] TransColumns Save");
+        save.source.columns(columns);
+        log.info("[sync] TransColumns Finish");
     }
     
     public void transColumns(SourceTable sourceTable, DataSourceProvider provider) {
+        log.info("[sync] TransColumn");
         List<SourceColumn> columns = select.source.columns(sourceTable.getId().getCatalogName(), sourceTable.getId()
                                                                                                             .getDatabaseName(), sourceTable.getId()
                                                                                                                                            .getTableName());

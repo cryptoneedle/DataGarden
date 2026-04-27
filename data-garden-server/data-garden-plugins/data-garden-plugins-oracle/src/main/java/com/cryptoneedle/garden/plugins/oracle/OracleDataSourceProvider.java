@@ -290,7 +290,10 @@ public class OracleDataSourceProvider implements DataSourceProvider {
         switch (dataType) {
             case "NUMBER" -> {
                 if (precision == null) {
-                    dorisDataType = DorisDataType.LARGEINT;
+                    //dorisDataType = DorisDataType.LARGEINT;
+                    // 转为 varchar
+                    dorisDataType = DorisDataType.VARCHAR;
+                    dorisLength = 50L;
                     warn = "未指定p和s的number(p,s)类型: number(" + precision + "," + scale + "), length=" + length;
                 } else if (scale == null || scale == 0) {
                     if (precision == 1) {
@@ -358,7 +361,7 @@ public class OracleDataSourceProvider implements DataSourceProvider {
             case "DATE" -> {
                 // 不使用官方建议，尝试转换为 DorisDataType.DATE
                 //dorisDataType = DorisDataType.DATETIME;
-                dorisDataType = DorisDataType.DATE;
+                dorisDataType = DorisDataType.DATETIME;
                 //warn = "尝试性实验：Oracle DATE -> Doris DATE (官方建议为 DATETIME)";
             }
             case "TIMESTAMP" -> {

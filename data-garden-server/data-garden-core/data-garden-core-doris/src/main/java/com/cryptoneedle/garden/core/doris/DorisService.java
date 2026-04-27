@@ -163,12 +163,19 @@ public class DorisService {
             service.syncTable(dorisDatabase, table);
         }
         
+        log.info("[sync]:ALL");
         syncStandardService.syncTable();
+        log.info("[sync]:STANDARD");
         syncOdsService.syncTable();
+        log.info("[sync]:ODS");
         syncMappingService.syncTable();
+        log.info("[sync]:MAPPING");
         syncDwdService.syncTable();
+        log.info("[sync]:DWD");
         syncDwsService.syncTable();
+        log.info("[sync]:DWS");
         syncAdsService.syncTable();
+        log.info("[sync]:ADS");
     }
     
     public void syncTable(DorisDatabase database, DorisTable table) {

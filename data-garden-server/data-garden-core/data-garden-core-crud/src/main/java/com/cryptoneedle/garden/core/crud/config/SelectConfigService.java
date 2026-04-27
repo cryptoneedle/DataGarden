@@ -7,6 +7,7 @@ import com.cryptoneedle.garden.infrastructure.entity.config.ConfigProperty;
 import com.cryptoneedle.garden.infrastructure.entity.config.ConfigSsh;
 import com.cryptoneedle.garden.infrastructure.repository.config.ConfigPropertyRepository;
 import com.cryptoneedle.garden.infrastructure.repository.config.ConfigSshRepository;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -190,6 +191,10 @@ public class SelectConfigService {
     
     public String dolphinSchedulerToken() {
         return property("dolphin_scheduler_token").getValue();
+    }
+    
+    public Boolean dolphinSchedulerUseHttps() {
+        return BooleanUtils.toBoolean(property("dolphin_scheduler_use_https").getValue());
     }
     
     public String dolphinSchedulerTenantCode() {

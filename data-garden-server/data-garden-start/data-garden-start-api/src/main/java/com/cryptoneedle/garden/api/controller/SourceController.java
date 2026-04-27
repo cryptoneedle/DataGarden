@@ -11,6 +11,7 @@ import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.core.crud.source.*;
 import com.cryptoneedle.garden.core.source.SourceService;
 import com.cryptoneedle.garden.core.source.SourceSyncService;
+import com.cryptoneedle.garden.core.source.SourceTransformService;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceColumn;
 import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
@@ -18,7 +19,10 @@ import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceCatalogSaveVo;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceColumnAlterCommentVo;
 import com.cryptoneedle.garden.infrastructure.vo.source.SourceTableAlterCommentVo;
+import com.cryptoneedle.garden.spi.DataSourceProvider;
+import com.cryptoneedle.garden.spi.DataSourceSpiLoader;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,11 +33,13 @@ import java.util.List;
  * @author CryptoNeedle
  * @date 2025-12-20
  */
+@Slf4j
 @RestController
 @RequestMapping("/source")
 public class SourceController {
     
     private final SourceService sourceService;
+    private final SourceTransformService sourceTransformService;
     private final SourceSyncService sourceSyncService;
     public final AddSourceService add;
     public final SelectSourceService select;
@@ -42,6 +48,7 @@ public class SourceController {
     public final PatchSourceService patch;
     
     public SourceController(SourceService sourceService,
+                            SourceTransformService sourceTransformService,
                             SourceSyncService sourceSyncService,
                             AddSourceService add,
                             SelectSourceService select,
@@ -49,6 +56,7 @@ public class SourceController {
                             DeleteSourceService delete,
                             PatchSourceService patch) {
         this.sourceService = sourceService;
+        this.sourceTransformService = sourceTransformService;
         this.sourceSyncService = sourceSyncService;
         this.add = add;
         this.select = select;
@@ -337,5 +345,16 @@ public class SourceController {
         SourceDatabase database = select.databaseCheck(new SourceDatabaseKey(catalogName, databaseName));
         SourceTable table = select.tableCheck(new SourceTableKey(catalogName, databaseName, tableName));
         return Result.success((Object) sourceService.createSeatunnelScript(catalog, database, table));
+    }
+    
+    @PostMapping("/catalog/{catalogName}/database/{databaseName}/transColumns")
+    public Result<Object> transColumns(@PathVariable("catalogName") String catalogName,
+                                                @PathVariable("databaseName") String databaseName) throws EntityNotFoundException {
+        SourceCatalog catalog = select.catalog(catalogName);
+        DataSourceProvider provider = DataSourceSpiLoader.getProvider(catalog.getDatabaseType());
+        SourceDatabase database = select.database(new SourceDatabaseKey(catalogName, databaseName));
+        sourceTransformService.transColumns(database, provider);
+        log.info("[transColumns]");
+        return Result.success();
     }
 }

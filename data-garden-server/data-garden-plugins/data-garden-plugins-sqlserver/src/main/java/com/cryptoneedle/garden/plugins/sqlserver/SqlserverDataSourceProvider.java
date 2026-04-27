@@ -416,7 +416,9 @@ public class SqlserverDataSourceProvider implements DataSourceProvider {
             }
             case "numeric" -> {
                 if (precision == null) {
-                    dorisDataType = DorisDataType.LARGEINT;
+                    //dorisDataType = DorisDataType.LARGEINT;
+                    dorisDataType = DorisDataType.VARCHAR;
+                    dorisLength = 50L;
                     warn = "未指定p和s的number(p,s)类型: number(" + precision + "," + scale + "), length=" + length;
                 } else if (scale == null || scale == 0) {
                     if (precision == 1) {

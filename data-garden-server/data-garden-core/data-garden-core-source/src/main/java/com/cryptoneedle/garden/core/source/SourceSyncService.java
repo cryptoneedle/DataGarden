@@ -137,6 +137,7 @@ public class SourceSyncService {
     @Async("asyncExecutor")
     @Transactional(rollbackFor = Exception.class, transactionManager = "primaryTransactionManager", propagation = Propagation.REQUIRES_NEW)
     public void syncTable(SourceCatalog catalog, SourceDatabase database, SourceTable table) {
+        log.info("[sync] Table");
         String databaseName = database != null ? database.getId().getDatabaseName() : null;
         String tableName = table != null ? table.getId().getTableName() : null;
         
@@ -181,8 +182,11 @@ public class SourceSyncService {
         // 移除
         List<SourceTable> missList = originList.stream().filter(item -> !dealMap.containsKey(item.getId())).toList();
         
+        log.info("[sync] Table Add");
         add.source.tables(extraList);
+        log.info("[sync] Table Save");
         save.source.tables(existsList);
+        log.info("[sync] Table Delete");
         delete.source.tables(missList);
         
         patch.source.tableDefault(catalog);

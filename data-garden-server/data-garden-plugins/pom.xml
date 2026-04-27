@@ -17,6 +17,7 @@
     <modules>
         <module>data-garden-plugins-oracle</module>
         <module>data-garden-plugins-sqlserver</module>
+        <module>data-garden-plugins-postgre</module>
     </modules>
 
     <dependencies>
