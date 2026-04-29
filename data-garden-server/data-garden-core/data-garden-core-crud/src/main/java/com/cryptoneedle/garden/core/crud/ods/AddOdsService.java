@@ -2,6 +2,7 @@ package com.cryptoneedle.garden.core.crud.ods;
 
 
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
+import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumnTranslate;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,5 +48,9 @@ public class AddOdsService {
     
     public void columns(List<OdsColumn> list) {
         save.columns(list);
+    }
+    
+    public void columnTranslates(List<OdsColumnTranslate> odsColumnTranslateList) {
+        save.columnTranslates(odsColumnTranslateList);
     }
 }

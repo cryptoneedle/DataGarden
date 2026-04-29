@@ -6,6 +6,7 @@ import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
 import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnTranslateRepository;
 import com.cryptoneedle.garden.infrastructure.repository.ods.OdsTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +25,14 @@ public class DeleteOdsService {
     
     private final OdsTableRepository odsTableRepository;
     private final OdsColumnRepository odsColumnRepository;
+    private final OdsColumnTranslateRepository odsColumnTranslateRepository;
     
     public DeleteOdsService(OdsTableRepository odsTableRepository,
-                            OdsColumnRepository odsColumnRepository) {
+                            OdsColumnRepository odsColumnRepository,
+                            OdsColumnTranslateRepository odsColumnTranslateRepository) {
         this.odsTableRepository = odsTableRepository;
         this.odsColumnRepository = odsColumnRepository;
+        this.odsColumnTranslateRepository = odsColumnTranslateRepository;
     }
     
     /**
@@ -59,5 +63,12 @@ public class DeleteOdsService {
     
     public void columns(List<OdsColumn> list) {
         odsColumnRepository.deleteAll(list);
+    }
+    
+    /**
+     * OdsColumn
+     */
+    public void columnTranslates(String tableName, String columnName) {
+        odsColumnTranslateRepository.deleteByColumn(tableName, columnName);
     }
 }

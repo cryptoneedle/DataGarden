@@ -5,6 +5,7 @@ import com.bubbles.engine.common.core.result.Result;
 import com.cryptoneedle.garden.core.crud.ods.*;
 import com.cryptoneedle.garden.core.ods.OdsService;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
+import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumnTranslate;
 import com.cryptoneedle.garden.infrastructure.vo.ods.OdsColumnVo;
 import com.cryptoneedle.garden.infrastructure.vo.ods.OdsTableVo;
 import org.springframework.data.domain.Page;
@@ -53,5 +54,16 @@ public class OdsController {
     @PostMapping("/{tableName}/column/list")
     public Result<List<OdsColumnVo>> columnVos(@PathVariable String tableName) {
         return Result.success(service.columnVos(tableName));
+    }
+    
+    @PostMapping("/{tableName}/{columnName}/column/translate/list")
+    public Result<List<OdsColumnTranslate>> translateColumnList(@PathVariable String tableName, @PathVariable String columnName) {
+        return Result.success(service.translateColumnList(tableName, columnName));
+    }
+    
+    @PostMapping("/{tableName}/{columnName}/column/translate/save")
+    public Result<?> saveTranslateColumnList(@PathVariable String tableName, @PathVariable String columnName, @RequestBody List<OdsColumnTranslate> odsColumnTranslateList) {
+        service.saveTranslateColumnList(tableName, columnName, odsColumnTranslateList);
+        return Result.success();
     }
 }

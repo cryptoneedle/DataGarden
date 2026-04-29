@@ -1,6 +1,7 @@
 package com.cryptoneedle.garden.core.ods;
 
 import com.cryptoneedle.garden.core.crud.*;
+import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumnTranslate;
 import com.cryptoneedle.garden.infrastructure.vo.ods.OdsColumnVo;
 import com.cryptoneedle.garden.infrastructure.vo.ods.OdsTableVo;
 import org.springframework.context.annotation.Lazy;
@@ -46,5 +47,16 @@ public class OdsService {
     
     public List<OdsColumnVo> columnVos(String tableName) {
         return select.ods.columnVos(tableName);
+    }
+    
+    public List<OdsColumnTranslate> translateColumnList(String tableName, String columnName) {
+        return select.ods.columnTranslates(tableName, columnName);
+    }
+    
+    public void saveTranslateColumnList(String tableName,
+                                        String columnName,
+                                        List<OdsColumnTranslate> odsColumnTranslateList) {
+        delete.ods.columnTranslates(tableName, columnName);
+        add.ods.columnTranslates(odsColumnTranslateList);
     }
 }

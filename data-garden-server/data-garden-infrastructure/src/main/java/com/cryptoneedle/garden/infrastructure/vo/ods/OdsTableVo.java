@@ -2,6 +2,7 @@ package com.cryptoneedle.garden.infrastructure.vo.ods;
 
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumn;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingTableRely;
+import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumnTranslate;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +23,5 @@ public class OdsTableVo {
     
     private OdsTable odsTable;
     private List<MappingTableRely> mappingTableRelyList;
+    private List<String> translateColumnList;
 }

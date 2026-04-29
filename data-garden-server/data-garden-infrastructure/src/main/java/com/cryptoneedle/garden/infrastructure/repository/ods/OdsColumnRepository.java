@@ -30,4 +30,14 @@ public interface OdsColumnRepository extends BaseRepository<OdsColumn, DorisColu
             ORDER BY id.databaseName, id.tableName, sort
             """)
     List<OdsColumn> columns(String tableName);
+    
+    @Query("""
+           SELECT id.columnName
+             FROM OdsColumn
+            WHERE id.databaseName = :databaseName
+              AND id.tableName = :tableName
+              AND translatable = TRUE
+            ORDER BY id.databaseName, id.tableName, sort
+           """)
+    List<String> translateColumnList(String databaseName, String tableName);
 }

@@ -61,4 +61,10 @@ public class OdsColumn extends BaseEntity {
     private String extra;
     @Comment("默认值")
     private String defaultValue;
+    
+    /**
+     * 个性化字段
+     */
+    @Comment("可翻译")
+    private Boolean translatable;
 }

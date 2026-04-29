@@ -2,8 +2,10 @@ package com.cryptoneedle.garden.core.crud.ods;
 
 
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
+import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumnTranslate;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
 import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnTranslateRepository;
 import com.cryptoneedle.garden.infrastructure.repository.ods.OdsTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +24,14 @@ public class SaveOdsService {
     
     private final OdsTableRepository odsTableRepository;
     private final OdsColumnRepository odsColumnRepository;
+    private final OdsColumnTranslateRepository odsColumnTranslateRepository;
     
     public SaveOdsService(OdsTableRepository odsTableRepository,
-                          OdsColumnRepository odsColumnRepository) {
+                          OdsColumnRepository odsColumnRepository,
+                          OdsColumnTranslateRepository odsColumnTranslateRepository) {
         this.odsTableRepository = odsTableRepository;
         this.odsColumnRepository = odsColumnRepository;
+        this.odsColumnTranslateRepository = odsColumnTranslateRepository;
     }
     
     /**
@@ -49,5 +54,9 @@ public class SaveOdsService {
     
     public void columns(List<OdsColumn> list) {
         odsColumnRepository.saveAll(list);
+    }
+    
+    public void columnTranslates(List<OdsColumnTranslate> list) {
+        odsColumnTranslateRepository.saveAll(list);
     }
 }

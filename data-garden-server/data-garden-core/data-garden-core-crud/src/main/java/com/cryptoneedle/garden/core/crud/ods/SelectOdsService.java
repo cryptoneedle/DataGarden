@@ -8,10 +8,12 @@ import com.cryptoneedle.garden.common.key.doris.MappingColumnRelyKey;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumnRely;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingTableRely;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
+import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumnTranslate;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
 import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingColumnRelyRepository;
 import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingTableRelyRepository;
 import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.ods.OdsColumnTranslateRepository;
 import com.cryptoneedle.garden.infrastructure.repository.ods.OdsTableRepository;
 import com.cryptoneedle.garden.infrastructure.vo.ods.OdsColumnVo;
 import com.cryptoneedle.garden.infrastructure.vo.ods.OdsTableVo;
@@ -36,15 +38,18 @@ public class SelectOdsService {
     
     private final OdsTableRepository odsTableRepository;
     private final OdsColumnRepository odsColumnRepository;
+    private final OdsColumnTranslateRepository odsColumnTranslateRepository;
     private final MappingTableRelyRepository mappingTableRelyRepository;
     private final MappingColumnRelyRepository mappingColumnRelyRepository;
     
     public SelectOdsService(OdsTableRepository odsTableRepository,
                             OdsColumnRepository odsColumnRepository,
+                            OdsColumnTranslateRepository odsColumnTranslateRepository,
                             MappingTableRelyRepository mappingTableRelyRepository,
                             MappingColumnRelyRepository mappingColumnRelyRepository) {
         this.odsTableRepository = odsTableRepository;
         this.odsColumnRepository = odsColumnRepository;
+        this.odsColumnTranslateRepository = odsColumnTranslateRepository;
         this.mappingTableRelyRepository = mappingTableRelyRepository;
         this.mappingColumnRelyRepository = mappingColumnRelyRepository;
     }
@@ -79,7 +84,12 @@ public class SelectOdsService {
                                                                   table.getId().getDatabaseName(),
                                                                   table.getId().getTableName()
                                                           );
-                                                  return new OdsTableVo(table, mappingTableRelyList);
+                                                  List<String> odsColumn =
+                                                          odsColumnRepository.translateColumnList(
+                                                                  table.getId().getDatabaseName(),
+                                                                  table.getId().getTableName()
+                                                          );
+                                                  return new OdsTableVo(table, mappingTableRelyList, odsColumn);
                                               })
                                               .collect(Collectors.toList());
         return new PageImpl<>(voList, pageable, odsTablePage.getTotalElements());
@@ -121,5 +131,12 @@ public class SelectOdsService {
     
     public List<OdsColumn> columns(String tableName) {
         return odsColumnRepository.columns(tableName);
+    }
+    
+    /**
+     * OdsColumnTranslate
+     */
+    public List<OdsColumnTranslate> columnTranslates(String tableName, String columnName) {
+        return odsColumnTranslateRepository.listByColumn(tableName, columnName);
     }
 }
