@@ -3,6 +3,8 @@ package com.cryptoneedle.garden.infrastructure.repository.ods;
 import com.bubbles.engine.data.core.repository.BaseRepository;
 import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -29,6 +31,13 @@ public interface OdsTableRepository extends BaseRepository<OdsTable, DorisTableK
             ORDER BY id.databaseName, id.tableName
             """)
     List<OdsTable> tables();
+    
+    @Query("""
+             FROM OdsTable
+            WHERE (:tableName IS NULL OR id.tableName LIKE %:tableName%)
+            ORDER BY id.databaseName, id.tableName
+            """)
+    Page<OdsTable> tablesPage(Pageable pageable, String tableName);
     
     @Query("""
              FROM OdsTable

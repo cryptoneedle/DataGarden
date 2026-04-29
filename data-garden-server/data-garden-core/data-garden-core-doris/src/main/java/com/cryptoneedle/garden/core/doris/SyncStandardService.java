@@ -78,7 +78,21 @@ public class SyncStandardService {
                 .peek(origin -> {
                     DorisTable deal = dealMap.get(origin.getId());
                     if (deal != null) {
-                    
+                        origin.setComment(deal.getComment());
+                        origin.setTableType(deal.getTableType());
+                        origin.setTableModelType(deal.getTableModelType());
+                        origin.setReplicaCount(deal.getReplicaCount());
+                        origin.setPartitioned(deal.getPartitioned());
+                        origin.setBucketNum(deal.getBucketNum());
+                        origin.setEstimateBucketNum(deal.getEstimateBucketNum());
+                        origin.setRemoteSize(deal.getRemoteSize());
+                        origin.setColumnNum(deal.getColumnNum());
+                        origin.setRowNum(deal.getRowNum());
+                        origin.setStorageSpaceFormat(deal.getStorageSpaceFormat());
+                        origin.setStorageBytes(deal.getStorageBytes());
+                        origin.setAvgRowBytes(deal.getAvgRowBytes());
+                        origin.setCreateDt(deal.getCreateDt());
+                        origin.setUpdateDt(deal.getUpdateDt());
                     }
                 }).toList();
         
@@ -120,7 +134,17 @@ public class SyncStandardService {
                 .peek(origin -> {
                     DorisColumn deal = dealMap.get(origin.getId());
                     if (deal != null) {
+                        origin.setComment(deal.getComment());
                         origin.setSort(deal.getSort());
+                        origin.setColumnType(deal.getColumnType());
+                        origin.setDataTypeFormat(deal.getDataTypeFormat());
+                        origin.setDataType(deal.getDataType());
+                        origin.setLength(deal.getLength());
+                        origin.setPrecision(deal.getPrecision());
+                        origin.setScale(deal.getScale());
+                        origin.setNotNull(deal.getNotNull());
+                        origin.setExtra(deal.getExtra());
+                        origin.setDefaultValue(deal.getDefaultValue());
                     }
                 }).toList();
         

@@ -3,6 +3,7 @@ package com.cryptoneedle.garden.infrastructure.repository.ods;
 import com.bubbles.engine.data.core.repository.BaseRepository;
 import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
+import com.cryptoneedle.garden.infrastructure.vo.ods.OdsColumnVo;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 

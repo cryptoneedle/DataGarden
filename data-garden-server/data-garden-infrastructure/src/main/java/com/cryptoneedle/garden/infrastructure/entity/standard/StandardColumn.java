@@ -2,10 +2,7 @@ package com.cryptoneedle.garden.infrastructure.entity.standard;
 
 import com.bubbles.engine.data.core.entity.BaseEntity;
 import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Comment;
@@ -33,6 +30,35 @@ public class StandardColumn extends BaseEntity {
     @EmbeddedId
     private DorisColumnKey id;
     
+    @Column(length = 2048)
+    @Comment("详情")
+    private String comment;
+    
     @Comment("排序")
     private Long sort;
+    
+    // todo Enums DorisColumnType
+    @Column(length = 3)
+    @Comment("如果是 UNI，则表示当前字段是 Unique Key 字段")
+    private String columnType;
+    @Column(length = 32)
+    @Comment("字段类型")
+    private String dataTypeFormat;
+    @Column(length = 64)
+    @Comment("数据类型")
+    private String dataType;
+    @Comment("字段宽度")
+    private Long length;
+    @Column(length = 1024)
+    @Comment("精度")
+    private Long precision;
+    @Comment("标度")
+    private Long scale;
+    @Comment("非空")
+    private Boolean notNull;
+    @Column(length = 27)
+    @Comment("字段的一些额外信息。包括展示是否为自增字段，是否为 Generated 字段等")
+    private String extra;
+    @Comment("默认值")
+    private String defaultValue;
 }
