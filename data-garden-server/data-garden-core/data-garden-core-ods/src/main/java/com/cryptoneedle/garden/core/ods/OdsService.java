@@ -1,6 +1,8 @@
 package com.cryptoneedle.garden.core.ods;
 
+import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
 import com.cryptoneedle.garden.core.crud.*;
+import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumnTranslate;
 import com.cryptoneedle.garden.infrastructure.vo.ods.OdsColumnVo;
 import com.cryptoneedle.garden.infrastructure.vo.ods.OdsTableVo;
@@ -57,6 +59,14 @@ public class OdsService {
                                         String columnName,
                                         List<OdsColumnTranslate> odsColumnTranslateList) {
         delete.ods.columnTranslates(tableName, columnName);
-        add.ods.columnTranslates(odsColumnTranslateList);
+        String ods = select.config.dorisSchemaOds();
+        OdsColumn column = select.ods.column(new DorisColumnKey(ods, tableName, columnName));
+        if (odsColumnTranslateList.isEmpty()) {
+            column.setTranslatable(false);
+        } else {
+            add.ods.columnTranslates(odsColumnTranslateList);
+            column.setTranslatable(true);
+        }
+        save.ods.column(column);
     }
 }
