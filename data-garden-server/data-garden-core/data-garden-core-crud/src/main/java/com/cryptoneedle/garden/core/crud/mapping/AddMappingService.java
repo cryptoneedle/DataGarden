@@ -2,7 +2,9 @@ package com.cryptoneedle.garden.core.crud.mapping;
 
 
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumn;
+import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumnRely;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingTable;
+import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingTableRely;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,5 +49,27 @@ public class AddMappingService {
     
     public void columns(List<MappingColumn> list) {
         save.columns(list);
+    }
+    
+    /**
+     * MappingTableRely
+     */
+    public void tableRely(MappingTableRely entity) {
+        save.tableRely(entity);
+    }
+    
+    public void tableRelys(List<MappingTableRely> list) {
+        save.tableRelys(list);
+    }
+    
+    /**
+     * MappingColumnRely
+     */
+    public void columnRely(MappingColumnRely entity) {
+        save.columnRely(entity);
+    }
+    
+    public void columnRelys(List<MappingColumnRely> list) {
+        save.columnRelys(list);
     }
 }

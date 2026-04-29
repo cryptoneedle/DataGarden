@@ -2,8 +2,12 @@ package com.cryptoneedle.garden.core.crud.mapping;
 
 
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumn;
+import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumnRely;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingTable;
+import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingTableRely;
+import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingColumnRelyRepository;
 import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingTableRelyRepository;
 import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +26,17 @@ public class SaveMappingService {
     
     private final MappingTableRepository mappingTableRepository;
     private final MappingColumnRepository mappingColumnRepository;
+    private final MappingTableRelyRepository mappingTableRelyRepository;
+    private final MappingColumnRelyRepository mappingColumnRelyRepository;
     
     public SaveMappingService(MappingTableRepository mappingTableRepository,
-                              MappingColumnRepository mappingColumnRepository) {
+                              MappingColumnRepository mappingColumnRepository,
+                              MappingTableRelyRepository mappingTableRelyRepository,
+                              MappingColumnRelyRepository mappingColumnRelyRepository) {
         this.mappingTableRepository = mappingTableRepository;
         this.mappingColumnRepository = mappingColumnRepository;
+        this.mappingTableRelyRepository = mappingTableRelyRepository;
+        this.mappingColumnRelyRepository = mappingColumnRelyRepository;
     }
     
     /**
@@ -49,5 +59,27 @@ public class SaveMappingService {
     
     public void columns(List<MappingColumn> list) {
         mappingColumnRepository.saveAll(list);
+    }
+    
+    /**
+     * MappingTableRely
+     */
+    public void tableRely(MappingTableRely entity) {
+        mappingTableRelyRepository.save(entity);
+    }
+    
+    public void tableRelys(List<MappingTableRely> list) {
+        mappingTableRelyRepository.saveAll(list);
+    }
+    
+    /**
+     * MappingColumnRely
+     */
+    public void columnRely(MappingColumnRely entity) {
+        mappingColumnRelyRepository.save(entity);
+    }
+    
+    public void columnRelys(List<MappingColumnRely> list) {
+        mappingColumnRelyRepository.saveAll(list);
     }
 }

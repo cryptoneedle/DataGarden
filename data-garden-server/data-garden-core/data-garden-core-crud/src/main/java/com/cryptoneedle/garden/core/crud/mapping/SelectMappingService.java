@@ -5,8 +5,11 @@ import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
 import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
 import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumn;
+import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumnRely;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingTable;
+import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingColumnRelyRepository;
 import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingTableRelyRepository;
 import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingTableRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,11 +28,17 @@ public class SelectMappingService {
     
     private final MappingTableRepository mappingTableRepository;
     private final MappingColumnRepository mappingColumnRepository;
+    private final MappingTableRelyRepository mappingTableRelyRepository;
+    private final MappingColumnRelyRepository mappingColumnRelyRepository;
     
     public SelectMappingService(MappingTableRepository mappingTableRepository,
-                                MappingColumnRepository mappingColumnRepository) {
+                                MappingColumnRepository mappingColumnRepository,
+                                MappingTableRelyRepository mappingTableRelyRepository,
+                                MappingColumnRelyRepository mappingColumnRelyRepository) {
         this.mappingTableRepository = mappingTableRepository;
         this.mappingColumnRepository = mappingColumnRepository;
+        this.mappingTableRelyRepository = mappingTableRelyRepository;
+        this.mappingColumnRelyRepository = mappingColumnRelyRepository;
     }
     
     /**
@@ -74,5 +83,9 @@ public class SelectMappingService {
     
     public List<MappingColumn> columns(String tableName) {
         return mappingColumnRepository.columns(tableName);
+    }
+    
+    public List<MappingColumnRely> listColumnRelysByMapping(String mappingTableName, String sourceTableName) {
+        return mappingColumnRelyRepository.listColumnRelysByMapping(mappingTableName, sourceTableName);
     }
 }
