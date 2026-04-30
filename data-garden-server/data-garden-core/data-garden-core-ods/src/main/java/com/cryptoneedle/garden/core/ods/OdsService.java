@@ -4,6 +4,7 @@ import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
 import com.cryptoneedle.garden.core.crud.*;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumnTranslate;
+import com.cryptoneedle.garden.infrastructure.vo.ods.ColumnTranslateResultVo;
 import com.cryptoneedle.garden.infrastructure.vo.ods.OdsColumnVo;
 import com.cryptoneedle.garden.infrastructure.vo.ods.OdsTableVo;
 import org.springframework.context.annotation.Lazy;

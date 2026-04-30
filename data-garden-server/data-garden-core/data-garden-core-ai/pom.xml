@@ -6,23 +6,21 @@
 
     <parent>
         <groupId>com.cryptoneedle.garden</groupId>
-        <artifactId>data-garden-server</artifactId>
+        <artifactId>data-garden-core</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>data-garden-start</artifactId>
-    <packaging>pom</packaging>
-
-    <modules>
-        <module>data-garden-start-config</module>
-        <module>data-garden-start-api</module>
-    </modules>
+    <artifactId>data-garden-core-ai</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.cryptoneedle.garden</groupId>
-            <artifactId>data-garden-core-ai</artifactId>
+            <artifactId>data-garden-core-dolphin-scheduler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-deepseek</artifactId>
         </dependency>
     </dependencies>
 </project>
