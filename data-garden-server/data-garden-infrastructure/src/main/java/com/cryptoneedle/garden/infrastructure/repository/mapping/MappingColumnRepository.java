@@ -30,4 +30,13 @@ public interface MappingColumnRepository  extends BaseRepository<MappingColumn, 
             ORDER BY id.databaseName, id.tableName, sort
             """)
     List<MappingColumn> columns(String tableName);
+    
+    @Query("""
+        SELECT t3
+        FROM MappingTableRely t1
+                INNER JOIN MappingTable t2 ON t1.id.mappingTableName = t2.id.tableName
+                INNER JOIN MappingColumn t3 ON t2.id.databaseName = t3.id.databaseName AND t2.id.tableName = t3.id.tableName
+        WHERE t1.id.sourceTableName = :odsTableName
+        """)
+    List<MappingColumn> columnsByOdsRelyMapping(String odsTableName);
 }

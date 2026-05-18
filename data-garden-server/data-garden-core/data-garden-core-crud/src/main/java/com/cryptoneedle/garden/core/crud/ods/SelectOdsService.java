@@ -136,6 +136,10 @@ public class SelectOdsService {
     /**
      * OdsColumnTranslate
      */
+    public List<OdsColumnTranslate> columnTranslates(String tableName) {
+        return odsColumnTranslateRepository.listByTable(tableName);
+    }
+    
     public List<OdsColumnTranslate> columnTranslates(String tableName, String columnName) {
         return odsColumnTranslateRepository.listByColumn(tableName, columnName);
     }

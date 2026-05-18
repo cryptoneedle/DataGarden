@@ -78,6 +78,7 @@ public class DolphinSchedulerService {
                                                        .linearFlow()
                                                        .autoLayout(50, 50, 250, 100, 4)
                                                        .tenantCode(select.config.dolphinSchedulerTenantCode())
+                .timeout(60 * 1000)
                                                        .build();
         
         Long projectCode = select.config.dolphinSchedulerProjectFull();
@@ -169,6 +170,7 @@ public class DolphinSchedulerService {
                                                        .linearFlow()
                                                        .autoLayout(50, 50, 250, 80, 5)
                                                        .tenantCode(select.config.dolphinSchedulerTenantCode())
+                                                       .timeout(60 * 1000)
                                                        .build();
         Long projectCode = select.config.dolphinSchedulerProjectIncrement();
         Long workFlowCode = service.refreshWorkFlow(projectCode, taskName, request, tables);

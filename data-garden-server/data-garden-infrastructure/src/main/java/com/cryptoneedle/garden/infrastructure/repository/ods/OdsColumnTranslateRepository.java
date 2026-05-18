@@ -23,6 +23,13 @@ public interface OdsColumnTranslateRepository extends BaseRepository<OdsColumnTr
     @Query("""
          FROM OdsColumnTranslate
         WHERE id.tableName = :tableName
+        ORDER BY id.value
+        """)
+    List<OdsColumnTranslate> listByTable(String tableName);
+    
+    @Query("""
+         FROM OdsColumnTranslate
+        WHERE id.tableName = :tableName
           AND id.columnName = :columnName
         ORDER BY id.value
         """)
@@ -35,4 +42,5 @@ public interface OdsColumnTranslateRepository extends BaseRepository<OdsColumnTr
            AND id.columnName = :columnName
         """)
     void deleteByColumn(String tableName, String columnName);
+    
 }

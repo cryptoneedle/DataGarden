@@ -139,8 +139,8 @@ public class SourceColumn extends BaseEntity {
             if (DorisDataType.DECIMAL.equals(this.transDataType)) {
                 fullDataType = fullDataType + "(" + this.precision + ", " + this.scale + ")";
             } else if (DorisDataType.DATETIME.equals(this.transDataType)) {
-                if (this.scale != null) {
-                    fullDataType = fullDataType + "(" + this.scale + ")";
+                if (this.transScale != null) {
+                    fullDataType = fullDataType + "(" + this.transScale + ")";
                 }
             } else if (DorisDataType.CHAR.equals(this.transDataType)) {
                 fullDataType = fullDataType + "(" + this.transLength + ")";

@@ -19,9 +19,9 @@ public interface MappingTableRelyRepository extends BaseRepository<MappingTableR
 
     @Query("""
              FROM MappingTableRely
-            WHERE id.sourceDatabaseName = :databaseName
-              AND id.sourceTableName = :tableName
+            WHERE id.sourceDatabaseName = :sourceDatabaseName
+              AND id.sourceTableName = :sourceTableName
             ORDER BY id.mappingDatabaseName, id.mappingTableName
             """)
-    List<MappingTableRely> findBySource(String databaseName, String tableName);
+    List<MappingTableRely> findBySource(String sourceDatabaseName, String sourceTableName);
 }

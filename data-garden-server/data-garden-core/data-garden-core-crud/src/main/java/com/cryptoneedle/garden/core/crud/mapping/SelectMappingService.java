@@ -7,6 +7,7 @@ import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumn;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumnRely;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingTable;
+import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingTableRely;
 import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingColumnRelyRepository;
 import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingColumnRepository;
 import com.cryptoneedle.garden.infrastructure.repository.mapping.MappingTableRelyRepository;
@@ -85,7 +86,25 @@ public class SelectMappingService {
         return mappingColumnRepository.columns(tableName);
     }
     
+    /**
+     * MappingTableRely
+     */
+    public List<MappingTableRely> mappingTableRelyListBySource(String sourceDatabaseName, String sourceTableName) {
+        return mappingTableRelyRepository.findBySource(sourceDatabaseName, sourceTableName);
+    }
+    
+    /**
+     * MappingColumnRely
+     */
+    public List<MappingColumnRely> listColumnRelysBySource(String sourceTableName) {
+        return mappingColumnRelyRepository.listColumnRelysBySource(sourceTableName);
+    }
+    
     public List<MappingColumnRely> listColumnRelysByMapping(String mappingTableName, String sourceTableName) {
         return mappingColumnRelyRepository.listColumnRelysByMapping(mappingTableName, sourceTableName);
+    }
+    
+    public List<MappingColumn> columnsByOdsRelyMapping(String odsTableName) {
+        return mappingColumnRepository.columnsByOdsRelyMapping(odsTableName);
     }
 }

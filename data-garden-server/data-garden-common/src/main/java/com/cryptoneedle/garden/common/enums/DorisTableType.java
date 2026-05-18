@@ -1,5 +1,8 @@
 package com.cryptoneedle.garden.common.enums;
 
+import cn.hutool.v7.crypto.Mode;
+import cn.hutool.v7.crypto.Padding;
+import cn.hutool.v7.crypto.symmetric.SM4;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

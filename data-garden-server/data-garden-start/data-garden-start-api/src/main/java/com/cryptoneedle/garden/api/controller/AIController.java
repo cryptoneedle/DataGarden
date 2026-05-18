@@ -1,24 +1,13 @@
 package com.cryptoneedle.garden.api.controller;
 
 import com.bubbles.engine.common.core.result.Result;
-import com.cryptoneedle.garden.common.enums.SourceCollectFrequencyType;
-import com.cryptoneedle.garden.common.exception.EntityNotFoundException;
-import com.cryptoneedle.garden.common.key.source.SourceCatalogKey;
-import com.cryptoneedle.garden.common.key.source.SourceDatabaseKey;
-import com.cryptoneedle.garden.common.key.source.SourceTableKey;
 import com.cryptoneedle.garden.core.ai.AIService;
 import com.cryptoneedle.garden.core.crud.*;
-import com.cryptoneedle.garden.core.crud.source.*;
-import com.cryptoneedle.garden.core.ds.DolphinSchedulerService;
-import com.cryptoneedle.garden.infrastructure.entity.source.SourceCatalog;
-import com.cryptoneedle.garden.infrastructure.entity.source.SourceDatabase;
-import com.cryptoneedle.garden.infrastructure.entity.source.SourceTable;
+import com.cryptoneedle.garden.infrastructure.vo.dwd.DwdGenResultVo;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * <p>description:  </p>
@@ -51,9 +40,14 @@ public class AIController {
         this.patch = patch;
     }
     
-    @PostMapping("/{tableName}/{columnName}/column/translate")
-    public Result<?> translateOdsColumn(@PathVariable String tableName, @PathVariable String columnName) {
-        aiService.translateOdsColumn(tableName, columnName);
+    @PostMapping("/{odsTableName}/{columnName}/column/translate")
+    public Result<?> translateOdsColumn(@PathVariable String odsTableName, @PathVariable String columnName) {
+        aiService.translateOdsColumn(odsTableName, columnName);
         return Result.success();
+    }
+    
+    @PostMapping("/{odsTableName}/dwd/generate")
+    public Result<DwdGenResultVo> generateDwdTable(@PathVariable String odsTableName) {
+        return Result.success(aiService.generateDwdTable(odsTableName));
     }
 }

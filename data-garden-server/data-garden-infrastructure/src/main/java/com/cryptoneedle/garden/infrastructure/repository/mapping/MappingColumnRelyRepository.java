@@ -50,4 +50,10 @@ public interface MappingColumnRelyRepository extends BaseRepository<MappingColum
                AND id.sourceTableName = :sourceTableName
            """)
     List<MappingColumnRely> listColumnRelysByMapping(String mappingTableName, String sourceTableName);
+    
+    @Query("""
+              FROM MappingColumnRely
+             WHERE id.sourceTableName = :sourceTableName
+           """)
+    List<MappingColumnRely> listColumnRelysBySource(String sourceTableName);
 }

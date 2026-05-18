@@ -107,7 +107,7 @@ public class PatchSourceService {
     public void tableDefault(SourceCatalog catalog) {
         List<SourceTable> tables = select.tables(catalog.getId().getCatalogName());
         tables = tables.stream()
-                       .filter(SourceTable::getEnabled)
+                       //.filter(SourceTable::getEnabled)
                        .toList();
         for (SourceTable table : tables) {
             if (table.getDorisCatalog() == null
@@ -131,7 +131,7 @@ public class PatchSourceService {
                 if (table.getCollectGroupNum() == null) {
                     table.setCollectGroupNum(0);
                 }
-                if (table.getRowNum() == null) {
+                if (table.getRowNum() == null && table.getEnabled()) {
                     Long rowNum = DataSourceExecutor.selectRowNum(catalog, table);
                     table.setRowNum(rowNum);
                 }

@@ -405,7 +405,7 @@ public class DorisService {
                     + "BUCKETS " + estimateBucket
                     + """
                      \nPROPERTIES (
-                        "replication_num" = "2",
+                        "replication_num" = "3",
                         "is_being_synced" = "false",
                         "compression" = "LZ4",
                         "enable_unique_key_merge_on_write" = "true",
