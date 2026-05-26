@@ -50,4 +50,10 @@ public class AIController {
     public Result<DwdGenResultVo> generateDwdTable(@PathVariable String odsTableName) {
         return Result.success(aiService.generateDwdTable(odsTableName));
     }
+    
+    @PostMapping("/data-lineage/dolphinScheduler")
+    public Result<?> dolphinSchedulerDataLineage() {
+        aiService.dolphinSchedulerDataLineage();
+        return Result.success();
+    }
 }

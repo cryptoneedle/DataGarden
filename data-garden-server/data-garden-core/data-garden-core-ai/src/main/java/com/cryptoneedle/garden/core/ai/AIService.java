@@ -1,14 +1,16 @@
 package com.cryptoneedle.garden.core.ai;
 
 import com.cryptoneedle.garden.common.constants.CommonConstant;
-import com.cryptoneedle.garden.common.key.doris.DorisColumnKey;
-import com.cryptoneedle.garden.common.key.doris.DorisTableKey;
-import com.cryptoneedle.garden.common.key.doris.OdsColumnTranslateKey;
+import com.cryptoneedle.garden.common.key.doris.*;
 import com.cryptoneedle.garden.core.crud.SelectService;
 import com.cryptoneedle.garden.core.mapping.MappingService;
 import com.cryptoneedle.garden.core.ods.OdsService;
+import com.cryptoneedle.garden.core.ai.neo4j.service.Neo4jLineageService;
 import com.cryptoneedle.garden.infrastructure.doris.DorisMetadataRepository;
 import com.cryptoneedle.garden.infrastructure.dto.DwdColumnGen;
+import com.cryptoneedle.garden.infrastructure.entity.dolphinScheduler.DolphinSchedulerTask;
+import com.cryptoneedle.garden.infrastructure.entity.doris.DorisLineageColumn;
+import com.cryptoneedle.garden.infrastructure.entity.doris.DorisLineageTable;
 import com.cryptoneedle.garden.infrastructure.entity.doris.DorisShowCreateTable;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumn;
 import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingColumnRely;
@@ -16,7 +18,10 @@ import com.cryptoneedle.garden.infrastructure.entity.mapping.MappingTableRely;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumn;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsColumnTranslate;
 import com.cryptoneedle.garden.infrastructure.entity.ods.OdsTable;
+import com.cryptoneedle.garden.infrastructure.repository.doris.DorisLineageColumnRepository;
+import com.cryptoneedle.garden.infrastructure.repository.doris.DorisLineageTableRepository;
 import com.cryptoneedle.garden.infrastructure.vo.dwd.DwdGenResultVo;
+import com.cryptoneedle.garden.infrastructure.vo.lineage.SqlLineageAnalysisResultVo;
 import com.cryptoneedle.garden.infrastructure.vo.ods.ColumnTranslateResultVo;
 import com.google.common.collect.Maps;
 import org.springframework.ai.chat.client.ChatClient;
@@ -53,6 +58,15 @@ public class AIService {
     @Autowired
     @Qualifier("dorisJdbcTemplate")
     private JdbcTemplate dorisJdbcTemplate;
+    @Autowired
+    @Qualifier("dolphinSchedulerJdbcTemplate")
+    private JdbcTemplate dolphinSchedulerJdbcTemplate;
+    @Autowired
+    private DorisLineageTableRepository dorisLineageTableRepository;
+    @Autowired
+    private DorisLineageColumnRepository dorisLineageColumnRepository;
+    @Autowired
+    private Neo4jLineageService neo4jLineageService;
     
     public void translateOdsColumn(String tableName, String columnName) {
         String ods = selectService.config.dorisSchemaOds();
@@ -246,40 +260,43 @@ public class AIService {
         
         // INSERT 列名列表
         String insertColumns = allColumns.stream()
-                .map(col -> "    `" + col.getColumnName() + "`")
-                .collect(Collectors.joining(",\n"));
+                                         .map(col -> "    `" + col.getColumnName() + "`")
+                                         .collect(Collectors.joining(",\n"));
         
         // SELECT 字段列表 — 格式: 原始表名.`字段名` AS `目标列名`
         String selectFields = allColumns.stream()
-                .map(col -> "    " + col.getOriginTableName() + ".`" + col.getOriginColumnName() + "` AS `" + col.getColumnName() + "`")
-                .collect(Collectors.joining(",\n"));
+                                        .map(col -> "    " + col.getOriginTableName() + ".`" + col.getOriginColumnName() + "` AS `" + col.getColumnName() + "`")
+                                        .collect(Collectors.joining(",\n"));
         
         // FROM 子句 — 不取别名
         String fromClause = "`" + odsDatabaseName + "`.`" + odsTableName + "`";
         
         // 按映射表名分组 MappingColumnRely
         Map<String, List<MappingColumnRely>> reliesByTable = mappingColumnRelies.stream()
-                .collect(Collectors.groupingBy(r -> r.getId().getMappingTableName()));
+                                                                                .collect(Collectors.groupingBy(r -> r.getId()
+                                                                                                                     .getMappingTableName()));
         
         // LEFT JOIN 子句 — 不取别名，直接使用表名引用字段
         String joinClauses = mappingTableRelies.stream()
-                .map(rely -> {
-                    String mappingTableName = rely.getId().getMappingTableName();
-                    String mappingDb = rely.getId().getMappingDatabaseName();
-                    
-                    List<MappingColumnRely> relies = reliesByTable.get(mappingTableName);
-                    if (relies == null || relies.isEmpty()) {
-                        return "";
-                    }
-                    
-                    String onConditions = relies.stream()
-                            .map(r -> odsTableName + ".`" + r.getId().getSourceColumnName() + "` = " + mappingTableName + ".`" + r.getId().getMappingColumnName() + "`")
-                            .collect(Collectors.joining(" AND "));
-                    
-                    return "\nLEFT JOIN `" + mappingDb + "`.`" + mappingTableName + "` ON " + onConditions;
-                })
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.joining());
+                                               .map(rely -> {
+                                                   String mappingTableName = rely.getId().getMappingTableName();
+                                                   String mappingDb = rely.getId().getMappingDatabaseName();
+                                                   
+                                                   List<MappingColumnRely> relies = reliesByTable.get(mappingTableName);
+                                                   if (relies == null || relies.isEmpty()) {
+                                                       return "";
+                                                   }
+                                                   
+                                                   String onConditions = relies.stream()
+                                                                               .map(r -> odsTableName + ".`" + r.getId()
+                                                                                                                .getSourceColumnName() + "` = " + mappingTableName + ".`" + r.getId()
+                                                                                                                                                                             .getMappingColumnName() + "`")
+                                                                               .collect(Collectors.joining(" AND "));
+                                                   
+                                                   return "\nLEFT JOIN `" + mappingDb + "`.`" + mappingTableName + "` ON " + onConditions;
+                                               })
+                                               .filter(s -> !s.isEmpty())
+                                               .collect(Collectors.joining());
         
         return """
                 INSERT INTO `%s`.`%s`(
@@ -335,5 +352,141 @@ public class AIService {
                 );
                 """
                 .formatted(dwdDatabaseName, dwdTableName, columnDefinition, uniqueKeys, comment, uniqueKeys, replicationNum);
+    }
+    
+    public void dolphinSchedulerDataLineage() {
+        // 步骤 1: 从 DolphinScheduler 数据库查询所有 SQL 类型的任务定义
+        List<DolphinSchedulerTask> sqlTasks = dolphinSchedulerJdbcTemplate.query("""
+                                                                                         SELECT td.code        AS code,
+                                                                                                td.task_type   AS taskType,
+                                                                                                td.task_params AS json
+                                                                                         FROM t_ds_process_definition pd
+                                                                                                  JOIN t_ds_process_task_relation ptr
+                                                                                                       ON pd.code = ptr.process_definition_code AND pd.version = ptr.process_definition_version
+                                                                                                  JOIN t_ds_task_definition td ON ptr.post_task_code = td.code AND ptr.post_task_version = td.version""",
+                                                                                 (rs, rowNum) -> DolphinSchedulerTask.builder()
+                                                                                                                     .code(rs.getString("code"))
+                                                                                                                     .taskType(rs.getString("taskType"))
+                                                                                                                     .json(rs.getString("json"))
+                                                                                                                     .build());
+        sqlTasks.stream().filter(task -> task.getTaskType().equals("SQL")).forEach(
+                task -> {
+                    String sql = task.getJson();
+                    String taskCode = task.getCode();
+                    
+                    // 使用 AI 分析 SQL 语句，识别表与表之间的血缘关系
+                    var outputConverter = new BeanOutputConverter<>(SqlLineageAnalysisResultVo.class);
+                    SqlLineageAnalysisResultVo lineageResult = chatClient.prompt()
+                                                                         .system("你是一个数据血缘分析专家，擅长从 SQL 语句中提取表和字段的血缘关系。")
+                                                                         .user(u -> u.text("""
+                                                                                                   请分析以下 SQL 语句，提取其中的血缘关系信息：
+                                                                                                   
+                                                                                                   SQL 语句：
+                                                                                                   {sql}
+                                                                                                   
+                                                                                                   请返回以下信息：
+                                                                                                   1. 目标表列表（INSERT INTO/CREATE TABLE 中的表）
+                                                                                                   2. 源表列表（FROM/JOIN 中的表）
+                                                                                                   3. 表级血缘关系（上游表 -> 下游表）
+                                                                                                   4. 字段级血缘关系（源字段 -> 目标字段）
+                                                                                                   
+                                                                                                   注意：
+                                                                                                   - 尽量识别完整的数据库名.表名格式，并排除中间表或临时表
+                                                                                                   - 字段血缘关系需要包含转换逻辑（如函数调用、计算表达式等）
+                                                                                                   
+                                                                                                   ----------------
+                                                                                                   {format}
+                                                                                                   """)
+                                                                                     .param("sql", sql)
+                                                                                     .param("format", outputConverter.getFormat()))
+                                                                         .call()
+                                                                         .entity(outputConverter);
+                    
+                    if (lineageResult != null) {
+                        // 获取表级血缘关系
+                        List<SqlLineageAnalysisResultVo.TableLineage> tableLineages = lineageResult.getTableLineages();
+                        
+                        // 获取字段级血缘关系
+                        List<SqlLineageAnalysisResultVo.FieldLineage> fieldLineages = lineageResult.getFieldLineages();
+                        
+                        // 转换为 DorisLineageTable 实体并保存到关系数据库
+                        if (tableLineages != null && !tableLineages.isEmpty()) {
+                            List<DorisLineageTable> dorisLineageTables = tableLineages.stream()
+                                                                                      .filter(tl -> tl.getToDatabaseName() != null && tl.getToTableName() != null
+                                                                                              && tl.getFromDatabaseName() != null && tl.getFromTableName() != null)
+                                                                                      .map(tl -> {
+                                                                                          DorisLineageTableKey key = DorisLineageTableKey.builder()
+                                                                                                                                         .toDatabaseName(tl.getToDatabaseName())
+                                                                                                                                         .toTableName(tl.getToTableName())
+                                                                                                                                         .fromDatabaseName(tl.getFromDatabaseName())
+                                                                                                                                         .fromTableName(tl.getFromTableName())
+                                                                                                                                         .build();
+                                                                                          return DorisLineageTable.builder()
+                                                                                                                  .id(key)
+                                                                                                                  .build();
+                                                                                      })
+                                                                                      .toList();
+                            
+                            if (!dorisLineageTables.isEmpty()) {
+                                dorisLineageTableRepository.saveAll(dorisLineageTables);
+                            }
+                            
+                            // 同时保存到 Neo4j 图数据库
+                            List<Neo4jLineageService.TableLineageInfo> neo4jTableLineages = tableLineages.stream()
+                                                                                                         .filter(tl -> tl.getToDatabaseName() != null && tl.getToTableName() != null
+                                                                                                                 && tl.getFromDatabaseName() != null && tl.getFromTableName() != null)
+                                                                                                         .map(tl -> new Neo4jLineageService.TableLineageInfo(
+                                                                                                                 tl.getFromDatabaseName(), tl.getFromTableName(),
+                                                                                                                 tl.getToDatabaseName(), tl.getToTableName(),
+                                                                                                                 "SQL任务: " + taskCode))
+                                                                                                         .toList();
+                            
+                            if (!neo4jTableLineages.isEmpty()) {
+                                neo4jLineageService.batchCreateTableLineage(neo4jTableLineages, taskCode);
+                            }
+                        }
+                        
+                        // 转换为 DorisLineageColumn 实体并保存到关系数据库
+                        if (fieldLineages != null && !fieldLineages.isEmpty()) {
+                            List<DorisLineageColumn> dorisLineageColumns = fieldLineages.stream()
+                                                                                        .filter(fl -> fl.getToDatabaseName() != null && fl.getToTableName() != null && fl.getToColumnName() != null
+                                                                                                && fl.getFromDatabaseName() != null && fl.getFromTableName() != null && fl.getFromColumnName() != null)
+                                                                                        .map(fl -> {
+                                                                                            DorisLineageColumnKey key = DorisLineageColumnKey.builder()
+                                                                                                                                             .toDatabaseName(fl.getToDatabaseName())
+                                                                                                                                             .toTableName(fl.getToTableName())
+                                                                                                                                             .toColumnName(fl.getToColumnName())
+                                                                                                                                             .fromDatabaseName(fl.getFromDatabaseName())
+                                                                                                                                             .fromTableName(fl.getFromTableName())
+                                                                                                                                             .fromColumnName(fl.getFromColumnName())
+                                                                                                                                             .build();
+                                                                                            return DorisLineageColumn.builder()
+                                                                                                                     .id(key)
+                                                                                                                     .transformLogic(fl.getTransformLogic())
+                                                                                                                     .build();
+                                                                                        })
+                                                                                        .toList();
+                            
+                            if (!dorisLineageColumns.isEmpty()) {
+                                dorisLineageColumnRepository.saveAll(dorisLineageColumns);
+                            }
+                            
+                            // 同时保存到 Neo4j 图数据库
+                            List<Neo4jLineageService.ColumnLineageInfo> neo4jColumnLineages = fieldLineages.stream()
+                                                                                                           .filter(fl -> fl.getToDatabaseName() != null && fl.getToTableName() != null && fl.getToColumnName() != null
+                                                                                                                   && fl.getFromDatabaseName() != null && fl.getFromTableName() != null && fl.getFromColumnName() != null)
+                                                                                                           .map(fl -> new Neo4jLineageService.ColumnLineageInfo(
+                                                                                                                   fl.getFromDatabaseName(), fl.getFromTableName(), fl.getFromColumnName(),
+                                                                                                                   fl.getToDatabaseName(), fl.getToTableName(), fl.getToColumnName(),
+                                                                                                                   fl.getTransformLogic(), "SQL任务: " + taskCode))
+                                                                                                           .toList();
+                            
+                            if (!neo4jColumnLineages.isEmpty()) {
+                                neo4jLineageService.batchCreateColumnLineage(neo4jColumnLineages, taskCode);
+                            }
+                        }
+                    }
+                }
+        );
     }
 }
